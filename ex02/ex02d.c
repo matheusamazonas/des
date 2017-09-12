@@ -11,8 +11,9 @@ RT_TASK tasks[N];
 
 void periodic(void *arg)
 {
-  rt_task_sleep(1000000000L);
-  long long num = * (long long *) arg;
+  RTIME sleep = 1000000000L;
+  rt_task_sleep(sleep);
+  RTIME num = * (RTIME *) arg;
   rt_task_set_periodic(NULL, TM_NOW, num);
   while (1) {
     rt_printf("\nTask with period: %lld is being executed", num);
@@ -25,7 +26,7 @@ int main(int argc, char* argv[])
 {
   char  str[10] ;
   long long i;
-  long long periods[N];
+  RTIME periods[N];
 
   // Perform auto-init of rt_print buffers if the task doesn't do so
   //rt_print_auto_init(1);
