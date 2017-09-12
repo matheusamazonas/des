@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
       rt_task_start(&tasks[i], &demo, &index);
       //saves the time in which the task was started;
       startTime = rt_timer_read();
-      rt_printf("Create time [%d]: %llu | Start time [%d]: %llu \n", i+1 ,createTime, i+1 , startTime);
+      rt_printf("Creation time [%d]: %llu | Start time [%d]: %llu \n", i+1 ,createTime, i+1 , startTime);
       index += 10;
       prio += 10;
 
