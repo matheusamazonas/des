@@ -50,10 +50,14 @@ int main(int argc, char* argv[]) {
     rt_task_create(&t1, "task1", 0, 1, 0);
     rt_task_create(&t2, "task2", 0, 1, 0);
     rt_task_create(&t3, "task3", 0, 1, 0);
+    rt_task_create(&t4, "task4", 0, 1, 0);
     rt_task_start(&t1, &taskOne, &index);
     index++;
     rt_task_start(&t2, &taskTwo, &index);
     index++;
     rt_task_start(&t3, &taskOne, &index);
+    index++;
+    rt_task_start(&t4, &taskTwo, &index);
+    index++;
     return 0;
 }
