@@ -22,7 +22,7 @@ void taskOne(void *arg)
     int i, num;
     num = * (int *) arg;
     for (i=0; i < ITER; i++) {
-        rt_sem_p(&contr, 10000000000L);
+        rt_sem_p(&contr, TM_INFINITE);
         printf("I am taskTwo and global (%d)) = %d----------------\n", num, ++global);
         rt_sem_v(&contr2);
         
@@ -35,7 +35,7 @@ void taskTwo(void *arg)
     int i, num;
     num = * (int *) arg;
     for (i=0; i < ITER; i++) {
-        rt_sem_p(&contr2, 10000000000L);
+        rt_sem_p(&contr2, TM_INFINITE);
         printf("I am taskTwo and global (%d)) = %d----------------\n", num , --global);
         rt_sem_v(&contr);
         
