@@ -123,5 +123,5 @@ int main (int argc, char* args)
     rt_sem_p(&sem, TM_INFINITE); 
 
     // The number of differences is the number of runs minus one
-    write_RTIMES("time_diff.csv", VALID_RUNS-1, times);
+    write_RTIMES("time_diff_b.csv", VALID_RUNS-1, times);
 }
