@@ -19,11 +19,11 @@ void writeIntToPin(int,int);
 void writeValues()
 {
     int fd, ret, errorCode;
-    int one = 1;
     
     fd = open("/dev/rtdm/pinctrl-bcm2835/gpio4", O_WRONLY);
     //set device to output mode with special device request GPIO_RTIOC_DIR_OUT
-    ret = ioctl(fd, GPIO_RTIOC_DIR_OUT, &one);
+    int xeno_trigger = GPIO_TRIGGER_EDGE_FALLING;
+    ret = ioctl(fd, GPIO_RTIOC_DIR_OUT, &xeno_trigger);
     if (ret < 0)
     {
         errorCode = -ret;
@@ -65,6 +65,7 @@ void handler(void* arg)
         ret =read(fd, &value, sizeof(value));
         while (read(fd, &value, sizeof(value)) >= 0)
         {
+            //printf("Got interruption: %d\n", validCounter);
             if (runCounter >= 10)
             {
                 times[validCounter] = rt_timer_read() - lastTime;            
@@ -83,6 +84,7 @@ void periodic(void* arg)
     {
         lastTime = rt_timer_read();
         writeValues();
+        //printf("Sending interruption: %d\n", i);
         rt_task_wait_period(NULL);
     }
      
