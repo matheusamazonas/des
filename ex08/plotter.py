@@ -40,7 +40,7 @@ def ex08a():
 	print("Minimum deviation: ", minimum)
 	print("Standard Deviation: ", std_dev(deviations))
 
-	pyplot.title("Scheduling - run on Raspberry Pi")
+	#pyplot.title("Scheduling - run on Raspberry Pi")
 	pyplot.xlabel("runs")
 	pyplot.ylabel("delta (us)")
 	pyplot.scatter(x = list(range(1, len(values)+1)), y = values, marker='.')
@@ -55,7 +55,7 @@ def ex08b():
 	print("Average: ", average(correct_values))
 	print("Standard Deviation: ", std_dev(correct_values))
 
-	pyplot.title("Interrupt Latency on Raspberry Pi")
+	#pyplot.title("Interrupt Latency on Raspberry Pi")
 	pyplot.xlabel("runs")
 	pyplot.ylabel("latency (us)")
 	pyplot.scatter(x = list(range(1, len(correct_values)+1)), y = correct_values, marker='.')
