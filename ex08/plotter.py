@@ -13,8 +13,8 @@ def deviation_stats(list, desired_value):
 	for value in list:
 		dev = desired_value - value
 		deviations.append(dev)
-		minimum = min(minimum, dev)
-		maximum = max(maximum, dev)
+		minimum = min(minimum, abs(dev))
+		maximum = max(maximum, abs(dev))
 	return (deviations, minimum, maximum)
 
 def read_file_values(file_name, ignore_zeros):
