@@ -5,14 +5,23 @@
 #include <alchemy/task.h>
 #include <alchemy/timer.h>
 #include <rtdm/gpio.h>
-#include <wiringPi.h>
 
-#define N 500
+#define N 800
 
 int fd2, fd3, fd4, fd17, fd27, fd22, fd10, fd9, f23;
-int right;
-RTIME tRight= 0L, tLeft = 0L;
+int toRight;
+RTIME pRight= 0L, pLeft = 0L;
 RT_SEM sem;
+
+//pRight = period to move from the sensor to the right and back
+//pLeft = period to move from the sensor to the left and back
+
+//FLAG
+//toRight
+//toLeft
+
+//lastRight = Last time the clock blocked the sensor while moving to the right
+//lastLeft = Last time the clock blocked the sensor while moving to the left
 
 int initPin(int pin, int trigger, int in)
 {
@@ -62,29 +71,30 @@ void periodicLeft(void* arg)
 	while (1) 
 	{
 		rt_sem_p(&sem, TM_INFINITE);
-		period = tRight + tLeft;
-		if(right)
+		period = pRight + pLeft;
+		if(!toRight)
 		{
-			//printf("Sleeping for: %llu. Period: %llu\n", tLeft/2 + period/4, period);
-			rt_task_sleep(tLeft/2L + period/4L);
+			//printf("Sleeping for: %llu. Period: %llu\n", pLeft/2 + period/4, period);
+			rt_task_sleep(pLeft/2L + period/4L);
 			writeToPin(fd2, 1);
 			rt_task_sleep(period/N);
 			writeToPin(fd2, 0);
 		}
+		
 	}
 }
 
-void periodicRight (void* arg)
+void periodicRight(void* arg)
 {
 	RTIME period;
 	while(1)
 	{
 		rt_sem_p(&sem, TM_INFINITE);
-		period = tRight + tLeft;
-		if (!right)
+		period = pRight + pLeft;
+		if (toRight)
 		{
-			//printf("Sleeping for: %llu. Period: %llu\n", tRight/2 - period/4, period);
-			rt_task_sleep(tRight/2L + period/4L);
+			//printf("Sleeping for: %llu. Period: %llu\n", pRight/2 - period/4, period);
+			rt_task_sleep(pRight/2L + period/4L);
 			writeToPin(fd2, 1);
 			rt_task_sleep(period/N); 
 			writeToPin(fd2, 0);
@@ -96,40 +106,51 @@ void periodicRight (void* arg)
 void interrupt(void* arg)
 {
 	int ret, value, errorCode;
-	RTIME lastRight = 0L, lastLeft = 0L, time;
+	RTIME lastRight = 0L, lastLeft = 0L, time, period, errorDelta = 0;
 
 	while (read(f23, &value, sizeof(value)) >= 0)
 	{
+		toRight = !toRight;
 		time = rt_timer_read();
 		//printf("tRise: %llu tFall: %llu time: %llu\n", timeRise, timeFall, time);
-		if (right)
+		if (toRight)
 		{
 			if (lastRight)
 			{
 				//printf("Initializing left\n");
-				tLeft = time - lastRight;
+				//printf("T: %llu lastRight+pLeft: %llu delta:%llu\n", time, lastRight+pRight, time-(lastRight+pRight));
+				//errorDelta = time - (lastLeft+pLeft);
+				pLeft = time - lastLeft;
 			}
-			lastLeft = time;
+			//period = time - lastLeft;
+			lastRight = time;
 		}
 		else
 		{
 			if (lastLeft)
 			{
-				tRight = time - lastLeft;
-				//printf("Setting right\n");
+				pRight = time - lastRight;
+				//printf("Setting toRight\n");
 			}
-			lastRight = time;	
+			//period = time - lastRight;
+			lastLeft = time;	
 		}
 		//printf("Delta: %llu\n", rt_timer_read() - lastI);
 		//printf("Got an interruption\n");
-		if (tRight && tLeft)
+		if (pRight && pLeft)
 		{
-			//printf("tRight: %llu tLeft: %llu\n", tRight, tLeft);
+			//printf("pRight: %llu pLeft: %llu P: %llu E: %llu\n", pRight, pLeft, period, errorDelta);
 			//printf("Letting the semaphore go.\n");
 			//rt_sem_v(&sem);
+			//printf("Delta: %llu\n",(pRight + pLeft)-period);
+			rt_task_sleep(1000000L);
+			if(!toRight)
+			{
+				//printf("P: %llu D: %llu\n", period, (pLeft+pRight)-period);
+				//rt_task_sleep(period-(lastLeft-lastRight));
+			}
 			rt_sem_broadcast(&sem);
 		}
-		right = !right;
 	}
 }
 
@@ -153,24 +174,9 @@ int main (int argc, char* args)
 {
     RT_TASK taskRight, taskLeft, sTask;
 
-	// gpio Pin with INcoming interrupt
-    int PIN =23;
-    
-    // use wiringpi code to turn on pi's internal pullup circuit for input pin
-    // initialize wiringpi library to gpio mode
-    if (wiringPiSetupGpio() < 0)
-    {
-         printf("\n\n stopped program : Unable to setup wiringPi with GPIO \n\n");
-         exit(1);
-    }
-
 	rt_sem_create(&sem, "semaphore", 0, S_PRIO);
 
 	init();    
-
-	// setup internal pull up resister
-    // possible values : PUD_UP,PUD_DOWN,PUD_OFF (floating)
-    pullUpDnControl (PIN,PUD_UP);// returns void  
 
 	rt_task_create(&sTask, "sensor task", 0, 99, 0);
 	rt_task_start(&sTask, &interrupt, 0);
