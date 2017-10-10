@@ -139,9 +139,8 @@ void periodicLeft(void* arg)
 
 void periodicRight(void* arg)
 {
-    RTIME cDelay;
+    RTIME cDelay, period;
     int j;
-	RTIME period;
 	while(1)
 	{
 		rt_sem_p(&sem, TM_INFINITE);
