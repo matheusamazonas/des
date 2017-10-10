@@ -171,9 +171,7 @@ void interrupt(void* arg)
 	    if(value && tFall)
         {
             tError = (time - tFall)/2L;
-            // Magic number	
-            tError += 200000L;
-            //printf("Error: %llu\n", tError);
+            tError += (cCount * ((pRight+pLeft)/N))/4;
             toRight = !toRight;
 		    if (toRight)
 		    {
