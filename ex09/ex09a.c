@@ -6,12 +6,18 @@
 #include <alchemy/timer.h>
 #include <rtdm/gpio.h>
 
-#define N 800
+#define N 300L
 
 int fd2, fd3, fd4, fd17, fd27, fd22, fd10, fd9, f23;
-int toRight;
-RTIME pRight= 0L, pLeft = 0L;
+int toRight = 1;
+RTIME pRight= 0L, pLeft = 0L, tError = 0L;
 RT_SEM sem;
+
+typedef struct 
+{
+    int pin;
+    RTIME time;;
+} lightInfo;
 
 //pRight = period to move from the sensor to the right and back
 //pLeft = period to move from the sensor to the left and back
@@ -71,16 +77,15 @@ void periodicLeft(void* arg)
 	while (1) 
 	{
 		rt_sem_p(&sem, TM_INFINITE);
-		period = pRight + pLeft;
 		if(!toRight)
 		{
 			//printf("Sleeping for: %llu. Period: %llu\n", pLeft/2 + period/4, period);
-			rt_task_sleep(pLeft/2L + period/4L);
+		    period = pRight + pLeft;
+			rt_task_sleep(pLeft/2L + period/4L - tError);
 			writeToPin(fd2, 1);
 			rt_task_sleep(period/N);
 			writeToPin(fd2, 0);
 		}
-		
 	}
 }
 
@@ -90,15 +95,14 @@ void periodicRight(void* arg)
 	while(1)
 	{
 		rt_sem_p(&sem, TM_INFINITE);
-		period = pRight + pLeft;
 		if (toRight)
 		{
 			//printf("Sleeping for: %llu. Period: %llu\n", pRight/2 - period/4, period);
-			rt_task_sleep(pRight/2L + period/4L);
+		    period = pRight + pLeft;
+			rt_task_sleep(pRight/2L + period/4L - tError);
 			writeToPin(fd2, 1);
 			rt_task_sleep(period/N); 
 			writeToPin(fd2, 0);
-
 		}
 	}
 }
@@ -106,58 +110,49 @@ void periodicRight(void* arg)
 void interrupt(void* arg)
 {
 	int ret, value, errorCode;
-	RTIME lastRight = 0L, lastLeft = 0L, time, period, errorDelta = 0;
+	RTIME lastRight = 0L, lastLeft = 0L, time, tFall = 0L;
 
 	while (read(f23, &value, sizeof(value)) >= 0)
 	{
-		toRight = !toRight;
 		time = rt_timer_read();
-		//printf("tRise: %llu tFall: %llu time: %llu\n", timeRise, timeFall, time);
-		if (toRight)
-		{
-			if (lastRight)
-			{
-				//printf("Initializing left\n");
-				//printf("T: %llu lastRight+pLeft: %llu delta:%llu\n", time, lastRight+pRight, time-(lastRight+pRight));
-				//errorDelta = time - (lastLeft+pLeft);
-				pLeft = time - lastLeft;
-			}
-			//period = time - lastLeft;
-			lastRight = time;
-		}
-		else
-		{
-			if (lastLeft)
-			{
-				pRight = time - lastRight;
-				//printf("Setting toRight\n");
-			}
-			//period = time - lastRight;
-			lastLeft = time;	
-		}
-		//printf("Delta: %llu\n", rt_timer_read() - lastI);
-		//printf("Got an interruption\n");
-		if (pRight && pLeft)
-		{
-			//printf("pRight: %llu pLeft: %llu P: %llu E: %llu\n", pRight, pLeft, period, errorDelta);
-			//printf("Letting the semaphore go.\n");
-			//rt_sem_v(&sem);
-			//printf("Delta: %llu\n",(pRight + pLeft)-period);
-			rt_task_sleep(1000000L);
-			if(!toRight)
-			{
-				//printf("P: %llu D: %llu\n", period, (pLeft+pRight)-period);
-				//rt_task_sleep(period-(lastLeft-lastRight));
-			}
-			rt_sem_broadcast(&sem);
-		}
+	    if(value)
+        {
+            tError = (time - tFall)/2L;	
+            //tError += 200000L;
+            printf("Error: %llu\n", tError);
+            toRight = !toRight;
+		    if (toRight)
+		    {
+			    if (lastRight)
+			    {
+				    pLeft = time - lastLeft;
+			    }
+			    lastRight = time;
+		    }
+		    else
+		    {
+			    if (lastLeft)
+			    {
+				    pRight = time - lastRight;
+			    }
+			    lastLeft = time;	
+		    }
+		    if (pRight && pLeft)
+		    {
+			    rt_sem_broadcast(&sem);
+		    }
+        }
+        else
+        {
+            tFall = time;
+        }
 	}
 }
 
 void init ()
 {
 	//int trigger = GPIO_TRIGGER_EDGE_RISING;
-	int trigger = GPIO_TRIGGER_EDGE_FALLING;
+	int trigger = GPIO_TRIGGER_EDGE_FALLING|GPIO_TRIGGER_EDGE_RISING;
 
 	fd2 = initPin(2, 0, 0);
 	fd3 = initPin(3, 0, 0);
