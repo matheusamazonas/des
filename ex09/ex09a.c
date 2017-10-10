@@ -9,25 +9,19 @@
 #define N 300L
 
 int fd2, fd3, fd4, fd17, fd27, fd22, fd10, fd9, f23;
-int toRight = 1;
-RTIME pRight= 0L, pLeft = 0L, tError = 0L;
+int toRight;
+RTIME period;
 RT_SEM sem;
 
 typedef struct 
 {
     int pin;
-    RTIME time;;
+    int value;
 } lightInfo;
 
-//pRight = period to move from the sensor to the right and back
-//pLeft = period to move from the sensor to the left and back
+lightInfo** matX;
 
-//FLAG
-//toRight
-//toLeft
-
-//lastRight = Last time the clock blocked the sensor while moving to the right
-//lastLeft = Last time the clock blocked the sensor while moving to the left
+lightInfo** getX();
 
 int initPin(int pin, int trigger, int in)
 {
@@ -71,88 +65,82 @@ void writeToPin(int fd, int value)
     }	
 }
 
-void periodicLeft(void* arg)
+int getPinByNumber(int number)
 {
-	RTIME period;
-	while (1) 
-	{
-		rt_sem_p(&sem, TM_INFINITE);
-		if(!toRight)
-		{
-			//printf("Sleeping for: %llu. Period: %llu\n", pLeft/2 + period/4, period);
-		    period = pRight + pLeft;
-			rt_task_sleep(pLeft/2L + period/4L - tError);
-			writeToPin(fd2, 1);
-			rt_task_sleep(period/N);
-			writeToPin(fd2, 0);
-		}
-	}
+    switch(number)
+    {
+        case 2:
+            return fd2;
+        case 3:
+            return fd3;
+        case 4: 
+            return fd4;
+        case 17:
+            return fd17;
+        case 27:
+            return fd27;
+        case 22:
+            return fd22;
+        case 9:
+            return fd9;
+        case 10:
+            return fd10;
+    }
+}
+
+void setColumnValues(lightInfo* column, int on)
+{
+    int i;
+    int pinFd;
+    for (i = 0; i < 8; i++)
+    {
+        if (column[i].value)
+        {
+            pinFd = getPinByNumber(column[i].pin);
+            writeToPin(pinFd, on);
+        }
+    }
 }
 
 void periodicRight(void* arg)
 {
-	RTIME period;
+    int j;
 	while(1)
 	{
 		rt_sem_p(&sem, TM_INFINITE);
-		if (toRight)
-		{
-			//printf("Sleeping for: %llu. Period: %llu\n", pRight/2 - period/4, period);
-		    period = pRight + pLeft;
-			rt_task_sleep(pRight/2L + period/4L - tError);
-			writeToPin(fd2, 1);
-			rt_task_sleep(period/N); 
-			writeToPin(fd2, 0);
-		}
+		for (j = 0; j < 8; j++)
+        {
+            setColumnValues(matX[j], 1);
+            rt_task_sleep(period/N);
+            setColumnValues(matX[j], 0);
+        }
 	}
 }
 
 void interrupt(void* arg)
 {
 	int ret, value, errorCode;
-	RTIME lastRight = 0L, lastLeft = 0L, time, tFall = 0L;
+	RTIME lastTime = 0L, time;
 
 	while (read(f23, &value, sizeof(value)) >= 0)
 	{
+		if (toRight && period)
+		{
+			rt_sem_broadcast(&sem);
+		}
+		toRight = !toRight;
 		time = rt_timer_read();
-	    if(value)
-        {
-            tError = (time - tFall)/2L;	
-            //tError += 200000L;
-            printf("Error: %llu\n", tError);
-            toRight = !toRight;
-		    if (toRight)
-		    {
-			    if (lastRight)
-			    {
-				    pLeft = time - lastLeft;
-			    }
-			    lastRight = time;
-		    }
-		    else
-		    {
-			    if (lastLeft)
-			    {
-				    pRight = time - lastRight;
-			    }
-			    lastLeft = time;	
-		    }
-		    if (pRight && pLeft)
-		    {
-			    rt_sem_broadcast(&sem);
-		    }
-        }
-        else
-        {
-            tFall = time;
-        }
+		if (lastTime)
+		{
+			period = time - lastTime;
+		}
+		lastTime = time;
 	}
 }
 
 void init ()
 {
-	//int trigger = GPIO_TRIGGER_EDGE_RISING;
-	int trigger = GPIO_TRIGGER_EDGE_FALLING|GPIO_TRIGGER_EDGE_RISING;
+	int trigger = GPIO_TRIGGER_EDGE_FALLING;
 
 	fd2 = initPin(2, 0, 0);
 	fd3 = initPin(3, 0, 0);
@@ -163,11 +151,67 @@ void init ()
 	fd10 = initPin(10, 0, 0);
 	fd9 = initPin(9, 0, 0);
 	f23 = initPin(23, trigger, 1);
+
+    matX = getX();
+}
+
+lightInfo** getX()
+{
+    int i, j; 
+    lightInfo **x = calloc(8, sizeof(lightInfo*));
+    for (i = 0; i < 8; i++)
+    {
+        x[i] = calloc(8, sizeof(lightInfo));
+    }
+    for(i = 0, j = 0; i < 8 && j < 8; i++, j++)
+    {
+        x[i][j].pin = getPinByLine(i);
+        x[i][j].value = 0;
+    }
+    for (i = 0, j = 7; i <= 7, j >= 0; i++, j--)
+    {
+        x[i][i].pin = getPinByLine(i); 
+        x[i][i].value = 1;
+        x[j][i].pin = getPinByLine(i);  
+        x[j][i].value = 1;
+    }
+    /*for(i = 0; i < 8; i++)
+    {
+        for (j = 0; j < 8; j++)
+        {
+            printf("%d ", x[i][j].pin);
+        }
+        printf("\n");
+    }*/ 
+    return x;
+} 
+
+int getPinByLine(int line)
+{
+    switch(line)
+    {
+        case 0:
+            return 2;
+        case 1:
+            return 3;
+        case 2:
+            return 4;
+        case 3:
+            return 17;
+        case 4:
+            return 27;
+        case 5:
+            return 22;
+        case 6:
+            return 10;
+        case 7:
+            return 9;
+    }
 }
 
 int main (int argc, char* args)
 {
-    RT_TASK taskRight, taskLeft, sTask;
+    RT_TASK taskRight, sTask;
 
 	rt_sem_create(&sem, "semaphore", 0, S_PRIO);
 
@@ -179,10 +223,6 @@ int main (int argc, char* args)
 	rt_task_create(&taskRight, "taskRight", 0, 50, 0);
     rt_task_start(&taskRight, &periodicRight, 0);
 	
-	rt_task_create(&taskLeft, "taskLeft", 0, 50, 0);
-    rt_task_start(&taskLeft, &periodicLeft, 0);
-
-
     pause(); 
 }
 
