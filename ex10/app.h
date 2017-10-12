@@ -10,12 +10,17 @@ extern "C" {
 #define	STACK_SIZE		4096
 #endif
 
+void check_for_obstacles();
+
 #ifndef TOPPERS_MACRO_ONLY
 
 #include <stdio.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 
 #define sleep tslp_tsk
 
