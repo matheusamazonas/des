@@ -3,6 +3,7 @@
 void check_for_obstacles();
 
 int32_t FONT_WIDTH, FONT_HEIGHT;
+int *cs;
 
 // Speed settings
 uint32_t
@@ -11,7 +12,8 @@ uint32_t
 	MAX_ROT_DUR = 3780,
 	MIN_ROT_DUR = 630,
 	REVERSE_DUR = 1000,
-	SENSOR_REFRESH_RATE = 50;
+	SENSOR_REFRESH_RATE = 50,
+	BEEP_DURATION = 750;
 
 // Sensor mapping
 sensor_port_t
@@ -91,7 +93,7 @@ void move_towards()
 void avoid(int direction)
 {
 	ev3_led_set_color(LED_RED);
-	ev3_speaker_play_tone(NOTE_A4, 1000);
+	ev3_speaker_play_tone(NOTE_A4, BEEP_DURATION);
 	reverse();
 	rotate_in_axis(direction);
 	ev3_led_set_color(LED_GREEN);
@@ -100,6 +102,22 @@ void avoid(int direction)
 void check_for_obstacles()
 {
 	read_sensors(1);
+
+	switch (color)
+	{
+		case (COLOR_RED):
+			cs[0] = 1;
+			break;
+		case (COLOR_YELLOW):
+			cs[1] = 1;
+			break;
+		case (COLOR_BLUE):
+			cs[2] = 1;
+			break;
+		default:
+			break;
+	}
+
 	if (color == COLOR_BLACK)
 	{
 		if (rand() % 2)
@@ -141,8 +159,9 @@ void stop()
 	ev3_print(5, "Finished!");
 }
 
-void movement_task(intptr_t unused) 
+void move(int* colors) 
 {
+	cs = colors;
 	init();
 	
 	while(true) 
@@ -190,7 +209,7 @@ void read_sensors(int display_line)
 	ultrasonic = ev3_ultrasonic_sensor_get_distance(ULTRA_P);
 	if (display_line >= 0)
 	{
-		print_sensor_values(display_line);
+		//print_sensor_values(display_line);
 	}
 }
 
@@ -212,5 +231,6 @@ void print_sensor_values(int start_line)
 void close_app(intptr_t btn) 
 {
 	do_exit = true;
+	stop();
 	ev3_print(5, "Finishing..");
 }

@@ -56,6 +56,8 @@ extern void close_app(intptr_t);
  */
 
 extern void	main_task(intptr_t);
+extern void move_task(intptr_t);
+extern void color_task(intptr_t);
 
 #endif /* TOPPERS_MACRO_ONLY */
 
