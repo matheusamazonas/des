@@ -1,6 +1,11 @@
+#ifndef APP
+#define APP
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define is_master 0
 
 #pragma once
 
@@ -9,8 +14,6 @@ extern "C" {
 #ifndef STACK_SIZE
 #define	STACK_SIZE		4096
 #endif
-
-void check_for_obstacles();
 
 #ifndef TOPPERS_MACRO_ONLY
 
@@ -21,6 +24,9 @@ void check_for_obstacles();
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
+#include "syssvc/serial.h"
+#include "driver_interface_bluetooth.h"
+#include "driver_interface_filesys.h"
 
 #define sleep tslp_tsk
 
@@ -56,3 +62,6 @@ extern void	main_task(intptr_t);
 #ifdef __cplusplus
 }
 #endif
+
+#endif
+
