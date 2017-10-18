@@ -63,10 +63,12 @@ void connect_to_master()
 void slave_task(intptr_t unused)
 {
 	connect_to_master();
+	movement_task(unused);
 }
 void master_task(intptr_t unused)
 {
 	connect_to_slave();
+	movement_task(unused);
 }
 
 void main_task(intptr_t unused) 
