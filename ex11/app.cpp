@@ -1,27 +1,26 @@
-#include "movement.h"
+// Matheus Andrade and Alan Andrade
 
-int32_t NLINES;
+#include "movement.h"
+#include "roll.h"
+
+#define DISCOVERY_DURATION 150
+#define BT_CONNECT_PERIOD 500
+
 const uint8_t slave_address[6] = { 0x00, 0x17, 0xE9, 0xB2, 0x56, 0x99 };
 const char* pin = "0000";
 static FILE *bt_con;
+int32_t NLINES;
 int line = 0;
-int* colors;
+int* colors = (int*) calloc(3, sizeof(int));
+
+
+// ---------- BT Communication ----------
 
 bool_t isConnected()
 {
 	T_SERIAL_RPOR rpor;
     ER ercd = serial_ref_por(SIO_PORT_SPP_MASTER_TEST, &rpor);
     return ercd == E_OK;
-}
-
-void cycle_print(char* message) 
-{
-    int printLine = ++line % NLINES;
-    if (line >= NLINES)
-    {
-        ev3_lcd_clear_line_range(printLine, printLine + 1);
-    }
-    ev3_print(printLine, message);
 }
 
 void connect_to_slave()
@@ -36,7 +35,7 @@ void connect_to_slave()
 	        {
 	        	cycle_print((char*)"Trying to connect...");
 	            spp_master_test_connect(slave_address, pin);
-	            sleep(1000);
+	            sleep(BT_CONNECT_PERIOD);
 	        }
 	        break;
 	    }
@@ -52,58 +51,105 @@ void connect_to_master()
 		while (!ev3_bluetooth_is_connected()) 
 		{
 		    cycle_print((char*)"Waiting for connection...");
-		    sleep(1000);
+		    sleep(BT_CONNECT_PERIOD);
 		}
 		bt_con = ev3_serial_open_file(EV3_SERIAL_BT);
 		break;
 	}
-
+	fprintf(bt_con, "000\n");
 	cycle_print((char*)"Connected to master.");
 }
 
-void process_colors(char buf[])
+// ---------- Color handling ----------
+
+void write_colors()
+{
+	fprintf(bt_con, "%d%d%d\n", colors[0], colors[1], colors[2]);
+}
+
+bool is_done()
 {
 	int i;
 	bool allTrue = true;
 	for (i = 0; i < 3; i++)
 	{
-		colors[i] = (buf[i] - '0') || colors[i];
-	}
-	for (i = 0; i < 3; i++)
-	{
 		allTrue = colors[i] && allTrue;
 	}
-	if (allTrue)
+	return allTrue;
+}
+
+void process_colors(char buf[])
+{
+	int i, x;
+	for (i = 0; i < 3; i++)
 	{
-		cycle_print((char*)"DONEEEEEEEEEEEEE.");
+		x = buf[i] - '0';
+		if (x != colors[i])
+		{
+			ev3_speaker_play_tone(NOTE_C4, DISCOVERY_DURATION);
+			blink_led(LED_ORANGE, LED_GREEN, DISCOVERY_DURATION);
+			cycle_print((char*)"Found a color!");
+		}
+		colors[i] |= x;
+	}
+	if (is_done())
+	{
+		write_colors();
+		cycle_print((char*)"Found all colors!");
+		close_app();
+		if (is_master)
+		{
+			roll();
+		}
 	}
 }
 
-void communicate_color_master()
+void communicate_color()
 {
-	//static char buf[8];
-	cycle_print((char*)"Trying to send colors...");
-	fprintf(bt_con, "%d%d%d\n", colors[0], colors[1], colors[2]);
-	cycle_print((char*)"Sent colors...");
 	static char buf[8];
 	while (fgets(buf, 8, bt_con)) 
 	{
-		cycle_print(buf);
 		process_colors(buf);
-		dly_tsk(500);
+		write_colors();
 	}
 }
 
-void communicate_color_slave()
+// ---------- Closing and setting up ----------
+
+void close_app_handler(intptr_t unused) 
 {
-	static char buf[8];
-	while (fgets(buf, 8, bt_con)) 
-	{
-		cycle_print(buf);
-		process_colors(buf);
-		dly_tsk(500);
-	}
+	close_app();
 }
+
+void close_app()
+{
+	stop();
+	fclose(bt_con);
+	cycle_print((char*)"Closing...");
+	ter_tsk(MOVE_TASK);
+	ter_tsk(COLOR_TASK);
+	ter_tsk(MAIN_TASK);
+}
+
+void setup()
+{
+    //	Attach exit handler
+	ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
+	NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
+	init();
+}
+
+void cycle_print(char* message) 
+{
+    int printLine = ++line % NLINES;
+    if (line >= NLINES)
+    {
+        ev3_lcd_clear_line_range(printLine, printLine + 1);
+    }
+    ev3_print(printLine, message);
+}
+
+// ---------- Tasks ----------
 
 void move_task(intptr_t unused)
 {
@@ -112,19 +158,11 @@ void move_task(intptr_t unused)
 
 void color_task(intptr_t unused)
 {
-	if (is_master)
-	{
-		communicate_color_master();
-	}
-	else
-	{
-		communicate_color_slave();
-	}
+	communicate_color();
 }
 
 void main_task(intptr_t unused) 
 {
-	colors = (int*) calloc(3, sizeof(int));
 	if (is_master)
 	{
 		connect_to_slave();
@@ -133,10 +171,7 @@ void main_task(intptr_t unused)
 	{
 		connect_to_master();
 	}
+	setup();
 	act_tsk(MOVE_TASK);
 	act_tsk(COLOR_TASK);
 }
-
-
-
-

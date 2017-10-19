@@ -1,3 +1,5 @@
+// Matheus Andrade and Alan Andrade
+
 #ifndef APP
 #define APP
 
@@ -5,7 +7,7 @@
 extern "C" {
 #endif
 
-#define is_master 0
+#define is_master true
 
 #pragma once
 
@@ -49,8 +51,8 @@ extern int32_t FONT_HEIGHT;
 extern void set_font(lcdfont_t);
 extern void init();
 extern void read_sensors(int);
-extern void print_sensor_values(int);
-extern void close_app(intptr_t);
+extern void close_app();
+void cycle_print(char*); 
 /**
  * Tasks
  */

@@ -1,3 +1,5 @@
+// Matheus Andrade and Alan Andrade
+
 #include "movement.h"
 
 void check_for_obstacles();
@@ -13,7 +15,7 @@ uint32_t
 	MIN_ROT_DUR = 630,
 	REVERSE_DUR = 1000,
 	SENSOR_REFRESH_RATE = 50,
-	BEEP_DURATION = 750;
+	BEEP_DURATION = 200;
 
 // Sensor mapping
 sensor_port_t
@@ -29,8 +31,7 @@ motor_port_t
 
 bool_t
 	touch_left = false,
-	touch_right = false,
-	do_exit = false;
+	touch_right = false;
 colorid_t color;
 int16_t ultrasonic = 0;
 
@@ -60,10 +61,20 @@ void wait_for_ultra()
 
 void reverse()
 {
+	ulong_t current_time = 0L, init_time;
+
 	ev3_motor_set_power(LEFT_P, -SPECIAL_SPEED);
 	ev3_motor_set_power(RIGHT_P, -SPECIAL_SPEED);
 
-	sleep(REVERSE_DUR);
+	get_tim(&init_time);
+
+	while (init_time + REVERSE_DUR > current_time)
+	{
+		read_sensors(1);
+		check_colors();
+		sleep(100);
+		get_tim(&current_time);
+	}
 }
 
 void rotate_in_axis(int direction)
@@ -84,6 +95,13 @@ void rotate_in_axis(int direction)
 	}
 }
 
+void blink_led(ledcolor_t color, ledcolor_t reset, float duration)
+{
+	ev3_led_set_color(color);
+	dly_tsk(duration);
+	ev3_led_set_color(reset);
+}
+
 void move_towards()
 {
 	ev3_motor_set_power(LEFT_P, DRIVE_SPEED);
@@ -99,10 +117,8 @@ void avoid(int direction)
 	ev3_led_set_color(LED_GREEN);
 }
 
-void check_for_obstacles()
+void check_colors()
 {
-	read_sensors(1);
-
 	switch (color)
 	{
 		case (COLOR_RED):
@@ -117,6 +133,12 @@ void check_for_obstacles()
 		default:
 			break;
 	}
+}
+
+void check_for_obstacles()
+{
+	read_sensors(1);
+	check_colors();
 
 	if (color == COLOR_BLACK)
 	{
@@ -155,31 +177,24 @@ void stop()
 	// stop and close
 	ev3_motor_stop(LEFT_P, true);
 	ev3_motor_stop(RIGHT_P, true);
-	ev3_lcd_clear_line(5);
-	ev3_print(5, "Finished!");
+	ev3_led_set_color(LED_OFF);
 }
 
 void move(int* colors) 
 {
 	cs = colors;
-	init();
 	
 	while(true) 
 	{
 		check_for_obstacles();
 	    move_towards();
 	    sleep(SENSOR_REFRESH_RATE);
-	    if(do_exit)
-	    {
-	    	break;
-	    }
 	}
 }
 
 void init() 
 {
 	ulong_t time;
-	set_font(EV3_FONT_MEDIUM);
 	//	Motor init
 	ev3_motor_config(LEFT_P, LARGE_MOTOR);
 	ev3_motor_config(RIGHT_P, LARGE_MOTOR);
@@ -188,11 +203,12 @@ void init()
 	ev3_sensor_config(COLOR_P, COLOR_SENSOR);
 	ev3_sensor_config(TLEFT_P, TOUCH_SENSOR);
 	ev3_sensor_config(TRIGHT_P, TOUCH_SENSOR);
-	//	Attach exit handler
-	ev3_button_set_on_clicked(ENTER_BUTTON, close_app, ENTER_BUTTON);
 	// Initialize the random generator
 	get_tim(&time);
 	srand(time);
+
+	ev3_lcd_set_font(EV3_FONT_SMALL);
+    ev3_font_get_size(EV3_FONT_SMALL, &FONT_WIDTH, &FONT_HEIGHT);
 
 	// Set lights and wait for initial sensor values
 	ev3_led_set_color(LED_ORANGE);
@@ -207,30 +223,6 @@ void read_sensors(int display_line)
 	touch_right = ev3_touch_sensor_is_pressed(TRIGHT_P);
 	color = ev3_color_sensor_get_color(COLOR_P);
 	ultrasonic = ev3_ultrasonic_sensor_get_distance(ULTRA_P);
-	if (display_line >= 0)
-	{
-		//print_sensor_values(display_line);
-	}
 }
 
-void print_sensor_values(int start_line) 
-{
-	char str[100];
 
-	ev3_lcd_clear_line_range(start_line, start_line + 5);
-	snprintf(str, 100, "TouchL: %d", touch_left);
-	ev3_print(start_line + 0, str);
-	snprintf(str, 100, "TouchR: %d", touch_right);
-	ev3_print(start_line + 1, str);
-	snprintf(str, 100, "Ultra : %d", ultrasonic);
-	ev3_print(start_line + 2, str);
-	snprintf(str, 100, "Color : %d", color);
-	ev3_print(start_line + 3, str);
-}
-
-void close_app(intptr_t btn) 
-{
-	do_exit = true;
-	stop();
-	ev3_print(5, "Finishing..");
-}

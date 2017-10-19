@@ -1,6 +1,6 @@
 APPL_COBJS += 
 
-APPL_CXXOBJS += movement.o
+APPL_CXXOBJS += movement.o 
 
 SRCLANG := c++
 
