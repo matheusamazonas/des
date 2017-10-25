@@ -1,0 +1,18 @@
+Planning: DepartmentABC anonymous
+Task: Report Strategy persons: Alice Carol priority: 5
+Task: Pay 5000 euro persons: Bob priority: 2 
+
+Person: Alice Person: Fred
+
+Task: Lunch Canteen persons: Fred priority: 8 duration: 1 hour 
+Task: Meeting "Demo" persons: Alice priority: 4 duration: 90 min
+
+Person: Bob Person: Jules 
+
+Task: Meeting "Training" persons: Carol priority: 7 duration: 3 day 
+Task: Report Overview persons: Dave priority: 2 duration: 52 week 
+Task: If 32<45 Pay 13*32 euro persons: Bob priority: 3
+
+Person: Carol Person: Dave
+Person: Matheus
+
