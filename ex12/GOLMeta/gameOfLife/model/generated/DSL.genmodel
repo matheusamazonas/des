@@ -6,11 +6,8 @@
     copyrightFields="false" runtimeVersion="2.13">
   <genPackages prefix="DSL" basePackage="gameOfLife" disposableProviderFactory="true"
       fileExtensions="tdsl" ecorePackage="DSL.ecore#/">
-    <genClasses ecoreClass="DSL.ecore#//Model">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DSL.ecore#//Model/greetings"/>
-    </genClasses>
-    <genClasses ecoreClass="DSL.ecore#//Greeting">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DSL.ecore#//Greeting/name"/>
+    <genClasses ecoreClass="DSL.ecore#//GameSpec">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DSL.ecore#//GameSpec/initialGrid"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

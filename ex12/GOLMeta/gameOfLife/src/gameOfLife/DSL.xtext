@@ -2,8 +2,8 @@ grammar gameOfLife.DSL with org.eclipse.xtext.common.Terminals
 
 generate dSL "http://www.DSL.gameOfLife"
 
-Model:
-	greetings+=Greeting*;
+GameSpec: 'GameSpec:'
+	'initialGrid:' initialGrid += INT+;
+
 	
-Greeting:
-	'Hello' name=ID '!';
+
