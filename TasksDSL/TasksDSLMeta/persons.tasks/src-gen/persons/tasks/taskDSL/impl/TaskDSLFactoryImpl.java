@@ -69,6 +69,8 @@ public class TaskDSLFactoryImpl extends EFactoryImpl implements TaskDSLFactory
       case TaskDSLPackage.PLANNING: return createPlanning();
       case TaskDSLPackage.PERSON: return createPerson();
       case TaskDSLPackage.TASK: return createTask();
+      case TaskDSLPackage.PROJECT: return createProject();
+      case TaskDSLPackage.PROJECT_USE: return createProjectUse();
       case TaskDSLPackage.DURATION: return createDuration();
       case TaskDSLPackage.ACTION: return createAction();
       case TaskDSLPackage.LUNCH_ACTION: return createLunchAction();
@@ -177,6 +179,28 @@ public class TaskDSLFactoryImpl extends EFactoryImpl implements TaskDSLFactory
   {
     TaskImpl task = new TaskImpl();
     return task;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Project createProject()
+  {
+    ProjectImpl project = new ProjectImpl();
+    return project;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ProjectUse createProjectUse()
+  {
+    ProjectUseImpl projectUse = new ProjectUseImpl();
+    return projectUse;
   }
 
   /**

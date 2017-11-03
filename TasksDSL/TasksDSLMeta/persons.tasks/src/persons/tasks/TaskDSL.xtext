@@ -7,10 +7,17 @@ Planning: 'Planning:' name=ID
 Person: 'Person:' name=ID 
 		 
 ;
-Task: 'Task:' action = Action 
+Task: 'Task:' name = ID action = Action 
 			'persons:' persons += [Person]+
 			'priority:' prio = INT
 			('duration:' duration = Duration)? 
+			'defineProjects:' (projects += Project)*
+			'useProjects:' (use += ProjectUse)*
+			("extends" extends=[Task|ID])?
+;
+Project: name = ID
+;
+ProjectUse: project = [Project]
 ;
 Duration: 
 	dl = INT unit = TimeUnit

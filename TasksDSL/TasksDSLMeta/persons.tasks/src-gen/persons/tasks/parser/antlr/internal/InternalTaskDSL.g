@@ -220,10 +220,28 @@ ruleTask returns [EObject current=null]
 		}
 		(
 			(
+				lv_name_1_0=RULE_ID
 				{
-					newCompositeNode(grammarAccess.getTaskAccess().getActionActionParserRuleCall_1_0());
+					newLeafNode(lv_name_1_0, grammarAccess.getTaskAccess().getNameIDTerminalRuleCall_1_0());
 				}
-				lv_action_1_0=ruleAction
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getTaskRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_1_0,
+						"org.eclipse.xtext.common.Terminals.ID");
+				}
+			)
+		)
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getTaskAccess().getActionActionParserRuleCall_2_0());
+				}
+				lv_action_2_0=ruleAction
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getTaskRule());
@@ -231,15 +249,15 @@ ruleTask returns [EObject current=null]
 					set(
 						$current,
 						"action",
-						lv_action_1_0,
+						lv_action_2_0,
 						"persons.tasks.TaskDSL.Action");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
-		otherlv_2='persons:'
+		otherlv_3='persons:'
 		{
-			newLeafNode(otherlv_2, grammarAccess.getTaskAccess().getPersonsKeyword_2());
+			newLeafNode(otherlv_3, grammarAccess.getTaskAccess().getPersonsKeyword_3());
 		}
 		(
 			(
@@ -248,21 +266,21 @@ ruleTask returns [EObject current=null]
 						$current = createModelElement(grammarAccess.getTaskRule());
 					}
 				}
-				otherlv_3=RULE_ID
+				otherlv_4=RULE_ID
 				{
-					newLeafNode(otherlv_3, grammarAccess.getTaskAccess().getPersonsPersonCrossReference_3_0());
+					newLeafNode(otherlv_4, grammarAccess.getTaskAccess().getPersonsPersonCrossReference_4_0());
 				}
 			)
 		)+
-		otherlv_4='priority:'
+		otherlv_5='priority:'
 		{
-			newLeafNode(otherlv_4, grammarAccess.getTaskAccess().getPriorityKeyword_4());
+			newLeafNode(otherlv_5, grammarAccess.getTaskAccess().getPriorityKeyword_5());
 		}
 		(
 			(
-				lv_prio_5_0=RULE_INT
+				lv_prio_6_0=RULE_INT
 				{
-					newLeafNode(lv_prio_5_0, grammarAccess.getTaskAccess().getPrioINTTerminalRuleCall_5_0());
+					newLeafNode(lv_prio_6_0, grammarAccess.getTaskAccess().getPrioINTTerminalRuleCall_6_0());
 				}
 				{
 					if ($current==null) {
@@ -271,22 +289,22 @@ ruleTask returns [EObject current=null]
 					setWithLastConsumed(
 						$current,
 						"prio",
-						lv_prio_5_0,
+						lv_prio_6_0,
 						"org.eclipse.xtext.common.Terminals.INT");
 				}
 			)
 		)
 		(
-			otherlv_6='duration:'
+			otherlv_7='duration:'
 			{
-				newLeafNode(otherlv_6, grammarAccess.getTaskAccess().getDurationKeyword_6_0());
+				newLeafNode(otherlv_7, grammarAccess.getTaskAccess().getDurationKeyword_7_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getTaskAccess().getDurationDurationParserRuleCall_6_1_0());
+						newCompositeNode(grammarAccess.getTaskAccess().getDurationDurationParserRuleCall_7_1_0());
 					}
-					lv_duration_7_0=ruleDuration
+					lv_duration_8_0=ruleDuration
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getTaskRule());
@@ -294,13 +312,143 @@ ruleTask returns [EObject current=null]
 						set(
 							$current,
 							"duration",
-							lv_duration_7_0,
+							lv_duration_8_0,
 							"persons.tasks.TaskDSL.Duration");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)
 		)?
+		otherlv_9='defineProjects:'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getTaskAccess().getDefineProjectsKeyword_8());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getTaskAccess().getProjectsProjectParserRuleCall_9_0());
+				}
+				lv_projects_10_0=ruleProject
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getTaskRule());
+					}
+					add(
+						$current,
+						"projects",
+						lv_projects_10_0,
+						"persons.tasks.TaskDSL.Project");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		otherlv_11='useProjects:'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getTaskAccess().getUseProjectsKeyword_10());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getTaskAccess().getUseProjectUseParserRuleCall_11_0());
+				}
+				lv_use_12_0=ruleProjectUse
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getTaskRule());
+					}
+					add(
+						$current,
+						"use",
+						lv_use_12_0,
+						"persons.tasks.TaskDSL.ProjectUse");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)*
+		(
+			otherlv_13='extends'
+			{
+				newLeafNode(otherlv_13, grammarAccess.getTaskAccess().getExtendsKeyword_12_0());
+			}
+			(
+				(
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getTaskRule());
+						}
+					}
+					otherlv_14=RULE_ID
+					{
+						newLeafNode(otherlv_14, grammarAccess.getTaskAccess().getExtendsTaskCrossReference_12_1_0());
+					}
+				)
+			)
+		)?
+	)
+;
+
+// Entry rule entryRuleProject
+entryRuleProject returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getProjectRule()); }
+	iv_ruleProject=ruleProject
+	{ $current=$iv_ruleProject.current; }
+	EOF;
+
+// Rule Project
+ruleProject returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			lv_name_0_0=RULE_ID
+			{
+				newLeafNode(lv_name_0_0, grammarAccess.getProjectAccess().getNameIDTerminalRuleCall_0());
+			}
+			{
+				if ($current==null) {
+					$current = createModelElement(grammarAccess.getProjectRule());
+				}
+				setWithLastConsumed(
+					$current,
+					"name",
+					lv_name_0_0,
+					"org.eclipse.xtext.common.Terminals.ID");
+			}
+		)
+	)
+;
+
+// Entry rule entryRuleProjectUse
+entryRuleProjectUse returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getProjectUseRule()); }
+	iv_ruleProjectUse=ruleProjectUse
+	{ $current=$iv_ruleProjectUse.current; }
+	EOF;
+
+// Rule ProjectUse
+ruleProjectUse returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			{
+				if ($current==null) {
+					$current = createModelElement(grammarAccess.getProjectUseRule());
+				}
+			}
+			otherlv_0=RULE_ID
+			{
+				newLeafNode(otherlv_0, grammarAccess.getProjectUseAccess().getProjectProjectCrossReference_0());
+			}
+		)
 	)
 ;
 

@@ -42,6 +42,8 @@ import persons.tasks.taskDSL.PaperAction;
 import persons.tasks.taskDSL.PaymentAction;
 import persons.tasks.taskDSL.Person;
 import persons.tasks.taskDSL.Planning;
+import persons.tasks.taskDSL.Project;
+import persons.tasks.taskDSL.ProjectUse;
 import persons.tasks.taskDSL.Task;
 import persons.tasks.taskDSL.TaskDSLFactory;
 import persons.tasks.taskDSL.TaskDSLPackage;
@@ -75,6 +77,20 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
    * @generated
    */
   private EClass taskEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass projectEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass projectUseEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -434,9 +450,9 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTask_Action()
+  public EAttribute getTask_Name()
   {
-    return (EReference)taskEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)taskEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -444,7 +460,7 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTask_Persons()
+  public EReference getTask_Action()
   {
     return (EReference)taskEClass.getEStructuralFeatures().get(1);
   }
@@ -454,9 +470,19 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getTask_Persons()
+  {
+    return (EReference)taskEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EAttribute getTask_Prio()
   {
-    return (EAttribute)taskEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)taskEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -466,7 +492,77 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
    */
   public EReference getTask_Duration()
   {
-    return (EReference)taskEClass.getEStructuralFeatures().get(3);
+    return (EReference)taskEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTask_Projects()
+  {
+    return (EReference)taskEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTask_Use()
+  {
+    return (EReference)taskEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getTask_Extends()
+  {
+    return (EReference)taskEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProject()
+  {
+    return projectEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProject_Name()
+  {
+    return (EAttribute)projectEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProjectUse()
+  {
+    return projectUseEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getProjectUse_Project()
+  {
+    return (EReference)projectUseEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1179,10 +1275,20 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
     createEAttribute(personEClass, PERSON__NAME);
 
     taskEClass = createEClass(TASK);
+    createEAttribute(taskEClass, TASK__NAME);
     createEReference(taskEClass, TASK__ACTION);
     createEReference(taskEClass, TASK__PERSONS);
     createEAttribute(taskEClass, TASK__PRIO);
     createEReference(taskEClass, TASK__DURATION);
+    createEReference(taskEClass, TASK__PROJECTS);
+    createEReference(taskEClass, TASK__USE);
+    createEReference(taskEClass, TASK__EXTENDS);
+
+    projectEClass = createEClass(PROJECT);
+    createEAttribute(projectEClass, PROJECT__NAME);
+
+    projectUseEClass = createEClass(PROJECT_USE);
+    createEReference(projectUseEClass, PROJECT_USE__PROJECT);
 
     durationEClass = createEClass(DURATION);
     createEAttribute(durationEClass, DURATION__DL);
@@ -1343,10 +1449,20 @@ public class TaskDSLPackageImpl extends EPackageImpl implements TaskDSLPackage
     initEAttribute(getPerson_Name(), ecorePackage.getEString(), "name", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(taskEClass, Task.class, "Task", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getTask_Name(), ecorePackage.getEString(), "name", null, 0, 1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTask_Action(), this.getAction(), null, "action", null, 0, 1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTask_Persons(), this.getPerson(), null, "persons", null, 0, -1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTask_Prio(), ecorePackage.getEInt(), "prio", null, 0, 1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTask_Duration(), this.getDuration(), null, "duration", null, 0, 1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTask_Projects(), this.getProject(), null, "projects", null, 0, -1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTask_Use(), this.getProjectUse(), null, "use", null, 0, -1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getTask_Extends(), this.getTask(), null, "extends", null, 0, 1, Task.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(projectEClass, Project.class, "Project", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getProject_Name(), ecorePackage.getEString(), "name", null, 0, 1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(projectUseEClass, ProjectUse.class, "ProjectUse", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getProjectUse_Project(), this.getProject(), null, "project", null, 0, 1, ProjectUse.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(durationEClass, Duration.class, "Duration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDuration_Dl(), ecorePackage.getEInt(), "dl", null, 0, 1, Duration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

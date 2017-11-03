@@ -40,6 +40,8 @@ import persons.tasks.taskDSL.PaperAction;
 import persons.tasks.taskDSL.PaymentAction;
 import persons.tasks.taskDSL.Person;
 import persons.tasks.taskDSL.Planning;
+import persons.tasks.taskDSL.Project;
+import persons.tasks.taskDSL.ProjectUse;
 import persons.tasks.taskDSL.Task;
 import persons.tasks.taskDSL.TaskDSLPackage;
 
@@ -131,6 +133,12 @@ public class TaskDSLSemanticSequencer extends AbstractDelegatingSemanticSequence
 				return; 
 			case TaskDSLPackage.PLANNING:
 				sequence_Planning(context, (Planning) semanticObject); 
+				return; 
+			case TaskDSLPackage.PROJECT:
+				sequence_Project(context, (Project) semanticObject); 
+				return; 
+			case TaskDSLPackage.PROJECT_USE:
+				sequence_ProjectUse(context, (ProjectUse) semanticObject); 
 				return; 
 			case TaskDSLPackage.TASK:
 				sequence_Task(context, (Task) semanticObject); 
@@ -773,10 +781,55 @@ public class TaskDSLSemanticSequencer extends AbstractDelegatingSemanticSequence
 	
 	/**
 	 * Contexts:
+	 *     ProjectUse returns ProjectUse
+	 *
+	 * Constraint:
+	 *     project=[Project|ID]
+	 */
+	protected void sequence_ProjectUse(ISerializationContext context, ProjectUse semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, TaskDSLPackage.Literals.PROJECT_USE__PROJECT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, TaskDSLPackage.Literals.PROJECT_USE__PROJECT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getProjectUseAccess().getProjectProjectIDTerminalRuleCall_0_1(), semanticObject.eGet(TaskDSLPackage.Literals.PROJECT_USE__PROJECT, false));
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Project returns Project
+	 *
+	 * Constraint:
+	 *     name=ID
+	 */
+	protected void sequence_Project(ISerializationContext context, Project semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, TaskDSLPackage.Literals.PROJECT__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, TaskDSLPackage.Literals.PROJECT__NAME));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getProjectAccess().getNameIDTerminalRuleCall_0(), semanticObject.getName());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     Task returns Task
 	 *
 	 * Constraint:
-	 *     (action=Action persons+=[Person|ID]+ prio=INT duration=Duration?)
+	 *     (
+	 *         name=ID 
+	 *         action=Action 
+	 *         persons+=[Person|ID]+ 
+	 *         prio=INT 
+	 *         duration=Duration? 
+	 *         projects+=Project* 
+	 *         use+=ProjectUse* 
+	 *         extends=[Task|ID]?
+	 *     )
 	 */
 	protected void sequence_Task(ISerializationContext context, Task semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

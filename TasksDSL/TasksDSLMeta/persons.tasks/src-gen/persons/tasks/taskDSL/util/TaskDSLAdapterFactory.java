@@ -91,6 +91,16 @@ public class TaskDSLAdapterFactory extends AdapterFactoryImpl
         return createTaskAdapter();
       }
       @Override
+      public Adapter caseProject(Project object)
+      {
+        return createProjectAdapter();
+      }
+      @Override
+      public Adapter caseProjectUse(ProjectUse object)
+      {
+        return createProjectUseAdapter();
+      }
+      @Override
       public Adapter caseDuration(Duration object)
       {
         return createDurationAdapter();
@@ -283,6 +293,36 @@ public class TaskDSLAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTaskAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link persons.tasks.taskDSL.Project <em>Project</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see persons.tasks.taskDSL.Project
+   * @generated
+   */
+  public Adapter createProjectAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link persons.tasks.taskDSL.ProjectUse <em>Project Use</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see persons.tasks.taskDSL.ProjectUse
+   * @generated
+   */
+  public Adapter createProjectUseAdapter()
   {
     return null;
   }

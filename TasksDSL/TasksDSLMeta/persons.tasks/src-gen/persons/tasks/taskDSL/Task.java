@@ -16,10 +16,14 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link persons.tasks.taskDSL.Task#getName <em>Name</em>}</li>
  *   <li>{@link persons.tasks.taskDSL.Task#getAction <em>Action</em>}</li>
  *   <li>{@link persons.tasks.taskDSL.Task#getPersons <em>Persons</em>}</li>
  *   <li>{@link persons.tasks.taskDSL.Task#getPrio <em>Prio</em>}</li>
  *   <li>{@link persons.tasks.taskDSL.Task#getDuration <em>Duration</em>}</li>
+ *   <li>{@link persons.tasks.taskDSL.Task#getProjects <em>Projects</em>}</li>
+ *   <li>{@link persons.tasks.taskDSL.Task#getUse <em>Use</em>}</li>
+ *   <li>{@link persons.tasks.taskDSL.Task#getExtends <em>Extends</em>}</li>
  * </ul>
  *
  * @see persons.tasks.taskDSL.TaskDSLPackage#getTask()
@@ -28,6 +32,32 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Task extends EObject
 {
+  /**
+   * Returns the value of the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Name</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Name</em>' attribute.
+   * @see #setName(String)
+   * @see persons.tasks.taskDSL.TaskDSLPackage#getTask_Name()
+   * @model
+   * @generated
+   */
+  String getName();
+
+  /**
+   * Sets the value of the '{@link persons.tasks.taskDSL.Task#getName <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Name</em>' attribute.
+   * @see #getName()
+   * @generated
+   */
+  void setName(String value);
+
   /**
    * Returns the value of the '<em><b>Action</b></em>' containment reference.
    * <!-- begin-user-doc -->
@@ -121,5 +151,63 @@ public interface Task extends EObject
    * @generated
    */
   void setDuration(Duration value);
+
+  /**
+   * Returns the value of the '<em><b>Projects</b></em>' containment reference list.
+   * The list contents are of type {@link persons.tasks.taskDSL.Project}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Projects</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Projects</em>' containment reference list.
+   * @see persons.tasks.taskDSL.TaskDSLPackage#getTask_Projects()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Project> getProjects();
+
+  /**
+   * Returns the value of the '<em><b>Use</b></em>' containment reference list.
+   * The list contents are of type {@link persons.tasks.taskDSL.ProjectUse}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Use</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Use</em>' containment reference list.
+   * @see persons.tasks.taskDSL.TaskDSLPackage#getTask_Use()
+   * @model containment="true"
+   * @generated
+   */
+  EList<ProjectUse> getUse();
+
+  /**
+   * Returns the value of the '<em><b>Extends</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Extends</em>' reference isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Extends</em>' reference.
+   * @see #setExtends(Task)
+   * @see persons.tasks.taskDSL.TaskDSLPackage#getTask_Extends()
+   * @model
+   * @generated
+   */
+  Task getExtends();
+
+  /**
+   * Sets the value of the '{@link persons.tasks.taskDSL.Task#getExtends <em>Extends</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Extends</em>' reference.
+   * @see #getExtends()
+   * @generated
+   */
+  void setExtends(Task value);
 
 } // Task

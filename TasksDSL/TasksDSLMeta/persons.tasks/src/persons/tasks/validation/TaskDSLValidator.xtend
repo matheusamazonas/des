@@ -47,7 +47,7 @@ class TaskDSLValidator extends AbstractTaskDSLValidator {
 		for (var i = 0; i < plist.size; i++){
 			for (var j = i+1; j < plist.size; j++){
 				if (plist.get(i).name.equals(plist.get(j).name)){
-					error("Double person name not allowed", null)
+					error("Double person name not allowed", Literals.PLANNING__PERSONS, j)
 				}
 			}
 		}

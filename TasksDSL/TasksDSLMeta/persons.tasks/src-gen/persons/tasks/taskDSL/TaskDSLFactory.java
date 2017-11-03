@@ -51,6 +51,24 @@ public interface TaskDSLFactory extends EFactory
   Task createTask();
 
   /**
+   * Returns a new object of class '<em>Project</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Project</em>'.
+   * @generated
+   */
+  Project createProject();
+
+  /**
+   * Returns a new object of class '<em>Project Use</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Project Use</em>'.
+   * @generated
+   */
+  ProjectUse createProjectUse();
+
+  /**
    * Returns a new object of class '<em>Duration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

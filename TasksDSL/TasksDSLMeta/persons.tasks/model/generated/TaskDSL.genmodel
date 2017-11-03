@@ -37,10 +37,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TaskDSL.ecore#//Person/name"/>
     </genClasses>
     <genClasses ecoreClass="TaskDSL.ecore#//Task">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TaskDSL.ecore#//Task/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//Task/action"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//Task/persons"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TaskDSL.ecore#//Task/prio"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//Task/duration"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//Task/projects"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//Task/use"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//Task/extends"/>
+    </genClasses>
+    <genClasses ecoreClass="TaskDSL.ecore#//Project">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TaskDSL.ecore#//Project/name"/>
+    </genClasses>
+    <genClasses ecoreClass="TaskDSL.ecore#//ProjectUse">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference TaskDSL.ecore#//ProjectUse/project"/>
     </genClasses>
     <genClasses ecoreClass="TaskDSL.ecore#//Duration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute TaskDSL.ecore#//Duration/dl"/>

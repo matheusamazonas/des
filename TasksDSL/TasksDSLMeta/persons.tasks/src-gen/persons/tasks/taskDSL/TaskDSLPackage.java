@@ -152,13 +152,22 @@ public interface TaskDSLPackage extends EPackage
   int TASK = 2;
 
   /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TASK__NAME = 0;
+
+  /**
    * The feature id for the '<em><b>Action</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TASK__ACTION = 0;
+  int TASK__ACTION = 1;
 
   /**
    * The feature id for the '<em><b>Persons</b></em>' reference list.
@@ -167,7 +176,7 @@ public interface TaskDSLPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TASK__PERSONS = 1;
+  int TASK__PERSONS = 2;
 
   /**
    * The feature id for the '<em><b>Prio</b></em>' attribute.
@@ -176,7 +185,7 @@ public interface TaskDSLPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TASK__PRIO = 2;
+  int TASK__PRIO = 3;
 
   /**
    * The feature id for the '<em><b>Duration</b></em>' containment reference.
@@ -185,7 +194,34 @@ public interface TaskDSLPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TASK__DURATION = 3;
+  int TASK__DURATION = 4;
+
+  /**
+   * The feature id for the '<em><b>Projects</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TASK__PROJECTS = 5;
+
+  /**
+   * The feature id for the '<em><b>Use</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TASK__USE = 6;
+
+  /**
+   * The feature id for the '<em><b>Extends</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TASK__EXTENDS = 7;
 
   /**
    * The number of structural features of the '<em>Task</em>' class.
@@ -194,7 +230,63 @@ public interface TaskDSLPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TASK_FEATURE_COUNT = 4;
+  int TASK_FEATURE_COUNT = 8;
+
+  /**
+   * The meta object id for the '{@link persons.tasks.taskDSL.impl.ProjectImpl <em>Project</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see persons.tasks.taskDSL.impl.ProjectImpl
+   * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getProject()
+   * @generated
+   */
+  int PROJECT = 3;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROJECT__NAME = 0;
+
+  /**
+   * The number of structural features of the '<em>Project</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROJECT_FEATURE_COUNT = 1;
+
+  /**
+   * The meta object id for the '{@link persons.tasks.taskDSL.impl.ProjectUseImpl <em>Project Use</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see persons.tasks.taskDSL.impl.ProjectUseImpl
+   * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getProjectUse()
+   * @generated
+   */
+  int PROJECT_USE = 4;
+
+  /**
+   * The feature id for the '<em><b>Project</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROJECT_USE__PROJECT = 0;
+
+  /**
+   * The number of structural features of the '<em>Project Use</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROJECT_USE_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link persons.tasks.taskDSL.impl.DurationImpl <em>Duration</em>}' class.
@@ -204,7 +296,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getDuration()
    * @generated
    */
-  int DURATION = 3;
+  int DURATION = 5;
 
   /**
    * The feature id for the '<em><b>Dl</b></em>' attribute.
@@ -241,7 +333,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getAction()
    * @generated
    */
-  int ACTION = 4;
+  int ACTION = 6;
 
   /**
    * The number of structural features of the '<em>Action</em>' class.
@@ -260,7 +352,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getLunchAction()
    * @generated
    */
-  int LUNCH_ACTION = 5;
+  int LUNCH_ACTION = 7;
 
   /**
    * The feature id for the '<em><b>Location</b></em>' attribute.
@@ -288,7 +380,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getMeetingAction()
    * @generated
    */
-  int MEETING_ACTION = 6;
+  int MEETING_ACTION = 8;
 
   /**
    * The feature id for the '<em><b>Topic</b></em>' attribute.
@@ -316,7 +408,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getPaperAction()
    * @generated
    */
-  int PAPER_ACTION = 7;
+  int PAPER_ACTION = 9;
 
   /**
    * The feature id for the '<em><b>Report</b></em>' attribute.
@@ -344,7 +436,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getPaymentAction()
    * @generated
    */
-  int PAYMENT_ACTION = 8;
+  int PAYMENT_ACTION = 10;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -381,7 +473,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getBooleanExpression()
    * @generated
    */
-  int BOOLEAN_EXPRESSION = 9;
+  int BOOLEAN_EXPRESSION = 11;
 
   /**
    * The number of structural features of the '<em>Boolean Expression</em>' class.
@@ -400,7 +492,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getNotExpression()
    * @generated
    */
-  int NOT_EXPRESSION = 10;
+  int NOT_EXPRESSION = 12;
 
   /**
    * The feature id for the '<em><b>Sub</b></em>' containment reference.
@@ -428,7 +520,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getBooleanExpressionBracket()
    * @generated
    */
-  int BOOLEAN_EXPRESSION_BRACKET = 11;
+  int BOOLEAN_EXPRESSION_BRACKET = 13;
 
   /**
    * The feature id for the '<em><b>Sub</b></em>' containment reference.
@@ -456,7 +548,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getBooleanExpressionConstant()
    * @generated
    */
-  int BOOLEAN_EXPRESSION_CONSTANT = 12;
+  int BOOLEAN_EXPRESSION_CONSTANT = 14;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -484,7 +576,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getIntExpression()
    * @generated
    */
-  int INT_EXPRESSION = 13;
+  int INT_EXPRESSION = 15;
 
   /**
    * The number of structural features of the '<em>Int Expression</em>' class.
@@ -503,7 +595,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionMinus()
    * @generated
    */
-  int EXPRESSION_MINUS = 14;
+  int EXPRESSION_MINUS = 16;
 
   /**
    * The feature id for the '<em><b>Sub</b></em>' containment reference.
@@ -531,7 +623,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionPlus()
    * @generated
    */
-  int EXPRESSION_PLUS = 15;
+  int EXPRESSION_PLUS = 17;
 
   /**
    * The feature id for the '<em><b>Sub</b></em>' containment reference.
@@ -559,7 +651,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionBracket()
    * @generated
    */
-  int EXPRESSION_BRACKET = 16;
+  int EXPRESSION_BRACKET = 18;
 
   /**
    * The feature id for the '<em><b>Sub</b></em>' containment reference.
@@ -587,7 +679,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionConstantInt()
    * @generated
    */
-  int EXPRESSION_CONSTANT_INT = 17;
+  int EXPRESSION_CONSTANT_INT = 19;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -615,7 +707,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionBalance()
    * @generated
    */
-  int EXPRESSION_BALANCE = 18;
+  int EXPRESSION_BALANCE = 20;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -643,7 +735,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionBinOp()
    * @generated
    */
-  int EXPRESSION_BIN_OP = 19;
+  int EXPRESSION_BIN_OP = 21;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -689,7 +781,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionCompOp()
    * @generated
    */
-  int EXPRESSION_COMP_OP = 20;
+  int EXPRESSION_COMP_OP = 22;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -735,7 +827,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionAddition()
    * @generated
    */
-  int EXPRESSION_ADDITION = 21;
+  int EXPRESSION_ADDITION = 23;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -772,7 +864,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionSubtraction()
    * @generated
    */
-  int EXPRESSION_SUBTRACTION = 22;
+  int EXPRESSION_SUBTRACTION = 24;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -809,7 +901,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionMultiply()
    * @generated
    */
-  int EXPRESSION_MULTIPLY = 23;
+  int EXPRESSION_MULTIPLY = 25;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -846,7 +938,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionDivision()
    * @generated
    */
-  int EXPRESSION_DIVISION = 24;
+  int EXPRESSION_DIVISION = 26;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -883,7 +975,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionMaximum()
    * @generated
    */
-  int EXPRESSION_MAXIMUM = 25;
+  int EXPRESSION_MAXIMUM = 27;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -920,7 +1012,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionMinimum()
    * @generated
    */
-  int EXPRESSION_MINIMUM = 26;
+  int EXPRESSION_MINIMUM = 28;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -957,7 +1049,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionModulo()
    * @generated
    */
-  int EXPRESSION_MODULO = 27;
+  int EXPRESSION_MODULO = 29;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -994,7 +1086,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getExpressionPower()
    * @generated
    */
-  int EXPRESSION_POWER = 28;
+  int EXPRESSION_POWER = 30;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -1031,7 +1123,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getBinaryBooleanOperator()
    * @generated
    */
-  int BINARY_BOOLEAN_OPERATOR = 29;
+  int BINARY_BOOLEAN_OPERATOR = 31;
 
   /**
    * The meta object id for the '{@link persons.tasks.taskDSL.CompareOperator <em>Compare Operator</em>}' enum.
@@ -1041,7 +1133,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getCompareOperator()
    * @generated
    */
-  int COMPARE_OPERATOR = 30;
+  int COMPARE_OPERATOR = 32;
 
   /**
    * The meta object id for the '{@link persons.tasks.taskDSL.Balance <em>Balance</em>}' enum.
@@ -1051,7 +1143,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getBalance()
    * @generated
    */
-  int BALANCE = 31;
+  int BALANCE = 33;
 
   /**
    * The meta object id for the '{@link persons.tasks.taskDSL.TimeUnit <em>Time Unit</em>}' enum.
@@ -1061,7 +1153,7 @@ public interface TaskDSLPackage extends EPackage
    * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getTimeUnit()
    * @generated
    */
-  int TIME_UNIT = 32;
+  int TIME_UNIT = 34;
 
 
   /**
@@ -1150,6 +1242,17 @@ public interface TaskDSLPackage extends EPackage
   EClass getTask();
 
   /**
+   * Returns the meta object for the attribute '{@link persons.tasks.taskDSL.Task#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see persons.tasks.taskDSL.Task#getName()
+   * @see #getTask()
+   * @generated
+   */
+  EAttribute getTask_Name();
+
+  /**
    * Returns the meta object for the containment reference '{@link persons.tasks.taskDSL.Task#getAction <em>Action</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1192,6 +1295,81 @@ public interface TaskDSLPackage extends EPackage
    * @generated
    */
   EReference getTask_Duration();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link persons.tasks.taskDSL.Task#getProjects <em>Projects</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Projects</em>'.
+   * @see persons.tasks.taskDSL.Task#getProjects()
+   * @see #getTask()
+   * @generated
+   */
+  EReference getTask_Projects();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link persons.tasks.taskDSL.Task#getUse <em>Use</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Use</em>'.
+   * @see persons.tasks.taskDSL.Task#getUse()
+   * @see #getTask()
+   * @generated
+   */
+  EReference getTask_Use();
+
+  /**
+   * Returns the meta object for the reference '{@link persons.tasks.taskDSL.Task#getExtends <em>Extends</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Extends</em>'.
+   * @see persons.tasks.taskDSL.Task#getExtends()
+   * @see #getTask()
+   * @generated
+   */
+  EReference getTask_Extends();
+
+  /**
+   * Returns the meta object for class '{@link persons.tasks.taskDSL.Project <em>Project</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Project</em>'.
+   * @see persons.tasks.taskDSL.Project
+   * @generated
+   */
+  EClass getProject();
+
+  /**
+   * Returns the meta object for the attribute '{@link persons.tasks.taskDSL.Project#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see persons.tasks.taskDSL.Project#getName()
+   * @see #getProject()
+   * @generated
+   */
+  EAttribute getProject_Name();
+
+  /**
+   * Returns the meta object for class '{@link persons.tasks.taskDSL.ProjectUse <em>Project Use</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Project Use</em>'.
+   * @see persons.tasks.taskDSL.ProjectUse
+   * @generated
+   */
+  EClass getProjectUse();
+
+  /**
+   * Returns the meta object for the reference '{@link persons.tasks.taskDSL.ProjectUse#getProject <em>Project</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Project</em>'.
+   * @see persons.tasks.taskDSL.ProjectUse#getProject()
+   * @see #getProjectUse()
+   * @generated
+   */
+  EReference getProjectUse_Project();
 
   /**
    * Returns the meta object for class '{@link persons.tasks.taskDSL.Duration <em>Duration</em>}'.
@@ -1994,6 +2172,14 @@ public interface TaskDSLPackage extends EPackage
     EClass TASK = eINSTANCE.getTask();
 
     /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TASK__NAME = eINSTANCE.getTask_Name();
+
+    /**
      * The meta object literal for the '<em><b>Action</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2024,6 +2210,66 @@ public interface TaskDSLPackage extends EPackage
      * @generated
      */
     EReference TASK__DURATION = eINSTANCE.getTask_Duration();
+
+    /**
+     * The meta object literal for the '<em><b>Projects</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference TASK__PROJECTS = eINSTANCE.getTask_Projects();
+
+    /**
+     * The meta object literal for the '<em><b>Use</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference TASK__USE = eINSTANCE.getTask_Use();
+
+    /**
+     * The meta object literal for the '<em><b>Extends</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference TASK__EXTENDS = eINSTANCE.getTask_Extends();
+
+    /**
+     * The meta object literal for the '{@link persons.tasks.taskDSL.impl.ProjectImpl <em>Project</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see persons.tasks.taskDSL.impl.ProjectImpl
+     * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getProject()
+     * @generated
+     */
+    EClass PROJECT = eINSTANCE.getProject();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROJECT__NAME = eINSTANCE.getProject_Name();
+
+    /**
+     * The meta object literal for the '{@link persons.tasks.taskDSL.impl.ProjectUseImpl <em>Project Use</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see persons.tasks.taskDSL.impl.ProjectUseImpl
+     * @see persons.tasks.taskDSL.impl.TaskDSLPackageImpl#getProjectUse()
+     * @generated
+     */
+    EClass PROJECT_USE = eINSTANCE.getProjectUse();
+
+    /**
+     * The meta object literal for the '<em><b>Project</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROJECT_USE__PROJECT = eINSTANCE.getProjectUse_Project();
 
     /**
      * The meta object literal for the '{@link persons.tasks.taskDSL.impl.DurationImpl <em>Duration</em>}' class.

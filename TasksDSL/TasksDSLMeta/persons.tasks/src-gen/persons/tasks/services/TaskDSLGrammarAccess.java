@@ -106,70 +106,159 @@ public class TaskDSLGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "persons.tasks.TaskDSL.Task");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cTaskKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cActionAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cActionActionParserRuleCall_1_0 = (RuleCall)cActionAssignment_1.eContents().get(0);
-		private final Keyword cPersonsKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cPersonsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final CrossReference cPersonsPersonCrossReference_3_0 = (CrossReference)cPersonsAssignment_3.eContents().get(0);
-		private final RuleCall cPersonsPersonIDTerminalRuleCall_3_0_1 = (RuleCall)cPersonsPersonCrossReference_3_0.eContents().get(1);
-		private final Keyword cPriorityKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cPrioAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cPrioINTTerminalRuleCall_5_0 = (RuleCall)cPrioAssignment_5.eContents().get(0);
-		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
-		private final Keyword cDurationKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
-		private final Assignment cDurationAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
-		private final RuleCall cDurationDurationParserRuleCall_6_1_0 = (RuleCall)cDurationAssignment_6_1.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameIDTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Assignment cActionAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cActionActionParserRuleCall_2_0 = (RuleCall)cActionAssignment_2.eContents().get(0);
+		private final Keyword cPersonsKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cPersonsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final CrossReference cPersonsPersonCrossReference_4_0 = (CrossReference)cPersonsAssignment_4.eContents().get(0);
+		private final RuleCall cPersonsPersonIDTerminalRuleCall_4_0_1 = (RuleCall)cPersonsPersonCrossReference_4_0.eContents().get(1);
+		private final Keyword cPriorityKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cPrioAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cPrioINTTerminalRuleCall_6_0 = (RuleCall)cPrioAssignment_6.eContents().get(0);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Keyword cDurationKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cDurationAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cDurationDurationParserRuleCall_7_1_0 = (RuleCall)cDurationAssignment_7_1.eContents().get(0);
+		private final Keyword cDefineProjectsKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		private final Assignment cProjectsAssignment_9 = (Assignment)cGroup.eContents().get(9);
+		private final RuleCall cProjectsProjectParserRuleCall_9_0 = (RuleCall)cProjectsAssignment_9.eContents().get(0);
+		private final Keyword cUseProjectsKeyword_10 = (Keyword)cGroup.eContents().get(10);
+		private final Assignment cUseAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cUseProjectUseParserRuleCall_11_0 = (RuleCall)cUseAssignment_11.eContents().get(0);
+		private final Group cGroup_12 = (Group)cGroup.eContents().get(12);
+		private final Keyword cExtendsKeyword_12_0 = (Keyword)cGroup_12.eContents().get(0);
+		private final Assignment cExtendsAssignment_12_1 = (Assignment)cGroup_12.eContents().get(1);
+		private final CrossReference cExtendsTaskCrossReference_12_1_0 = (CrossReference)cExtendsAssignment_12_1.eContents().get(0);
+		private final RuleCall cExtendsTaskIDTerminalRuleCall_12_1_0_1 = (RuleCall)cExtendsTaskCrossReference_12_1_0.eContents().get(1);
 		
 		//Task:
-		//	'Task:' action=Action
+		//	'Task:' name=ID action=Action
 		//	'persons:' persons+=[Person]+
-		//	'priority:' prio=INT ('duration:' duration=Duration)?;
+		//	'priority:' prio=INT ('duration:' duration=Duration)?
+		//	'defineProjects:' projects+=Project*
+		//	'useProjects:' use+=ProjectUse* ("extends" extends=[Task])?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'Task:' action=Action 'persons:' persons+=[Person]+ 'priority:' prio=INT ('duration:' duration=Duration)?
+		//'Task:' name=ID action=Action 'persons:' persons+=[Person]+ 'priority:' prio=INT ('duration:' duration=Duration)?
+		//'defineProjects:' projects+=Project* 'useProjects:' use+=ProjectUse* ("extends" extends=[Task])?
 		public Group getGroup() { return cGroup; }
 		
 		//'Task:'
 		public Keyword getTaskKeyword_0() { return cTaskKeyword_0; }
 		
-		//action=Action
-		public Assignment getActionAssignment_1() { return cActionAssignment_1; }
-		
-		//Action
-		public RuleCall getActionActionParserRuleCall_1_0() { return cActionActionParserRuleCall_1_0; }
-		
-		//'persons:'
-		public Keyword getPersonsKeyword_2() { return cPersonsKeyword_2; }
-		
-		//persons+=[Person]+
-		public Assignment getPersonsAssignment_3() { return cPersonsAssignment_3; }
-		
-		//[Person]
-		public CrossReference getPersonsPersonCrossReference_3_0() { return cPersonsPersonCrossReference_3_0; }
+		//name=ID
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 		
 		//ID
-		public RuleCall getPersonsPersonIDTerminalRuleCall_3_0_1() { return cPersonsPersonIDTerminalRuleCall_3_0_1; }
+		public RuleCall getNameIDTerminalRuleCall_1_0() { return cNameIDTerminalRuleCall_1_0; }
+		
+		//action=Action
+		public Assignment getActionAssignment_2() { return cActionAssignment_2; }
+		
+		//Action
+		public RuleCall getActionActionParserRuleCall_2_0() { return cActionActionParserRuleCall_2_0; }
+		
+		//'persons:'
+		public Keyword getPersonsKeyword_3() { return cPersonsKeyword_3; }
+		
+		//persons+=[Person]+
+		public Assignment getPersonsAssignment_4() { return cPersonsAssignment_4; }
+		
+		//[Person]
+		public CrossReference getPersonsPersonCrossReference_4_0() { return cPersonsPersonCrossReference_4_0; }
+		
+		//ID
+		public RuleCall getPersonsPersonIDTerminalRuleCall_4_0_1() { return cPersonsPersonIDTerminalRuleCall_4_0_1; }
 		
 		//'priority:'
-		public Keyword getPriorityKeyword_4() { return cPriorityKeyword_4; }
+		public Keyword getPriorityKeyword_5() { return cPriorityKeyword_5; }
 		
 		//prio=INT
-		public Assignment getPrioAssignment_5() { return cPrioAssignment_5; }
+		public Assignment getPrioAssignment_6() { return cPrioAssignment_6; }
 		
 		//INT
-		public RuleCall getPrioINTTerminalRuleCall_5_0() { return cPrioINTTerminalRuleCall_5_0; }
+		public RuleCall getPrioINTTerminalRuleCall_6_0() { return cPrioINTTerminalRuleCall_6_0; }
 		
 		//('duration:' duration=Duration)?
-		public Group getGroup_6() { return cGroup_6; }
+		public Group getGroup_7() { return cGroup_7; }
 		
 		//'duration:'
-		public Keyword getDurationKeyword_6_0() { return cDurationKeyword_6_0; }
+		public Keyword getDurationKeyword_7_0() { return cDurationKeyword_7_0; }
 		
 		//duration=Duration
-		public Assignment getDurationAssignment_6_1() { return cDurationAssignment_6_1; }
+		public Assignment getDurationAssignment_7_1() { return cDurationAssignment_7_1; }
 		
 		//Duration
-		public RuleCall getDurationDurationParserRuleCall_6_1_0() { return cDurationDurationParserRuleCall_6_1_0; }
+		public RuleCall getDurationDurationParserRuleCall_7_1_0() { return cDurationDurationParserRuleCall_7_1_0; }
+		
+		//'defineProjects:'
+		public Keyword getDefineProjectsKeyword_8() { return cDefineProjectsKeyword_8; }
+		
+		//projects+=Project*
+		public Assignment getProjectsAssignment_9() { return cProjectsAssignment_9; }
+		
+		//Project
+		public RuleCall getProjectsProjectParserRuleCall_9_0() { return cProjectsProjectParserRuleCall_9_0; }
+		
+		//'useProjects:'
+		public Keyword getUseProjectsKeyword_10() { return cUseProjectsKeyword_10; }
+		
+		//use+=ProjectUse*
+		public Assignment getUseAssignment_11() { return cUseAssignment_11; }
+		
+		//ProjectUse
+		public RuleCall getUseProjectUseParserRuleCall_11_0() { return cUseProjectUseParserRuleCall_11_0; }
+		
+		//("extends" extends=[Task])?
+		public Group getGroup_12() { return cGroup_12; }
+		
+		//"extends"
+		public Keyword getExtendsKeyword_12_0() { return cExtendsKeyword_12_0; }
+		
+		//extends=[Task]
+		public Assignment getExtendsAssignment_12_1() { return cExtendsAssignment_12_1; }
+		
+		//[Task]
+		public CrossReference getExtendsTaskCrossReference_12_1_0() { return cExtendsTaskCrossReference_12_1_0; }
+		
+		//ID
+		public RuleCall getExtendsTaskIDTerminalRuleCall_12_1_0_1() { return cExtendsTaskIDTerminalRuleCall_12_1_0_1; }
+	}
+	public class ProjectElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "persons.tasks.TaskDSL.Project");
+		private final Assignment cNameAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cNameIDTerminalRuleCall_0 = (RuleCall)cNameAssignment.eContents().get(0);
+		
+		//Project:
+		//	name=ID;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//name=ID
+		public Assignment getNameAssignment() { return cNameAssignment; }
+		
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_0() { return cNameIDTerminalRuleCall_0; }
+	}
+	public class ProjectUseElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "persons.tasks.TaskDSL.ProjectUse");
+		private final Assignment cProjectAssignment = (Assignment)rule.eContents().get(1);
+		private final CrossReference cProjectProjectCrossReference_0 = (CrossReference)cProjectAssignment.eContents().get(0);
+		private final RuleCall cProjectProjectIDTerminalRuleCall_0_1 = (RuleCall)cProjectProjectCrossReference_0.eContents().get(1);
+		
+		//ProjectUse:
+		//	project=[Project];
+		@Override public ParserRule getRule() { return rule; }
+		
+		//project=[Project]
+		public Assignment getProjectAssignment() { return cProjectAssignment; }
+		
+		//[Project]
+		public CrossReference getProjectProjectCrossReference_0() { return cProjectProjectCrossReference_0; }
+		
+		//ID
+		public RuleCall getProjectProjectIDTerminalRuleCall_0_1() { return cProjectProjectIDTerminalRuleCall_0_1; }
 	}
 	public class DurationElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "persons.tasks.TaskDSL.Duration");
@@ -1083,6 +1172,8 @@ public class TaskDSLGrammarAccess extends AbstractGrammarElementFinder {
 	private final PlanningElements pPlanning;
 	private final PersonElements pPerson;
 	private final TaskElements pTask;
+	private final ProjectElements pProject;
+	private final ProjectUseElements pProjectUse;
 	private final DurationElements pDuration;
 	private final ActionElements pAction;
 	private final LunchActionElements pLunchAction;
@@ -1126,6 +1217,8 @@ public class TaskDSLGrammarAccess extends AbstractGrammarElementFinder {
 		this.pPlanning = new PlanningElements();
 		this.pPerson = new PersonElements();
 		this.pTask = new TaskElements();
+		this.pProject = new ProjectElements();
+		this.pProjectUse = new ProjectUseElements();
 		this.pDuration = new DurationElements();
 		this.pAction = new ActionElements();
 		this.pLunchAction = new LunchActionElements();
@@ -1207,15 +1300,37 @@ public class TaskDSLGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Task:
-	//	'Task:' action=Action
+	//	'Task:' name=ID action=Action
 	//	'persons:' persons+=[Person]+
-	//	'priority:' prio=INT ('duration:' duration=Duration)?;
+	//	'priority:' prio=INT ('duration:' duration=Duration)?
+	//	'defineProjects:' projects+=Project*
+	//	'useProjects:' use+=ProjectUse* ("extends" extends=[Task])?;
 	public TaskElements getTaskAccess() {
 		return pTask;
 	}
 	
 	public ParserRule getTaskRule() {
 		return getTaskAccess().getRule();
+	}
+	
+	//Project:
+	//	name=ID;
+	public ProjectElements getProjectAccess() {
+		return pProject;
+	}
+	
+	public ParserRule getProjectRule() {
+		return getProjectAccess().getRule();
+	}
+	
+	//ProjectUse:
+	//	project=[Project];
+	public ProjectUseElements getProjectUseAccess() {
+		return pProjectUse;
+	}
+	
+	public ParserRule getProjectUseRule() {
+		return getProjectUseAccess().getRule();
 	}
 	
 	//Duration:

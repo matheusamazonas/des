@@ -94,6 +94,20 @@ public class TaskDSLSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case TaskDSLPackage.PROJECT:
+      {
+        Project project = (Project)theEObject;
+        T result = caseProject(project);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case TaskDSLPackage.PROJECT_USE:
+      {
+        ProjectUse projectUse = (ProjectUse)theEObject;
+        T result = caseProjectUse(projectUse);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case TaskDSLPackage.DURATION:
       {
         Duration duration = (Duration)theEObject;
@@ -346,6 +360,38 @@ public class TaskDSLSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTask(Task object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Project</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Project</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProject(Project object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Project Use</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Project Use</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProjectUse(ProjectUse object)
   {
     return null;
   }
