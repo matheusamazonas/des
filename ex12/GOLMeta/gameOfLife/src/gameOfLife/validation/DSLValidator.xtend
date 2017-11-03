@@ -3,6 +3,9 @@
  */
 package gameOfLife.validation
 
+import org.eclipse.xtext.validation.Check
+import gameOfLife.dSL.GridPoint
+import gameOfLife.dSL.DSLPackage$Literals;
 
 /**
  * This class contains custom validation rules. 
@@ -11,15 +14,16 @@ package gameOfLife.validation
  */
 class DSLValidator extends AbstractDSLValidator {
 	
-//	public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					DSLPackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
+	@Check
+	def checkTImeUnit(GridPoint point){
+		if (point !== null){
+			if (point.x < 0){
+				error("Point coordinates must be greater or equal than zero", Literals.GRID_POINT__X);
+			}
+			if (point.y < 0){
+				error("Point coordinates must be greater or equal than zero", Literals.GRID_POINT__Y);
+			}
+		}
+	}
 	
 }

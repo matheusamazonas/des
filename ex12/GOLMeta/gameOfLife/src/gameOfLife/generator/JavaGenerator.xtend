@@ -12,11 +12,9 @@ class JavaGenerator {
 		
 		public class RulesOfLife {
 			public static void computeInitialConfig(ArrayList<Point> survivingCells) {
-				survivingCells.add(new Point(22, 22));
-				survivingCells.add(new Point(22, 23));
-				survivingCells.add(new Point(22, 24));
-				survivingCells.add(new Point(21, 23));
-				survivingCells.add(new Point(23, 23));
+				«FOR p : root.initiallyAlive»
+					survivingCells.add(new Point(«p.x», «p.y»));
+				«ENDFOR»
 			}
 			
 			public static void computeSurvivors(boolean[][] gameBoard, ArrayList<Point> nextLiveCells) {

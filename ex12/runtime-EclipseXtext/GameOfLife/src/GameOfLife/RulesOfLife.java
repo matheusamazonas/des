@@ -10,6 +10,8 @@ public class RulesOfLife {
 		survivingCells.add(new Point(22, 24));
 		survivingCells.add(new Point(21, 23));
 		survivingCells.add(new Point(23, 23));
+		survivingCells.add(new Point(34, 45));
+		survivingCells.add(new Point(0, 0));
 	}
 	
 	public static void computeSurvivors(boolean[][] gameBoard, ArrayList<Point> nextLiveCells) {

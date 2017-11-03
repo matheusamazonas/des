@@ -3,7 +3,14 @@ grammar gameOfLife.DSL with org.eclipse.xtext.common.Terminals
 generate dSL "http://www.DSL.gameOfLife"
 
 GameSpec: 'GameSpec:'
-	'initialGrid:' initialGrid += INT+;
+	'initiallyAlive:' initiallyAlive += GridPoint+
+;
+	
+GridPoint: 
+	'(' x = INT
+	',' y = INT
+	')'
+;
 
 	
 
