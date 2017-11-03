@@ -1,6 +1,9 @@
 package gameOfLife.generator
 
 import gameOfLife.dSL.GameSpec
+import gameOfLife.dSL.Condition
+import gameOfLife.dSL.Operator
+import gameOfLife.dSL.Relativity
 
 class JavaGenerator {
 	
@@ -33,20 +36,42 @@ class JavaGenerator {
 		
 						if (gameBoard[i][j]) {
 							// Cell is alive, Can the cell live? (2-3)
-							if ((surrounding == 2) || (surrounding == 3)) {
+							«IF root.survivalRules !== null && root.survivalRules.length > 0»
+							if («FOR r : root.survivalRules SEPARATOR " || "»«toJava(r)»«ENDFOR») {
 								nextLiveCells.add(new Point(i - 1, j - 1));
 							}
+							«ENDIF»
 						} else {
 							// Cell is dead, will the cell be given birth? (3)
-							if (surrounding == 3) {
+							«IF root.birthRules !== null && root.birthRules.length > 0»
+							if («FOR r : root.birthRules SEPARATOR " || "»(surrounding == «r.value»)«ENDFOR») {
 								nextLiveCells.add(new Point(i - 1, j - 1));
 							}
+							«ENDIF»
 						}
 		            }
 		        }
 			}
-		
 		}
 		
 		'''
+		
+		def static toJava(Condition cond){
+			print("(surrounding " + toJava(cond.relativity) + " " + cond.value + ")")
+		}
+		
+		def static toJava(Relativity rel){
+			if (rel === null){
+				println("==")
+			}
+			else{
+				switch (rel.op) {
+				case GE: 
+					println(">=")
+				case LE:
+					println("<=")
+				}
+			}
+		}
+
 }

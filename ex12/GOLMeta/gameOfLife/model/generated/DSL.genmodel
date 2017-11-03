@@ -6,12 +6,25 @@
     copyrightFields="false" runtimeVersion="2.13">
   <genPackages prefix="DSL" basePackage="gameOfLife" disposableProviderFactory="true"
       fileExtensions="tdsl" ecorePackage="DSL.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="DSL.ecore#//Operator">
+      <genEnumLiterals ecoreEnumLiteral="DSL.ecore#//Operator/GE"/>
+      <genEnumLiterals ecoreEnumLiteral="DSL.ecore#//Operator/LE"/>
+    </genEnums>
     <genClasses ecoreClass="DSL.ecore#//GameSpec">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DSL.ecore#//GameSpec/initiallyAlive"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DSL.ecore#//GameSpec/birthRules"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DSL.ecore#//GameSpec/survivalRules"/>
     </genClasses>
     <genClasses ecoreClass="DSL.ecore#//GridPoint">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DSL.ecore#//GridPoint/x"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DSL.ecore#//GridPoint/y"/>
+    </genClasses>
+    <genClasses ecoreClass="DSL.ecore#//Condition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DSL.ecore#//Condition/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference DSL.ecore#//Condition/relativity"/>
+    </genClasses>
+    <genClasses ecoreClass="DSL.ecore#//Relativity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute DSL.ecore#//Relativity/op"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -4,6 +4,8 @@ generate dSL "http://www.DSL.gameOfLife"
 
 GameSpec: 'GameSpec:'
 	'initiallyAlive:' initiallyAlive += GridPoint+
+	'bornsIf:' birthRules += Condition+
+	'survivesIf:' survivalRules += Condition+
 ;
 	
 GridPoint: 
@@ -12,5 +14,19 @@ GridPoint:
 	')'
 ;
 
+Condition: {Condition}
+	'('
+	(value = INT 'neighbors' relativity = Relativity? | 'none')
+	')'
+;
+
+Relativity: 
+	op = Operator
+;
+
+enum Operator:
+	GE = 'or more' |
+	LE = 'or less' 
+;
 	
 

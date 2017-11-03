@@ -35,13 +35,12 @@ public class RulesOfLife {
 					}
 				} else {
 					// Cell is dead, will the cell be given birth? (3)
-					if (surrounding == 3) {
+					if ((surrounding == 3)) {
 						nextLiveCells.add(new Point(i - 1, j - 1));
 					}
 				}
             }
         }
 	}
-
 }
 
