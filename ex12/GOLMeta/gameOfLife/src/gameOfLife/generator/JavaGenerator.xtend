@@ -2,7 +2,6 @@ package gameOfLife.generator
 
 import gameOfLife.dSL.GameSpec
 import gameOfLife.dSL.Condition
-import gameOfLife.dSL.Operator
 import gameOfLife.dSL.Relativity
 
 class JavaGenerator {
@@ -56,6 +55,9 @@ class JavaGenerator {
 		
 		'''
 		
+		// Using { } instead of triple quotes to stop new lines when
+		// generating Java code. The code would compile with new lines,
+		// but it's terrible to look at.
 		def static toJava(Condition cond){
 			print("(surrounding " + toJava(cond.relativity) + " " + cond.value + ")")
 		}

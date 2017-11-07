@@ -17,6 +17,11 @@ import org.eclipse.emf.common.util.EList
  */
 class DSLValidator extends AbstractDSLValidator {
 	
+	/*
+	 * Throws an error if a grid point has invalid coordinates (less than 0).
+	 * Since the grid size is dynamic, we can't check if the coordinates are within 
+	 * its bounds.
+	 */
 	@Check
 	def checkGridPoint(GridPoint point){
 		if (point !== null){
@@ -29,6 +34,10 @@ class DSLValidator extends AbstractDSLValidator {
 		}
 	}
 	
+	/*
+	 * Throws a warning if repeated instances of a grid point are found in the list of
+	 * initial grid points  
+	 */
 	@Check
 	def checkDoublePoints(GameSpec spec){
 		if (spec !== null){
@@ -36,6 +45,8 @@ class DSLValidator extends AbstractDSLValidator {
 			for (var i = 0; i < points.size; i++){
 				for (var j = i+1; j < points.size; j ++){
 					if (equalPoints(points.get(i), points.get(j))){
+						// Displays a warning on both points
+						warning("Unnecessary repeated point", Literals.GAME_SPEC__INITIALLY_ALIVE, i);
 						warning("Unnecessary repeated point", Literals.GAME_SPEC__INITIALLY_ALIVE, j);
 					}
 				}
@@ -43,6 +54,13 @@ class DSLValidator extends AbstractDSLValidator {
 		}
 	}
 	
+	def equalPoints(GridPoint a, GridPoint b){
+		return a.x === b.x && a.y === b.y;
+	}
+	
+	/*
+	 * Throws an error of a rule value isn't valid (v < 0 or x > 8)
+	 */
 	@Check
 	def checkRuleValues(Condition rule){
 		if (rule.value < 0){
@@ -53,6 +71,11 @@ class DSLValidator extends AbstractDSLValidator {
 		}
 	}
 	
+	/*
+	 * Throws warnings if two rules are redundant, eg 
+	 * 		(4 neighbors) and (2 neighbors or more)
+	 * The warning is shown on both rules.
+	 */
 	@Check
 	def checkRedundantRules(GameSpec spec){
 		if (spec !== null){
@@ -81,6 +104,7 @@ class DSLValidator extends AbstractDSLValidator {
 	def redundantRules(Condition a, Condition b){
 		if (a.relativity === null){
 			if (b.relativity === null){
+				// both absolute
 				return a.value === b.value;
 			}
 			else{
@@ -127,10 +151,6 @@ class DSLValidator extends AbstractDSLValidator {
 			case LE:
 				return abs.value <= rel.value
 		}
-	}
-	
-	def equalPoints(GridPoint a, GridPoint b){
-		return a.x === b.x && a.y === b.y;
 	}
 	
 }

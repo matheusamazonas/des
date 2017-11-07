@@ -20,6 +20,8 @@ Condition: {Condition}
 	')'
 ;
 
+// Relativity is a wrapper entity around the Operator enum
+// to allow nullable values
 Relativity: 
 	op = Operator
 ;
