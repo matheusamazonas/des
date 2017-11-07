@@ -6,6 +6,9 @@ package gameOfLife.validation
 import org.eclipse.xtext.validation.Check
 import gameOfLife.dSL.GridPoint
 import gameOfLife.dSL.DSLPackage$Literals;
+import gameOfLife.dSL.GameSpec;
+import gameOfLife.dSL.Condition
+import org.eclipse.emf.common.util.EList
 
 /**
  * This class contains custom validation rules. 
@@ -15,7 +18,7 @@ import gameOfLife.dSL.DSLPackage$Literals;
 class DSLValidator extends AbstractDSLValidator {
 	
 	@Check
-	def checkTImeUnit(GridPoint point){
+	def checkGridPoint(GridPoint point){
 		if (point !== null){
 			if (point.x < 0){
 				error("Point coordinates must be greater or equal than zero", Literals.GRID_POINT__X);
@@ -24,6 +27,110 @@ class DSLValidator extends AbstractDSLValidator {
 				error("Point coordinates must be greater or equal than zero", Literals.GRID_POINT__Y);
 			}
 		}
+	}
+	
+	@Check
+	def checkDoublePoints(GameSpec spec){
+		if (spec !== null){
+			var points = spec.initiallyAlive;
+			for (var i = 0; i < points.size; i++){
+				for (var j = i+1; j < points.size; j ++){
+					if (equalPoints(points.get(i), points.get(j))){
+						warning("Unnecessary repeated point", Literals.GAME_SPEC__INITIALLY_ALIVE, j);
+					}
+				}
+			}
+		}
+	}
+	
+	@Check
+	def checkRuleValues(Condition rule){
+		if (rule.value < 0){
+			error ("Rule value must be positive", Literals.CONDITION__VALUE);
+		}
+		if (rule.value > 8){
+			error("Rule value can't be greater than 8.", Literals.CONDITION__VALUE);
+		}
+	}
+	
+	@Check
+	def checkRedundantRules(GameSpec spec){
+		if (spec !== null){
+			checkRedundancy(spec.birthRules, true);
+			checkRedundancy(spec.survivalRules, false);
+		}
+	}
+	
+	def checkRedundancy(EList<Condition> rules, boolean birth){
+		for (var i = 0; i < rules.size; i++){
+			for (var j = i+1; j < rules.size; j ++){
+				if (redundantRules(rules.get(i), rules.get(j))){
+					if (birth){
+						warning("Redundant rules", Literals.GAME_SPEC__BIRTH_RULES, i);	
+						warning("Redundant rules", Literals.GAME_SPEC__BIRTH_RULES, j);	
+					}
+					else {
+						warning("Redundant rules", Literals.GAME_SPEC__SURVIVAL_RULES, i);
+						warning("Redundant rules", Literals.GAME_SPEC__SURVIVAL_RULES, j);
+					}
+				}
+			}
+		}
+	}
+
+	def redundantRules(Condition a, Condition b){
+		if (a.relativity === null){
+			if (b.relativity === null){
+				return a.value === b.value;
+			}
+			else{
+				// a absolute, b relative
+				redundantRelativeAbsolute(b, a);
+			}
+		}
+		else {
+			if (b.relativity === null) {
+				// a relative, b absolute
+				redundantRelativeAbsolute(a, b);
+			}
+			else
+			{
+				// both relative
+				redundantRelativeRelative(a, b)
+			}
+		}
+	}
+	
+	def redundantRelativeRelative(Condition a, Condition b){
+		switch (a.relativity.op){
+			case GE:
+				switch (b.relativity.op){
+					case GE:
+						return true
+					case LE:
+						return a.value <= b.value
+				}
+			case LE: 
+				switch (b.relativity.op){
+					case GE:
+						return a.value >= b.value
+					case LE:
+						return true
+				}
+		}
+	}
+	
+	def redundantRelativeAbsolute(Condition rel, Condition abs){
+		switch (rel.relativity.op){
+			case GE:
+				return abs.value >= rel.value
+			case LE:
+				return abs.value <= rel.value
+		}
+	}
+	
+	def equalPoints(GridPoint a, GridPoint b){
+		return a.x === b.x && a.y === b.y;
 	}
 	
 }
