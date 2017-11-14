@@ -16,7 +16,7 @@ GridPoint:
 
 Condition: {Condition}
 	'('
-	(value = INT 'neighbors' relativity = Relativity? | 'none')
+	(value = INT 'neighbors' relativity = Relativity?)
 	')'
 ;
 
