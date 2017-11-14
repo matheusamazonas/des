@@ -5,13 +5,32 @@ import java.util.ArrayList;
 
 public class RulesOfLife {
 	public static void computeInitialConfig(ArrayList<Point> survivingCells) {
-		survivingCells.add(new Point(22, 22));
-		survivingCells.add(new Point(22, 23));
-		survivingCells.add(new Point(22, 24));
-		survivingCells.add(new Point(21, 23));
-		survivingCells.add(new Point(23, 23));
-		survivingCells.add(new Point(34, 45));
-		survivingCells.add(new Point(0, 0));
+		survivingCells.add(new Point(11, 12));
+		survivingCells.add(new Point(12, 13));
+		survivingCells.add(new Point(13, 11));
+		survivingCells.add(new Point(13, 12));
+		survivingCells.add(new Point(13, 13));
+		survivingCells.add(new Point(0, 1));
+		survivingCells.add(new Point(0, 2));
+		survivingCells.add(new Point(1, 0));
+		survivingCells.add(new Point(1, 1));
+		survivingCells.add(new Point(1, 2));
+		survivingCells.add(new Point(1, 3));
+		survivingCells.add(new Point(2, 0));
+		survivingCells.add(new Point(2, 1));
+		survivingCells.add(new Point(2, 3));
+		survivingCells.add(new Point(2, 4));
+		survivingCells.add(new Point(3, 2));
+		survivingCells.add(new Point(3, 3));
+		survivingCells.add(new Point(3, 30));
+		survivingCells.add(new Point(3, 31));
+		survivingCells.add(new Point(3, 32));
+		survivingCells.add(new Point(7, 22));
+		survivingCells.add(new Point(7, 23));
+		survivingCells.add(new Point(7, 24));
+		survivingCells.add(new Point(8, 23));
+		survivingCells.add(new Point(8, 24));
+		survivingCells.add(new Point(8, 25));
 	}
 	
 	public static void computeSurvivors(boolean[][] gameBoard, ArrayList<Point> nextLiveCells) {
@@ -30,12 +49,12 @@ public class RulesOfLife {
 
 				if (gameBoard[i][j]) {
 					// Cell is alive, Can the cell live? (2-3)
-					if ((surrounding == 2) || (surrounding == 3)) {
+					if ((surrounding >= 3)) {
 						nextLiveCells.add(new Point(i - 1, j - 1));
 					}
 				} else {
 					// Cell is dead, will the cell be given birth? (3)
-					if ((surrounding == 3)) {
+					if ((surrounding == 2)) {
 						nextLiveCells.add(new Point(i - 1, j - 1));
 					}
 				}
