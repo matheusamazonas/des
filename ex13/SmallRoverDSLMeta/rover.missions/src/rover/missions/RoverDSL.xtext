@@ -1,0 +1,9 @@
+grammar rover.missions.RoverDSL with org.eclipse.xtext.common.Terminals
+
+generate roverDSL "http://www.missions.rover/RoverDSL"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
