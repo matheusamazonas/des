@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import rover.missions.roverDSL.Model
 
 /**
  * Generates code from your model files on save.
@@ -16,10 +17,8 @@ import org.eclipse.xtext.generator.IGeneratorContext
 class RoverDSLGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(Greeting)
-//				.map[name]
-//				.join(', '))
+		var root = resource.allContents.head as Model;
+		var path = "../"
+		fsa.generateFile(path + "test.cpp", CPPGenerator.toCpp(root))
 	}
 }
