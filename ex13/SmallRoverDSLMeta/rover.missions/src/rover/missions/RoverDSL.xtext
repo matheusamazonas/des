@@ -2,8 +2,34 @@ grammar rover.missions.RoverDSL with org.eclipse.xtext.common.Terminals
 
 generate roverDSL "http://www.missions.rover/RoverDSL"
 
-Model:
-	greetings+=Greeting*;
+Robot:
+	"DefaultSpeed:" defaultSpeed = INT
+	"SlowSpeed:" slowSpeed = INT
+	"RotationRange:" minAngle = INT "to"  maxAngle = INT "degrees" 
+	"Mission:" 
+	mission=Mission
+;
 	
-Greeting:
-	'Hello' name=ID '!';
+
+Mission:
+	id = "FindColors" find = Colors|
+	id ="DetectBottle" "with" bottle = DetectBottle |
+	id = "AvoidColors" avoid = Colors |
+	id = "FollowLine" "of" "color" color =Color
+;
+
+Colors:
+	(color += Color)+
+;
+
+
+DetectBottle:
+	"closestDistance" maxDistance = INT
+;
+
+
+enum Color:
+	blue = "blue" |
+	red = "red" |
+	yellow = "yellow"
+;

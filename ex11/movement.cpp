@@ -15,7 +15,7 @@ uint32_t
 	MIN_ROT_DUR = 630,
 	REVERSE_DUR = 1000,
 	SENSOR_REFRESH_RATE = 50,
-	BEEP_DURATION = 200;
+	BEEP_DURATION = 10;
 
 // Sensor mapping
 sensor_port_t

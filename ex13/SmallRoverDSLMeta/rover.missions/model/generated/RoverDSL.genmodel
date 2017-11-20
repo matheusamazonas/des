@@ -6,11 +6,30 @@
     copyrightFields="false" runtimeVersion="2.13">
   <genPackages prefix="RoverDSL" basePackage="rover.missions" disposableProviderFactory="true"
       fileExtensions="evdsl" ecorePackage="RoverDSL.ecore#/">
-    <genClasses ecoreClass="RoverDSL.ecore#//Model">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Model/greetings"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="RoverDSL.ecore#//Color">
+      <genEnumLiterals ecoreEnumLiteral="RoverDSL.ecore#//Color/blue"/>
+      <genEnumLiterals ecoreEnumLiteral="RoverDSL.ecore#//Color/red"/>
+      <genEnumLiterals ecoreEnumLiteral="RoverDSL.ecore#//Color/yellow"/>
+    </genEnums>
+    <genClasses ecoreClass="RoverDSL.ecore#//Robot">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Robot/defaultSpeed"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Robot/slowSpeed"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Robot/minAngle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Robot/maxAngle"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Robot/mission"/>
     </genClasses>
-    <genClasses ecoreClass="RoverDSL.ecore#//Greeting">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Greeting/name"/>
+    <genClasses ecoreClass="RoverDSL.ecore#//Mission">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Mission/id"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Mission/find"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Mission/bottle"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Mission/avoid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Mission/color"/>
+    </genClasses>
+    <genClasses ecoreClass="RoverDSL.ecore#//Colors">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Colors/color"/>
+    </genClasses>
+    <genClasses ecoreClass="RoverDSL.ecore#//DetectBottle">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//DetectBottle/maxDistance"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
