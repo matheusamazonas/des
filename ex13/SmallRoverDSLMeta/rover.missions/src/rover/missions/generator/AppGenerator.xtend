@@ -8,10 +8,36 @@ class AppGenerator {
 		
 		#include "«root.mission.id».h"
 		
+		int32_t NLINES;
+		int line = 0;
 		
-		«IF root.mission.id == "FindColors"» int* colors = (int*) calloc(3, sizeof(int));«ENDIF»
-		void move_task(){
+		
+		«IF root.mission.id == "FindColors"» int* colors = (int*) calloc(«root.mission.find.color.length», sizeof(int));«ENDIF»
+		
+		void cycle_print(char* message) 
+		{
+		    int printLine = ++line % NLINES;
+		    if (line >= NLINES)
+		    {
+		        ev3_lcd_clear_line_range(printLine, printLine + 1);
+		    }
+		    ev3_print(printLine, message);
+		}
+		
+		void move_task(intptr_t unused){
 			move(«IF root.mission.id == "FindColors"»colors«ENDIF»);
+		}
+		
+		void close_app_handler(intptr_t unused) 
+		{
+			close_app();
+		}
+		
+		void close_app()
+		{
+			stop();
+			cycle_print((char*)"Closing...");
+			ter_tsk(MOVE_TASK);
 		}
 		
 		void setup(){

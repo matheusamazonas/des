@@ -14,8 +14,7 @@ Robot:
 Mission:
 	id = "FindColors" find = Colors|
 	id ="DetectBottle" "with" bottle = DetectBottle |
-	id = "AvoidColors" avoid = Colors |
-	id = "FollowLine" "of" "color" color =Color
+	id = "AvoidColors" avoid = Colors 
 ;
 
 Colors:

@@ -24,7 +24,8 @@ class RoverDSLGenerator extends AbstractGenerator {
 		fsa.generateFile(path+"app.h", AppGenerator.toH(root))
 		fsa.generateFile(path+"app.cfg", AppGenerator.toCfg(root))
 		fsa.generateFile(path+root.mission.id+".cpp", MissionModuleGenerator.toModuleCpp(root))
-		fsa.generateFile(path+root.mission.id+".h", MissionModuleGenerator.toModuleH(root)) 
+		fsa.generateFile(path+root.mission.id+".h", MissionModuleGenerator.toModuleH(root))
+		fsa.generateFile(path+"Makefile.inc", MakefileGenerator.toInc(root)) 
 	} 
 	
 //		fsa.generateFile('greetings.txt', 'People to greet: ' + 

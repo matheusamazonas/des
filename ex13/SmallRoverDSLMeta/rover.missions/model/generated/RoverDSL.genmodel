@@ -23,7 +23,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Mission/find"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Mission/bottle"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference RoverDSL.ecore#//Mission/avoid"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Mission/color"/>
     </genClasses>
     <genClasses ecoreClass="RoverDSL.ecore#//Colors">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute RoverDSL.ecore#//Colors/color"/>

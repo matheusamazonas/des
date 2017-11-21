@@ -1,19 +1,21 @@
 package rover.missions.generator
 
 import rover.missions.roverDSL.Robot
-import rover.missions.roverDSL.Mission
 import rover.missions.roverDSL.Color
+import rover.missions.roverDSL.Colors
+import org.eclipse.emf.common.util.EList
 
 class MissionModuleGenerator {
 	def static toModuleCpp(Robot root) '''
 		#include "«root.mission.id».h"
 		
+		void check_for_obstacles();
 		int32_t FONT_WIDTH, FONT_HEIGHT;
 				«IF root.mission.id == "FindColors"»int *cs;«ENDIF»
 				
 				
 				// Speed settings
-				uint32_t DRIVE_SPEED «root.defaultSpeed»,
+				uint32_t DRIVE_SPEED = «root.defaultSpeed»,
 					SPECIAL_SPEED = «root.slowSpeed»,
 					MAX_ROT_DUR = «root.maxAngle * 14»,
 					MIN_ROT_DUR = «root.minAngle * 14»,
@@ -123,15 +125,7 @@ class MissionModuleGenerator {
 								{
 									switch (color)
 									{
-										case (COLOR_RED):
-											cs[0] = 1;
-											break;
-										case (COLOR_YELLOW):
-											cs[1] = 1;
-											break;
-										case (COLOR_BLUE):
-											cs[2] = 1;
-											break;
+										«colors2CaseText(root.mission.find)»
 										default:
 											break;
 									}
@@ -162,8 +156,8 @@ class MissionModuleGenerator {
 											{
 												avoid(-1);
 											}
-											else if (ultrasonic <= «IF root.mission.id == "AvoidBottle"»«root.mission.bottle.maxDistance»«ENDIF» 
-											«IF root.mission.id != "AvoidBottle"»22«ENDIF»)
+											else if (ultrasonic <= «IF root.mission.id == "DetectBottle"»«root.mission.bottle.maxDistance»«ENDIF» 
+											«IF root.mission.id != "DetectBottle"»22«ENDIF»)
 											{
 												if (rand() % 2)
 												{
@@ -176,7 +170,6 @@ class MissionModuleGenerator {
 											}
 										}
 							
-							«mission2Text(root.mission)»
 							void init() 
 									{
 										ulong_t time;
@@ -221,9 +214,13 @@ class MissionModuleGenerator {
 											void move(«IF root.mission.id == "FindColors"» int* colors «ENDIF») 
 											{
 												«IF root.mission.id == "FindColors"» cs = colors;«ENDIF»
-												«IF root.mission.id == "FindColors"»while( (cs[0] + cs[1] + cs[2]) != 3 )«ENDIF»
-												«IF root.mission.id != "FindColors"»while(true)«ENDIF»
+												while(true)
 												{
+													«IF root.mission.id == "FindColors"»if( «colors2ConditionsText(root.mission.find.color)» == «root.mission.find.color.length» ){
+														stop();
+														break;
+														}
+													«ENDIF»
 													check_for_obstacles();
 													   move_towards();
 													   sleep(SENSOR_REFRESH_RATE);
@@ -236,47 +233,54 @@ class MissionModuleGenerator {
 	def static toModuleH(Robot root) '''
 		#include "app.h"
 		
-		void move(«IF root.mission.id == "FindColors"»int* scolors«ENDIF»);
+		void move(«IF root.mission.id == "FindColors"»int* colors«ENDIF»);
 		void stop();
 		void blink_led(ledcolor_t, ledcolor_t, float);
 		«IF root.mission.id == "FindColors"»void check_colors();«ENDIF»
 	'''
 
-	def static CharSequence mission2Text(Mission mission) {
-		switch (mission.id) {
-			case "FindColors": return missionFindColors
-			case "DetectBottle": return missionDetectBottle
-			case "AvoidColors": return missionAvoidColors(mission)
-			case "FollowLine": return missionFollowLine
+	
+	def static CharSequence colors2Text(String color) {
+		switch(color){
+			case "red": return '''COLOR_RED'''
+			case "blue": return '''COLOR_BLUE'''
+			case "yellow": return '''COLOR_YELLOW'''
+		}
+	}
+	
+	def static CharSequence colors2CaseText(Colors colors) {
+		switch(colors.color.length){
+			case 1: return '''case («colors2Text(colors.color.get(0).getName)»):
+					cs[0] = 1;
+					break;'''
+			case 2: return '''case («colors2Text(colors.color.get(0).getName)»):
+					cs[0] = 1;
+					break;
+				case («colors2Text(colors.color.get(1).getName)»):
+				  	cs[1] = 1;
+				  	break;'''
+			case 3: return '''case («colors2Text(colors.color.get(0).getName)»):
+					cs[0] = 1;
+					break;
+				case («colors2Text(colors.color.get(1).getName)»):
+				   	cs[1] = 1;
+					break;
+				case («colors2Text(colors.color.get(2).getName)»):
+					cs[2] = 1;
+					break;'''
+				
+		}
+	}
+	
+	def static CharSequence colors2ConditionsText(EList<Color> colors) {
+		switch(colors.length){
+			case 1: return '''cs[0]'''
+			case 2: return '''(cs[0] + cs[1])'''
+			case 3: return '''(cs[0] + cs[1] + cs[2])'''
+				
 		}
 	}
 
-	def static CharSequence missionFindColors() {
-		return ''''''
-	}
-
-	def static CharSequence missionDetectBottle() {
-		return '''
-			
-			
-			
-						
-			
-		'''
-	}
-
-	def static CharSequence missionAvoidColors(Mission mission) {
-		return '''
-			
-					
-			
-			
-		'''
-	}
-
-	def static CharSequence missionFollowLine() {
-		return ''''''
-	}
 
 	def static CharSequence colorsConditions2Text(Color color) {
 		switch (color.getName) {
