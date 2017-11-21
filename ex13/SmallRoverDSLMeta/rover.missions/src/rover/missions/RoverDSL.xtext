@@ -28,7 +28,11 @@ DetectBottle:
 
 
 enum Color:
-	blue = "blue" |
-	red = "red" |
-	yellow = "yellow"
+	black = "black"		|
+	blue = "blue" 		|
+	green = "green"		|
+	yellow = "yellow"	|
+	red = "red" 			|
+	white = "white"		|
+	brown = "brown"
 ;
