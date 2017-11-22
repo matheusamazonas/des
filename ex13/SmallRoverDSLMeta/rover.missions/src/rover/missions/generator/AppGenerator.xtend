@@ -1,58 +1,19 @@
 package rover.missions.generator
 
 import rover.missions.roverDSL.Robot
+import rover.missions.roverDSL.Mission
 
 class AppGenerator {
 	def static toCpp(Robot root)'''
 		
+	«FOR m : root.missions»
+		«toCpp(m)»
+	«ENDFOR»
 		
-		#include "«root.mission.id».h"
+	'''
+	
+	def static toCpp(Mission mission)'''
 		
-		int32_t NLINES;
-		int line = 0;
-		
-		
-		«IF root.mission.id == "FindColors"» int* colors = (int*) calloc(«root.mission.find.color.length», sizeof(int));«ENDIF»
-		
-		void cycle_print(char* message) 
-		{
-		    int printLine = ++line % NLINES;
-		    if (line >= NLINES)
-		    {
-		        ev3_lcd_clear_line_range(printLine, printLine + 1);
-		    }
-		    ev3_print(printLine, message);
-		}
-		
-		void move_task(intptr_t unused){
-			move(«IF root.mission.id == "FindColors"»colors«ENDIF»);
-		}
-		
-		void close_app_handler(intptr_t unused) 
-		{
-			close_app();
-		}
-		
-		void close_app()
-		{
-			stop();
-			cycle_print((char*)"Closing...");
-			ter_tsk(MOVE_TASK);
-		}
-		
-		void setup(){
-					    //	Attach exit handler
-						ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
-						NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
-						init();
-					}
-		
-		void main_task(intptr_t unused) 
-		{
-			setup();
-			act_tsk(MOVE_TASK);
-		}
-
 	'''
 	
 	def static toCfg(Robot root)'''

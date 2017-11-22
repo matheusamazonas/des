@@ -8,6 +8,7 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import rover.missions.roverDSL.Robot
+import rover.missions.roverDSL.Mission
 
 /**
  * Generates code from your model files on save.
@@ -23,9 +24,12 @@ class RoverDSLGenerator extends AbstractGenerator {
 		fsa.generateFile(path+"app.cpp", AppGenerator.toCpp(root))
 		fsa.generateFile(path+"app.h", AppGenerator.toH(root))
 		fsa.generateFile(path+"app.cfg", AppGenerator.toCfg(root))
-		fsa.generateFile(path+root.mission.id+".cpp", MissionModuleGenerator.toModuleCpp(root))
-		fsa.generateFile(path+root.mission.id+".h", MissionModuleGenerator.toModuleH(root))
-		fsa.generateFile(path+"Makefile.inc", MakefileGenerator.toInc(root)) 
+		for (Mission mission : root.missions)
+		{
+			fsa.generateFile(path+mission.name+".cpp", MissionModuleGenerator.toModuleCpp(root))
+			fsa.generateFile(path+mission.name+".h", MissionModuleGenerator.toModuleH(root)) 
+		}
+		
 	} 
 	
 //		fsa.generateFile('greetings.txt', 'People to greet: ' + 
