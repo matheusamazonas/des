@@ -1,0 +1,58 @@
+Features: 
+	Find all lakes and measure them (Must)
+	Find bricks and measure them (Must)
+	Avoid bricks after finding them (Should)
+	Avoid lakes after finding them (Should)
+	Stay within black area (Must)
+	Move around the board following white border (Would)
+	Measure lakes in a specific order (Could)
+Usability
+	High school students should be able to implement missions using DSL (Must)
+	Easy readability (Must)
+	Abstraction of implementations settings (makefile, c files, etc.) (Should)
+	Implement validations to provide feedback through messages{
+		ERROR (Must)
+		Warning (Could)
+		Info (Would)
+	}
+Reliability
+	Failure in communication (few missing messages) should not affect the tasks (Should)
+	Robots should not get stuck (Would)
+	Failure recovery invalid sensor values (Could)
+Performance
+	Broadband consumption (Could)
+	Response time for "threats" or goals (Could)
+Supportability
+	Speeds are configurable (should)
+
+=====================================================
+
+Sensor/port configuration
+			EV3 brick 1 (critical)	  EV3 brick 2 (secondary)
+		 ___________________________________________________
+Actuator|	    left motor			|						|
+		|	    right motor			|						|
+		|    measurement motor		|						|
+		|___________________________|_______________________|
+		 ____________________________________________________
+Sensors |	    color mid			|	  color right		|
+		|	 ultrasonic back		|	  color left		|
+		|	   touch left			|	ultrasonic front	|
+		|	   touch right			|		  gyro			|
+		|___________________________|_______________________|
+
+============================================================
+
+7 weeks in total, 6 prints, one week off (Dec 23-26,30,31, Jan 1st)
+
+Sprints:
+
+1st (22/11 - 28/11) - Planning
+2nd (29/11 - 05/12) - Reasonably good version of DSL grammar and code generation for Stay within borders.
+3rd (06/12 - 12/12) - Find bricks (and measure)? + Find lakes (and measure)?
+4th (13/12 - 19/12) - Error validation
+5th (20-23/12, 27-29/12, 02/01) - Abstraction of implementations settings, Failure in communication (few missing messages) should not affect the tasks
+6th (03/01 - 09/01) - Measure lakes in a specific order and Final improvements
+
+
+
