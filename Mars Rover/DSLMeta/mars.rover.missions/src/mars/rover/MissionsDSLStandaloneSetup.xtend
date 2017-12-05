@@ -13,3 +13,4 @@ class MissionsDSLStandaloneSetup extends MissionsDSLStandaloneSetupGenerated {
 		new MissionsDSLStandaloneSetup().createInjectorAndDoEMFRegistration()
 	}
 }
+

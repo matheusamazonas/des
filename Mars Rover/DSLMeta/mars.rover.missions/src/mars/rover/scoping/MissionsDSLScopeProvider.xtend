@@ -13,3 +13,4 @@ package mars.rover.scoping
 class MissionsDSLScopeProvider extends AbstractMissionsDSLScopeProvider {
 
 }
+

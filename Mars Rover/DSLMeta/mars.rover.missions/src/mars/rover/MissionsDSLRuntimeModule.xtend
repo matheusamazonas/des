@@ -9,3 +9,4 @@ package mars.rover
  */
 class MissionsDSLRuntimeModule extends AbstractMissionsDSLRuntimeModule {
 }
+
