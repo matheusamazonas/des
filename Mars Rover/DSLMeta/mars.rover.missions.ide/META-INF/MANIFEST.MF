@@ -7,5 +7,9 @@ Bundle-SymbolicName: mars.rover.missions.ide; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: mars.rover.missions,
  org.eclipse.xtext.ide,
- org.eclipse.xtext.xbase.ide
+ org.eclipse.xtext.xbase.ide,
+ org.antlr.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: mars.rover.ide.contentassist.antlr,
+ mars.rover.ide.contentassist.antlr.internal
+
