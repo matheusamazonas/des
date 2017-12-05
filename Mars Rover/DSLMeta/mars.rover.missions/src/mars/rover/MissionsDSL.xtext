@@ -6,26 +6,33 @@ Robot:
 	"DefaultSpeed:" defaultSpeed = INT
 	"SlowSpeed:" slowSpeed = INT
 	"RotationRange:" minAngle = INT "to"  maxAngle = INT "degrees" 
-	"Missions:" missions += [Mission]+
+	"StartMissions:" missions += [Mission]+
 	availableMissions += Mission+
 ;
 
 Mission: "Mission" name=ID "priority" priority = INT ":"
 	(
-		'avoid' cond += Condition+ 'otherwise' actions += Action+ 			|
-		'findOnce' cond += Condition+ 'finally' actions += Action+			|
-		'findSimultaneous' cond += Condition+ 'finally' actions += Action+ 
+		type = MissionType cond += Condition+ 'ifHappens' actions += Action* (new = NewMissions)?			|
+		type = MissionType cond += Condition+ 'whenDone' actions += Action*	(new = NewMissions)?			
 	)
+;
+
+enum MissionType:
+	AVOID = 						"avoid"	|
+	FIND = 							"find"	|
+	FINDINORDER = 			"findInOrder"	|
+	FINDSIMULTANEOUS = "findSimultaneous"	
 ;
 
 Condition:
 	sensor = Sensor 
-	relation = Relation
-	value = Value
+	(relation = Relation)?
+	value += Value+
+	(action = Action)?
 ;
 
 enum Sensor:
-	light = "light"				|
+	color = "color"				|
 	proximity = "proximity"		|
 	touch = "touch"
 ;
@@ -50,13 +57,18 @@ terminal BOOL:
 
 Action:
 	action = EV3_ACTION ("for" duration = INT | "value" value = INT)?
+	
 ;
 
 enum EV3_ACTION:
 	STOP = "stop"			|
 	REVERSE = "reverse" 		|
-	PLAY = "play" 			|
+	PLAY = "play" 		|
 	HALT = "halt"
+;
+
+NewMissions:
+	"startMission" missions +=[Mission]+
 ;
 
 enum Color:
