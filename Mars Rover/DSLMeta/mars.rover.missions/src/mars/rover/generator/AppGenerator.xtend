@@ -4,23 +4,109 @@ import mars.rover.missionsDSL.Robot
 
 class AppGenerator {
 	
-	def static toCfg(Robot root, boolean isMaster)'''
+	def static commonCpp()'''
+	#include "common.h"
 	
-		INCLUDE("app_common.cfg");
-		
-		«IF isMaster»
-		#include "master.h"
-		«ELSE»
-		#include "slave.h"
-		«ENDIF»
-			
-		DOMAIN(TDOM_APP) {
-		CRE_TSK(MAIN_TASK, { TA_ACT, 0, main_task, TMIN_APP_TPRI, STACK_SIZE, NULL });
-		CRE_TSK(ACT_TASK, {TA_NULL, 0, act_task, TMIN_APP_TPRI+2, STACK_SIZE, NULL });
-		CRE_TSK(SENSE_TASK, {TA_NULL, 0, sense_task, TMIN_APP_TPRI+1, STACK_SIZE, NULL });
-		}
-		
-		ATT_MOD("app.o");
+	int32_t FONT_WIDTH, FONT_HEIGHT;
 	
+	int32_t NLINES;
+	int line = 0;
+	
+	void cycle_print(char* message) 
+	{
+	    int printLine = ++line % NLINES;
+	    if (line >= NLINES)
+	    {
+	        ev3_lcd_clear_line_range(printLine, printLine + 1);
+	    }
+	    ev3_print(printLine, message);
+	}
+	
+	void stop()
+	{
+		
+	}
+	
+	void close_app_handler(intptr_t unused) 
+	{
+		close_app();
+	}
+	
+	void close_app()
+	{
+		stop();
+		cycle_print((char*)"Closing...");
+		//ter_tsk(ACT_TASK);
+	}
+	
+	void setup()
+	{
+	    //	Attach exit handler
+		ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
+		NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
+	}
+
+	
+	'''
+	
+	def static commonHeader()'''
+	// Matheus Andrade and Alan Andrade
+	
+	#pragma once
+	
+	#include "ev3api.h"
+	
+	#ifndef STACK_SIZE
+	#define	STACK_SIZE 4096
+	#endif
+	
+	#ifndef TOPPERS_MACRO_ONLY
+	
+	#include <stdio.h>
+	#include <unistd.h>
+	#include <ctype.h>
+	#include <string.h>
+	#include <stdlib.h>
+	#include <time.h>
+	#include <sys/time.h>
+	#include "syssvc/serial.h"
+	#include "driver_interface_bluetooth.h"
+	#include "driver_interface_filesys.h"
+	
+	#define sleep tslp_tsk
+	
+	#define ev3_print(x, s) ev3_lcd_draw_string(s, 0, x * FONT_HEIGHT)
+	
+	#define ev3_lcd_clear() ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE)
+	#define ev3_lcd_clear_line(x) ev3_lcd_fill_rect(0, x * FONT_HEIGHT, EV3_LCD_WIDTH, FONT_HEIGHT, EV3_LCD_WHITE)
+	#define ev3_lcd_clear_line_range(x, y) ev3_lcd_fill_rect(0, x * FONT_HEIGHT, EV3_LCD_WIDTH, (y - x) * FONT_HEIGHT, EV3_LCD_WHITE)
+	
+	#endif /* TOPPERS_MACRO_ONLY */
+	
+	/**
+	 * Functions
+	 */
+	
+	//extern void set_font(lcdfont_t);
+	//extern void init();
+	//extern void read_sensors(int);
+	extern void close_app();
+	extern void cycle_print(char*); 
+	extern void close_app_handler(intptr_t);
+	extern void setup();
+	'''
+	
+	def static toCfg(Robot root)'''
+	INCLUDE("app_common.cfg");
+	
+	#include "app.h"
+		
+	DOMAIN(TDOM_APP) {
+	CRE_TSK(MAIN_TASK, { TA_ACT, 0, main_task, TMIN_APP_TPRI, STACK_SIZE, NULL });
+	CRE_TSK(ACT_TASK, {TA_NULL, 0, act_task, TMIN_APP_TPRI+2, STACK_SIZE, NULL });
+	CRE_TSK(SENSE_TASK, {TA_NULL, 0, sense_task, TMIN_APP_TPRI+1, STACK_SIZE, NULL });
+	}
+	
+	ATT_MOD("app.o");
 	'''
 }

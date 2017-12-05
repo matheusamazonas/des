@@ -4,15 +4,10 @@ import mars.rover.missionsDSL.Robot
 
 class MakefileGenerator {
 	
-	def static toMake(Robot root, boolean isMaster)'''
-	
+	def static toMake(Robot root)'''
 	APPL_COBJS += 
 	
-	«IF isMaster»
-	APPL_CXXOBJS += master.o 
-	«ELSE»
-	APPL_CXXOBJS += slave.o
-	«ENDIF»
+	APPL_CXXOBJS += common.o
 	
 	SRCLANG := c++
 	
@@ -24,8 +19,6 @@ class MakefileGenerator {
 	include $(EV3RT_SDK_LIB_DIR)/spp_master_test_api/Makefile
 	
 	endif
-
-	
 	'''
 	
 }
