@@ -9,9 +9,43 @@ class SlaveGenerator {
 	
 	//static FILE *bt_con;	
 	
+	// Sensor mapping
+	sensor_port_t
+	TOUCH_L_P = EV3_PORT_1, 
+	COLOR_M_P = EV3_PORT_2, 
+	ULTRA_FRONT_P = EV3_PORT_3,
+	TOUCH_R_P = EV3_PORT_4;
+	
+	bool_t touch_l, touch_r;
+	colorid_t color_m;
+	int16_t ultra_front_dist = 0;
+	
+	void read_sensors(int display_line) 
+	{
+		color_m = ev3_color_sensor_get_color(COLOR_M_P);
+		touch_l = ev3_touch_sensor_is_pressed(TOUCH_L_P);
+		touch_r = ev3_touch_sensor_is_pressed(TOUCH_R_P);
+		ultra_front_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_FRONT_P);
+	}
+	
+	void wait_for_black()
+	{
+		while(color_m != COLOR_BLACK) 
+		{
+			read_sensors(1);
+		}
+		cycle_print((char*)"Ready");
+	}
+	
 	void init()
 	{
 		cycle_print((char*)"Slave");
+		
+		//	Sensor init
+		ev3_sensor_config(ULTRA_FRONT_P, ULTRASONIC_SENSOR);
+		ev3_sensor_config(COLOR_M_P, COLOR_SENSOR);
+		ev3_sensor_config(TOUCH_L_P, TOUCH_SENSOR);
+		ev3_sensor_config(TOUCH_R_P, TOUCH_SENSOR);
 	}
 
 	void main_task(intptr_t unused) 
