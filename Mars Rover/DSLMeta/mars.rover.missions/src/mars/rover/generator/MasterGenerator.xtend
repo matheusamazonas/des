@@ -8,6 +8,13 @@ class MasterGenerator {
 	#include "common.h"
 	#include "app.h"
 	
+	#define getColorR() ev3_color_sensor_get_color(COLOR_R_P)
+	#define getColorL() ev3_color_sensor_get_color(COLOR_L_P)
+	#define getColorM() ev3_color_sensor_get_color(COLOR_M_P)
+	#define getUltraBack() ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P)
+	#define getTouchL() ev3_touch_sensor_is_pressed()
+	#define getTouchR() ev3_touch_sensor_is_pressed()
+	
 	//static FILE *bt_con;	
 	
 	// Settings
@@ -208,13 +215,6 @@ class MasterGenerator {
 	#ifndef STACK_SIZE
 	#define	STACK_SIZE 4096
 	#endif
-	
-	#define getColorR() ev3_color_sensor_get_color(COLOR_R_P)
-	#define getColorL() ev3_color_sensor_get_color(COLOR_L_P)
-	#define getColorM() ev3_color_sensor_get_color(COLOR_M_P)
-	#define getUltraFront() ev3_ultrasonic_sensor_get_distance(ULTRA_P)
-	#define getTouchL() ev3_touch_sensor_is_pressed()
-	#define getTouchR() ev3_touch_sensor_is_pressed()
 	
 	extern void	main_task(intptr_t);
 	extern void act_task(intptr_t);
