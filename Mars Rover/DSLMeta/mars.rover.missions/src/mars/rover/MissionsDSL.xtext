@@ -3,6 +3,7 @@ grammar mars.rover.MissionsDSL with org.eclipse.xtext.common.Terminals
 generate missionsDSL "http://www.rover.mars/MissionsDSL"
 
 Robot: 
+	"SlaveAddress:" slaveAddress = MAC
 	"DefaultSpeed:" defaultSpeed = INT
 	"SlowSpeed:" slowSpeed = INT
 	"RotationRange:" minAngle = INT "to"  maxAngle = INT "degrees" 
@@ -10,11 +11,20 @@ Robot:
 	availableMissions += Mission+
 ;
 
-Mission: "Mission" name=ID "priority" priority = INT ":"
+Mission: "Mission" name=ID "priority" priority = INT
 	(
 		type = MissionType cond += Condition+ 'ifHappens' actions += Action* (new = NewMissions)?			|
 		type = MissionType cond += Condition+ 'whenDone' actions += Action* (new = NewMissions)?			
 	)
+;
+
+terminal MAC:
+	('a'..'f'|'A'..'F'|'0'..'9')('a'..'f'|'A'..'F'|'0'..'9')(':')
+	('a'..'f'|'A'..'F'|'0'..'9')('a'..'f'|'A'..'F'|'0'..'9')(':')
+	('a'..'f'|'A'..'F'|'0'..'9')('a'..'f'|'A'..'F'|'0'..'9')(':')
+	('a'..'f'|'A'..'F'|'0'..'9')('a'..'f'|'A'..'F'|'0'..'9')(':')
+	('a'..'f'|'A'..'F'|'0'..'9')('a'..'f'|'A'..'F'|'0'..'9')(':')
+	('a'..'f'|'A'..'F'|'0'..'9')('a'..'f'|'A'..'F'|'0'..'9')
 ;
 
 enum MissionType:

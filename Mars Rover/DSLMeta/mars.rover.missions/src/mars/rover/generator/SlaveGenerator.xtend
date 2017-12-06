@@ -7,7 +7,9 @@ class SlaveGenerator {
 	#include "common.h"
 	#include "app.h"
 	
-	//static FILE *bt_con;	
+	#define BT_CONNECT_PERIOD 200
+	
+	static FILE *bt_con;	
 	
 	// Sensor mapping
 	sensor_port_t
@@ -19,6 +21,22 @@ class SlaveGenerator {
 	bool_t touch_l, touch_r;
 	colorid_t color_m;
 	int16_t ultra_front_dist = 0;
+	
+	void connect_to_master()
+	{
+		while(true)
+		{
+			while (!ev3_bluetooth_is_connected()) 
+			{
+			    cycle_print((char*)"Waiting for connection...");
+			    sleep(BT_CONNECT_PERIOD);
+			}
+			bt_con = ev3_serial_open_file(EV3_SERIAL_BT);
+			break;
+		}
+		//fprintf(bt_con, "000\n");
+		cycle_print((char*)"Connected to master.");
+	}
 	
 	void read_sensors(int display_line) 
 	{
@@ -63,6 +81,7 @@ class SlaveGenerator {
 
 	void main_task(intptr_t unused) 
 	{
+		connect_to_master();
 		setup();
 		init();
 		act_tsk(ACT_TASK);

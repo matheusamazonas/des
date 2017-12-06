@@ -4,9 +4,22 @@ import mars.rover.missionsDSL.Robot
 import mars.rover.missionsDSL.Mission
 
 class MasterGenerator {
+	
+	def static getMacCode(String address){
+		var String[] parts = address.split(":");
+		return "{0x" + parts.get(0) + ", " +
+			    "0x" + parts.get(1) + ", " +
+			    "0x" + parts.get(2) + ", " +
+			    "0x" + parts.get(3) + ", " +
+			    "0x" + parts.get(4) + ", " +
+			    "0x" + parts.get(5) + "}"
+	}
+	
 	def static toCpp(Robot robot)'''
 	#include "common.h"
 	#include "app.h"
+	
+	#define BT_CONNECT_PERIOD 200
 	
 	#define getColorR() ev3_color_sensor_get_color(COLOR_R_P)
 	#define getColorL() ev3_color_sensor_get_color(COLOR_L_P)
@@ -15,17 +28,19 @@ class MasterGenerator {
 	#define getTouchL() ev3_touch_sensor_is_pressed()
 	#define getTouchR() ev3_touch_sensor_is_pressed()
 	
-	//static FILE *bt_con;	
+	static FILE *bt_con;	
 	
 	// Settings
-	uint32_t
-		DRIVE_SPEED = 30,
-		SPECIAL_SPEED = 15,
+	const uint32_t
+		DRIVE_SPEED = «robot.defaultSpeed»,
+		SPECIAL_SPEED = «robot.slowSpeed»,
 		SENSOR_REFRESH_RATE = 50,
 		BEEP_DURATION = 10;
-	int16_t
-		MAX_ROT_ANGLE = 270,
-		MIN_ROT_ANGLE = 90;
+	const int16_t
+		MAX_ROT_ANGLE = «robot.maxAngle»,
+		MIN_ROT_ANGLE = «robot.minAngle»;
+	const uint8_t slave_address[6] = «getMacCode(robot.slaveAddress)»;
+	const char* pin = "0000";
 	
 	// Sensor mapping
 	const sensor_port_t
@@ -45,6 +60,34 @@ class MasterGenerator {
 	int16_t ultra_back_dist = 0;
 	
 	void check_for_conditions();
+	
+	bool_t isConnected()
+	{
+		T_SERIAL_RPOR rpor;
+	    ER ercd = serial_ref_por(SIO_PORT_SPP_MASTER_TEST, &rpor);
+	    return ercd == E_OK;
+	}
+	
+	void connect_to_slave()
+	{
+		while(true)
+		{
+			bt_con = fdopen(SIO_PORT_SPP_MASTER_TEST_FILENO, "a+");
+		    if (bt_con != NULL) 
+		    {
+		        setbuf(bt_con, NULL);
+		        while (!isConnected()) 
+		        {
+		        	cycle_print((char*)"Trying to connect...");
+		            spp_master_test_connect(slave_address, pin);
+		            sleep(BT_CONNECT_PERIOD);
+		        }
+		        break;
+		    }
+		}
+		//fprintf(bt_con, "000\n");
+		cycle_print((char*)"Connected to slave.");
+	}
 	
 	void read_sensors(int display_line) 
 	{
@@ -142,12 +185,6 @@ class MasterGenerator {
 		ev3_sensor_config(COLOR_L_P, COLOR_SENSOR);
 		ev3_sensor_config(GYRO_P, GYRO_SENSOR);
 		
-		MIN_ROT_ANGLE = «robot.minAngle»;
-		MAX_ROT_ANGLE = «robot.maxAngle»;
-		
-		DRIVE_SPEED = «robot.defaultSpeed»;
-		SPECIAL_SPEED = «robot.slowSpeed»;
-		
 		ev3_led_set_color(LED_ORANGE);
 		wait_for_black();
 		wait_for_ultra();
@@ -173,6 +210,7 @@ class MasterGenerator {
 
 	void main_task(intptr_t unused) 
 	{
+		connect_to_slave();
 		setup();
 		init();
 		act_tsk(ACT_TASK);
