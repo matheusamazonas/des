@@ -18,7 +18,7 @@ Mission: "Mission" name=ID "priority" priority = INT ":"
 ;
 
 enum MissionType:
-	AVOID = 						"avoid"	|
+	AVOID = 						"avoid"		|
 	FIND = 							"find"	|
 	FINDINORDER = 			"findInOrder"	|
 	FINDSIMULTANEOUS = "findSimultaneous"	
@@ -56,14 +56,14 @@ terminal BOOL:
 ;
 
 Action:
-	action = EV3_ACTION ("for" duration = INT | "value" value = INT)?
-	
+	action = EV3_ACTION (value = INT)? ("for" duration = INT)?	
 ;
 
 enum EV3_ACTION:
-	STOP = "stop"			|
-	REVERSE = "reverse" 		|
+	STOP = "stop"		|
+	REVERSE = "reverse" 	|
 	PLAY = "play" 		|
+	ROTATE = "rotate"	|
 	HALT = "halt"
 ;
 
