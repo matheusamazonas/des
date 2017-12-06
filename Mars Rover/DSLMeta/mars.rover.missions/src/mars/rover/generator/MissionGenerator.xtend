@@ -3,7 +3,6 @@ package mars.rover.generator
 import mars.rover.missionsDSL.Mission
 import mars.rover.missionsDSL.Condition
 import mars.rover.missionsDSL.Action
-import mars.rover.missionsDSL.Sensor
 import mars.rover.missionsDSL.Color
 import mars.rover.missionsDSL.Relation
 
@@ -28,7 +27,7 @@ class MissionGenerator {
 	'''
 	
 	def static getAvoidCode(Mission mission)'''
-	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c)»«ENDFOR») {
+	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») {
 		«FOR a : mission.actions»«getActionCode(a)»«ENDFOR»
 	}
 	'''
@@ -52,21 +51,6 @@ class MissionGenerator {
 		}
 	}»
 	'''
-	
-	def static getSensorCode(Sensor sensor){
-		switch sensor
-		{
-			case COLOR: {
-				"ev3_color_sensor_get_color(COLOR_R_P)"
-			}
-			case PROXIMITY: {
-				// TODO: Get ultrasonic value from slave
-			}
-			case TOUCH: {
-				// TODO: Get ultrasonic value from slave
-			}
-		}
-	}
 	
 	def static getRelationCode(Relation relation){
 		switch relation
@@ -93,51 +77,67 @@ class MissionGenerator {
 		switch color
 		{
 			case BLACK: {
-				"COLOR_BLACK"
+				return "COLOR_BLACK";
 			}
 			case BLUE: {
-				"COLOR_BLUE"
+				return "COLOR_BLUE";
 			}
 			case BROWN: {
-				"COLOR_BROWN"
+				return "COLOR_BROWN";
 			}
 			case GREEN: {
-				"COLOR_GREEN"
+				return "COLOR_GREEN";
 			}
 			case RED: {
-				"COLOR_RED"
+				return "COLOR_RED";
 			}
 			case WHITE: {
-				"COLOR_WHITE"
+				return "COLOR_WHITE";
 			}
 			case YELLOW: {
-				"COLOR_YELLOW"
+				return "COLOR_YELLOW";
 			}
 		}
 	}
 	
-	def static getConditionCode(Condition cond){
-		var sensor = "";
-		var relation = "";
-		var value = "";
+	// TODO: Implement the middle color sensor after bluetooth setup
+	def static getColorAvoidCond(Relation relation, Color color){
+		var c1 = "getColorR()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c2 = "getColorL()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		//var c3 = "getColorM()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c3 = "true";
+		return c1 + " || " + c2 + " || " + c3;
+	}
+	
+	// TODO: Implement this for finding colors. Currently using just Color_Right
+	def static getColorFindCond(Relation relation, Color color){
+		return "getColorR()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+	}
+	
+	def static getTouchCond(Relation relation, String b){
+		var c1 = "getColorR()" + " " + getRelationCode(relation) + b;
+		var c2 = "getColorL()" + " " + getRelationCode(relation) + b;
+		return c1 + " || " + c2;
+	}
+	
+	def static getConditionCode(Condition cond, boolean avoid){
+		var code = ""
 		switch cond.sensor
 		{
 			case COLOR: {
-				sensor = getSensorCode(cond.sensor);
-				relation = getRelationCode(cond.relation);
-				value = getColorCode(cond.value.color);
+				if (avoid){
+					code = getColorAvoidCond(cond.relation, cond.value.color);
+				} else {
+					code = getColorFindCond(cond.relation, cond.value.color);
+				}
 			}
 			case PROXIMITY: {
-				sensor = getSensorCode(cond.sensor);
-				relation = getRelationCode(cond.relation);
-				value = cond.value.integer.toString();
+				code = "getUltraBack()" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.toString()
 			}
 			case TOUCH: {
-				sensor = getSensorCode(cond.sensor);
-				relation = getRelationCode(cond.relation);
-				value = cond.value.bool.toString();
+				code = getTouchCond(cond.relation, cond.value.bool);				
 			}
 		}
-		return sensor + " " + relation + " " + value;
+		return code;
 	}
 }
