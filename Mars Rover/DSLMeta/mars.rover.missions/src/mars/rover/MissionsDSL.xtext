@@ -13,7 +13,7 @@ Robot:
 Mission: "Mission" name=ID "priority" priority = INT ":"
 	(
 		type = MissionType cond += Condition+ 'ifHappens' actions += Action* (new = NewMissions)?			|
-		type = MissionType cond += Condition+ 'whenDone' actions += Action*	(new = NewMissions)?			
+		type = MissionType cond += Condition+ 'whenDone' actions += Action* (new = NewMissions)?			
 	)
 ;
 
@@ -27,7 +27,7 @@ enum MissionType:
 Condition:
 	sensor = Sensor 
 	(relation = Relation)?
-	value += Value+
+	value = (Value)?
 	(action = Action)?
 ;
 
