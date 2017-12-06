@@ -3,6 +3,11 @@
  */
 package mars.rover.validation
 
+import org.eclipse.xtext.validation.Check
+import mars.rover.missionsDSL.Robot
+import mars.rover.missionsDSL.MissionsDSLPackage.Literals
+import mars.rover.missionsDSL.Mission
+import mars.rover.missionsDSL.Action
 
 /**
  * This class contains custom validation rules. 
@@ -11,16 +16,93 @@ package mars.rover.validation
  */
 class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 	
-//	public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					MissionsDSLPackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
+	@Check
+	def checkSpeeds(Robot robot){
+		if (robot !== null){
+			if (robot.defaultSpeed < 0 || robot.defaultSpeed > 100){
+				error("Speeds values must be between 0 and 100", Literals.ROBOT__DEFAULT_SPEED);
+			}
+			if (robot.slowSpeed < 0 || robot.slowSpeed > 100){
+				error("Speeds values must be between 0 and 100", Literals.ROBOT__SLOW_SPEED);
+			}
+		}
+	}
+	
+	@Check
+	def checkAngles(Robot robot){
+		if (robot !== null){
+			if (robot.minAngle < 0 || robot.minAngle > 360){
+				error("Angle values must be between 0 and 360", Literals.ROBOT__MIN_ANGLE);
+			}
+			if (robot.maxAngle < 0 || robot.maxAngle > 360){
+				error("Angle values must be between 0 and 360", Literals.ROBOT__MAX_ANGLE);
+			}
+		}
+	}
+	
+	@Check
+	def checkPriorities(Mission mission){
+		if (mission !== null){
+			if (mission.priority < 0 || mission.priority > 100){
+				error("Priority must be between 0 and 100", Literals.MISSION__PRIORITY);
+			}
+		}
+	}
+	
+	@Check
+	def checkDuration(Action action){
+		if (action !== null){
+			if (action.duration < 0){
+				error("Duration must be positive", Literals.ACTION__DURATION);
+			}
+		}
+	}
+	
+	@Check
+	def checkAction(Action action){
+		if (action !== null){
+			switch action.action{
+				case HALT: {
+					if (action.value !== 0){
+						error("Halt doesn't support values", Literals.ACTION__VALUE);
+					}
+					if (action.duration !== 0){
+						error("Halt doesn't support duration", Literals.ACTION__DURATION);
+					}
+				}
+				case PLAY: {
+					if (action.value !== 0){
+						error("Play doesn't support values", Literals.ACTION__VALUE);
+					}
+					if (action.duration !== 0){
+						error("Play doesn't support duration", Literals.ACTION__DURATION);
+					}
+				}
+				case REVERSE: {
+					if (action.value !== 0){
+						error("Reverse doesn't support values", Literals.ACTION__VALUE);
+					}
+				}
+				case ROTATE: {
+					if (action.value !== 0){
+						error("Rotate doesn't support values", Literals.ACTION__VALUE);
+					}
+					if (action.duration !== 0){
+						error("Rotate doesn't support duration", Literals.ACTION__DURATION);
+					}
+				}
+				case STOP: {
+					if (action.value !== 0){
+						error("Stop doesn't support values", Literals.ACTION__VALUE);
+					}
+					if (action.duration !== 0){
+						error("Stop doesn't support duration", Literals.ACTION__DURATION);
+					}
+				}
+				
+			}
+		}
+	}
 	
 }
 
