@@ -47,7 +47,7 @@ enum Relation:
 
 Value:
 	color = Color	|
-	int = INT		|
+	integer = INT	|
 	bool = BOOL
 ;
 
