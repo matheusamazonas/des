@@ -46,12 +46,12 @@ class AppGenerator {
 		get_tim(&time);
 		srand(time);
 	
-	ev3_lcd_set_font(EV3_FONT_SMALL);
-	ev3_font_get_size(EV3_FONT_SMALL, &FONT_WIDTH, &FONT_HEIGHT);
-	NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
-
-	// Attach exit handler
-	ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
+		ev3_lcd_set_font(EV3_FONT_SMALL);
+		ev3_font_get_size(EV3_FONT_SMALL, &FONT_WIDTH, &FONT_HEIGHT);
+		NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
+	
+		// Attach exit handler
+		ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
 	}
 
 	

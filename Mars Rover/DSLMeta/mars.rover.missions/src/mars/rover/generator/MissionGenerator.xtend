@@ -5,7 +5,6 @@ import mars.rover.missionsDSL.Condition
 import mars.rover.missionsDSL.Action
 import mars.rover.missionsDSL.Sensor
 import mars.rover.missionsDSL.Color
-import mars.rover.missionsDSL.Value
 import mars.rover.missionsDSL.Relation
 
 class MissionGenerator {
@@ -69,11 +68,6 @@ class MissionGenerator {
 		}
 	}
 	
-	def static getValueCode(Value value){
-		// TODO: Implement values of other types (int, bool)
-		return getColorCode(value.color);
-	}
-	
 	def static getRelationCode(Relation relation){
 		switch relation
 		{
@@ -92,7 +86,6 @@ class MissionGenerator {
 			case LT: {
 				return ">";
 			}
-			
 		}
 	}
 	
@@ -124,6 +117,27 @@ class MissionGenerator {
 	}
 	
 	def static getConditionCode(Condition cond){
-		getSensorCode(cond.sensor) + " " + getRelationCode(cond.relation) + " " + getValueCode(cond.value);
+		var sensor = "";
+		var relation = "";
+		var value = "";
+		switch cond.sensor
+		{
+			case COLOR: {
+				sensor = getSensorCode(cond.sensor);
+				relation = getRelationCode(cond.relation);
+				value = getColorCode(cond.value.color);
+			}
+			case PROXIMITY: {
+				sensor = getSensorCode(cond.sensor);
+				relation = getRelationCode(cond.relation);
+				value = cond.value.integer.toString();
+			}
+			case TOUCH: {
+				sensor = getSensorCode(cond.sensor);
+				relation = getRelationCode(cond.relation);
+				value = cond.value.bool.toString();
+			}
+		}
+		return sensor + " " + relation + " " + value;
 	}
 }
