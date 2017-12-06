@@ -37,6 +37,14 @@ class SlaveGenerator {
 		cycle_print((char*)"Ready");
 	}
 	
+	void wait_for_ultra()
+	{
+		while (ev3_ultrasonic_sensor_get_distance(ULTRA_FRONT_P) <= 0)
+		{
+			read_sensors(1);
+		}
+	}
+	
 	void init()
 	{
 		cycle_print((char*)"Slave");
@@ -46,6 +54,11 @@ class SlaveGenerator {
 		ev3_sensor_config(COLOR_M_P, COLOR_SENSOR);
 		ev3_sensor_config(TOUCH_L_P, TOUCH_SENSOR);
 		ev3_sensor_config(TOUCH_R_P, TOUCH_SENSOR);
+		
+		ev3_led_set_color(LED_ORANGE);
+		wait_for_black();
+		wait_for_ultra();
+		ev3_led_set_color(LED_GREEN);
 	}
 
 	void main_task(intptr_t unused) 
