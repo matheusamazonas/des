@@ -14,20 +14,21 @@ class MasterGenerator {
 	uint32_t
 		DRIVE_SPEED = 30,
 		SPECIAL_SPEED = 15,
-		MAX_ROT_ANGLE = 3780,
-		MIN_ROT_ANGLE = 630,
 		SENSOR_REFRESH_RATE = 50,
 		BEEP_DURATION = 10;
+	int16_t
+		MAX_ROT_ANGLE = 270,
+		MIN_ROT_ANGLE = 90;
 	
 	// Sensor mapping
-	sensor_port_t
+	const sensor_port_t
 	COLOR_L_P = EV3_PORT_1, 
 	ULTRA_BACK_P = EV3_PORT_2, 
 	GYRO_P = EV3_PORT_3,
 	COLOR_R_P = EV3_PORT_4;
 	
 	// Motor mapping
-	motor_port_t
+	const motor_port_t
 	WHEEL_LEFT_P = EV3_PORT_A,
 	SMALL_ARM_P = EV3_PORT_C,
 	WHEEL_RIGHT_P = EV3_PORT_D;
@@ -35,6 +36,8 @@ class MasterGenerator {
 	// Sensors states
 	colorid_t color_r, color_l;
 	int16_t ultra_back_dist = 0;
+	
+	void check_for_conditions();
 	
 	void read_sensors(int display_line) 
 	{
@@ -101,22 +104,21 @@ class MasterGenerator {
 		}
 	}
 	
-	void rotate_in_axis(int direction)
+	void rotate()
 	{
-		// TODO: CHANGE ROTATION DURATION TO ANGLE
-		uint32_t rot_dur = (rand()%(MAX_ROT_ANGLE - MIN_ROT_ANGLE) + MIN_ROT_ANGLE);
-		ulong_t current_time = 0L, init_time;
+		int rand_direc = rand() % 2;
+		int16_t rot_angle = (rand()%(MAX_ROT_ANGLE - MIN_ROT_ANGLE) + MIN_ROT_ANGLE);
+		ev3_gyro_sensor_reset(GYRO_P);
+		int16_t current_angle = ev3_gyro_sensor_get_angle(GYRO_P);
 		
-		ev3_motor_set_power(WHEEL_LEFT_P, direction*SPECIAL_SPEED);
-		ev3_motor_set_power(WHEEL_RIGHT_P, (-direction)*SPECIAL_SPEED);
-		
-		get_tim(&init_time);
+		ev3_motor_set_power(WHEEL_LEFT_P, rand_direc*SPECIAL_SPEED);
+		ev3_motor_set_power(WHEEL_RIGHT_P, (-rand_direc)*SPECIAL_SPEED);
 	
-		while (init_time + rot_dur > current_time)
+		while (current_angle < rot_angle)
 		{
-			//check_for_obstacles();
+			//check_for_conditions();
 			sleep(100);
-			get_tim(&current_time);
+			current_angle = ev3_gyro_sensor_get_angle(GYRO_P);
 		}
 	}
 
@@ -131,6 +133,7 @@ class MasterGenerator {
 		ev3_sensor_config(ULTRA_BACK_P, ULTRASONIC_SENSOR);
 		ev3_sensor_config(COLOR_R_P, COLOR_SENSOR);
 		ev3_sensor_config(COLOR_L_P, COLOR_SENSOR);
+		ev3_sensor_config(GYRO_P, GYRO_SENSOR);
 		
 		MIN_ROT_ANGLE = «robot.minAngle»;
 		MAX_ROT_ANGLE = «robot.maxAngle»;

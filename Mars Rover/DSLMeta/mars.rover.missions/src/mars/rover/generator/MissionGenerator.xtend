@@ -43,7 +43,10 @@ class MissionGenerator {
 			// TODO: Implement playing sounds
 		}
 		case REVERSE: {
-			"reverse(" + action.value*1000 + ");" // The DSL takes seconds, the C method milliseconds.
+			"reverse(" + action.duration*1000 + ");" // The DSL takes seconds, the C method milliseconds.
+		}
+		case ROTATE: {
+			"rotate();"
 		}
 		case STOP: {
 			"stop();"

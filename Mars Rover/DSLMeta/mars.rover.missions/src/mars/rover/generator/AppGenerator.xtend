@@ -22,6 +22,12 @@ class AppGenerator {
 	    ev3_print(printLine, message);
 	}
 	
+	void set_font(lcdfont_t font) 
+	{
+	    ev3_lcd_set_font(font);
+	    ev3_font_get_size(font, &FONT_WIDTH, &FONT_HEIGHT);
+	}
+	
 	void close_app_handler(intptr_t unused) 
 	{
 		close_app();
@@ -36,9 +42,16 @@ class AppGenerator {
 	
 	void setup()
 	{
-	    //	Attach exit handler
-		ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
-		NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
+		ulong_t time;
+		get_tim(&time);
+		srand(time);
+	
+	ev3_lcd_set_font(EV3_FONT_SMALL);
+	ev3_font_get_size(EV3_FONT_SMALL, &FONT_WIDTH, &FONT_HEIGHT);
+	NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
+
+	// Attach exit handler
+	ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
 	}
 
 	
