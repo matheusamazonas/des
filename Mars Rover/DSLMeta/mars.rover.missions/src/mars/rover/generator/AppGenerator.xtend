@@ -22,11 +22,6 @@ class AppGenerator {
 	    ev3_print(printLine, message);
 	}
 	
-	void stop()
-	{
-		
-	}
-	
 	void close_app_handler(intptr_t unused) 
 	{
 		close_app();
@@ -34,7 +29,7 @@ class AppGenerator {
 	
 	void close_app()
 	{
-		stop();
+		//stop();
 		cycle_print((char*)"Closing...");
 		//ter_tsk(ACT_TASK);
 	}

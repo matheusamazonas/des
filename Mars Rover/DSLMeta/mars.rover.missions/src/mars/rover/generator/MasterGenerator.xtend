@@ -1,6 +1,7 @@
 package mars.rover.generator
 
 import mars.rover.missionsDSL.Robot
+import mars.rover.missionsDSL.Mission
 
 class MasterGenerator {
 	def static toCpp(Robot robot)'''
@@ -35,8 +36,6 @@ class MasterGenerator {
 	colorid_t color_r, color_l;
 	int16_t ultra_back_dist = 0;
 	
-
-	
 	void read_sensors(int display_line) 
 	{
 		color_l = ev3_color_sensor_get_color(COLOR_L_P);
@@ -68,6 +67,14 @@ class MasterGenerator {
 		ev3_led_set_color(color);
 		dly_tsk(duration);
 		ev3_led_set_color(reset);
+	}
+	
+	void stop()
+	{
+		// stop and close
+		ev3_motor_stop(WHEEL_LEFT_P, true);
+		ev3_motor_stop(WHEEL_RIGHT_P, true);
+		ev3_led_set_color(LED_OFF);
 	}
 	
 	void move_towards()
@@ -137,25 +144,51 @@ class MasterGenerator {
 		ev3_led_set_color(LED_GREEN);
 	}
 	
-
+	void check_for_conditions()
+	{
+		// TODO: Sort missions based on priority
+		«FOR Mission m : robot.missions SEPARATOR " else "»
+		«MissionGenerator.getMissionCode(m)»
+		«ENDFOR»
+	}
+	
+	void halt()
+	{
+		// TODO: Clean halt. Close connection. Close app.
+		stop();
+		ter_tsk(ACT_TASK);
+		ter_tsk(SENSE_TASK);
+		ter_tsk(MAIN_TASK);
+	}
 
 	void main_task(intptr_t unused) 
 	{
 		setup();
 		init();
 		act_tsk(ACT_TASK);
+		act_tsk(SENSE_TASK);
 	}
 	
 	void sense_task(intptr_t unused) 
 	{
-	
+
+
 	}
 	
 	void act_task(intptr_t unused) 
 	{
-		
+		«IF robot.missions.length > 0»
+		while(true) 
+		{
+			check_for_conditions();
+		    move_towards();
+		    sleep(SENSOR_REFRESH_RATE);
+		}
+		«ENDIF»
 	}
 	'''
+	
+
 	
 	def static toHeader(Robot robot)'''
 	#ifndef APP
