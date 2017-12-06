@@ -7,14 +7,14 @@ Robot:
 	"DefaultSpeed:" defaultSpeed = INT
 	"SlowSpeed:" slowSpeed = INT
 	"RotationRange:" minAngle = INT "to"  maxAngle = INT "degrees" 
-	"StartMissions:" missions += [Mission]+
+	"StartMissions:" startMissions += [Mission]+
 	availableMissions += Mission+
 ;
 
 Mission: "Mission" name=ID "priority" priority = INT
 	(
-		type = MissionType cond += Condition+ 'ifHappens' actions += Action* (new = NewMissions)?			|
-		type = MissionType cond += Condition+ 'whenDone' actions += Action* (new = NewMissions)?			
+		type = MissionType cond += Condition+ 'ifHappens' actionsAfterSetOfConditions += Action* (newMission = NewMissions)?			|
+		type = MissionType cond += Condition+ 'whenDone' actionsAfterSetOfCondition += Action* (newMission = NewMissions)?			
 	)
 ;
 
@@ -38,7 +38,7 @@ Condition:
 	sensor = Sensor 
 	(relation = Relation)?
 	value = (Value)?
-	(action = Action)?
+	(actionAfterSingleCondition = Action)?
 ;
 
 enum Sensor:
