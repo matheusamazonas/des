@@ -194,7 +194,7 @@ class MasterGenerator {
 	void check_for_conditions()
 	{
 		// TODO: Sort missions based on priority
-		«FOR Mission m : robot.missions SEPARATOR " else "»
+		«FOR Mission m : robot.startMissions SEPARATOR " else "»
 		«MissionGenerator.getMissionCode(m)»
 		«ENDFOR»
 	}
@@ -225,7 +225,7 @@ class MasterGenerator {
 	
 	void act_task(intptr_t unused) 
 	{
-		«IF robot.missions.length > 0»
+		«IF robot.startMissions.length > 0»
 		while(true) 
 		{
 			check_for_conditions();

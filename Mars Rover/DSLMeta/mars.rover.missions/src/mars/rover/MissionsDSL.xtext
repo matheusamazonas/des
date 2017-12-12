@@ -4,6 +4,7 @@ generate missionsDSL "http://www.rover.mars/MissionsDSL"
 
 Robot: 
 	"SlaveAddress:" slaveAddress = MAC
+	("SensorRefreshRate:" refreshRate = INT "ms")? 
 	"DefaultSpeed:" defaultSpeed = INT
 	"SlowSpeed:" slowSpeed = INT
 	"RotationRange:" minAngle = INT "to"  maxAngle = INT "degrees" 
@@ -14,7 +15,7 @@ Robot:
 Mission: "Mission" name=ID "priority" priority = INT
 	(
 		type = MissionType cond += Condition+ 'ifHappens' actionsAfterSetOfConditions += Action* (newMission = NewMissions)?			|
-		type = MissionType cond += Condition+ 'whenDone' actionsAfterSetOfCondition += Action* (newMission = NewMissions)?			
+		type = MissionType cond += Condition+ 'whenDone' actionsAfterSetOfConditions += Action* (newMission = NewMissions)?			
 	)
 ;
 
@@ -38,7 +39,7 @@ Condition:
 	sensor = Sensor 
 	(relation = Relation)?
 	value = (Value)?
-	(actionAfterSingleCondition = Action)?
+	('ifConditionTrue' ifConditionTrue = Action)?
 ;
 
 enum Sensor:

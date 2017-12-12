@@ -6,8 +6,14 @@
     complianceLevel="6.0" copyrightFields="false" runtimeVersion="2.13">
   <genPackages prefix="MissionsDSL" basePackage="mars.rover" disposableProviderFactory="true"
       fileExtensions="mrdsl" ecorePackage="MissionsDSL.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="MissionsDSL.ecore#//MissionType">
+      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//MissionType/AVOID"/>
+      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//MissionType/FIND"/>
+      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//MissionType/FINDINORDER"/>
+      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//MissionType/FINDSIMULTANEOUS"/>
+    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="MissionsDSL.ecore#//Sensor">
-      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//Sensor/light"/>
+      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//Sensor/color"/>
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//Sensor/proximity"/>
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//Sensor/touch"/>
     </genEnums>
@@ -22,6 +28,7 @@
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//EV3_ACTION/STOP"/>
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//EV3_ACTION/REVERSE"/>
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//EV3_ACTION/PLAY"/>
+      <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//EV3_ACTION/ROTATE"/>
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//EV3_ACTION/HALT"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="MissionsDSL.ecore#//Color">
@@ -34,33 +41,41 @@
       <genEnumLiterals ecoreEnumLiteral="MissionsDSL.ecore#//Color/BROWN"/>
     </genEnums>
     <genClasses ecoreClass="MissionsDSL.ecore#//Robot">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Robot/slaveAddress"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Robot/refreshRate"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Robot/defaultSpeed"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Robot/slowSpeed"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Robot/minAngle"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Robot/maxAngle"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Robot/missions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Robot/startMissions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Robot/availableMissions"/>
     </genClasses>
     <genClasses ecoreClass="MissionsDSL.ecore#//Mission">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Mission/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Mission/priority"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Mission/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Mission/cond"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Mission/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Mission/actionsAfterSetOfConditions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Mission/newMission"/>
     </genClasses>
     <genClasses ecoreClass="MissionsDSL.ecore#//Condition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Condition/sensor"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Condition/relation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Condition/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//Condition/ifConditionTrue"/>
     </genClasses>
     <genClasses ecoreClass="MissionsDSL.ecore#//Value">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Value/color"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Value/int"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Value/integer"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Value/bool"/>
     </genClasses>
     <genClasses ecoreClass="MissionsDSL.ecore#//Action">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Action/action"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Action/duration"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Action/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MissionsDSL.ecore#//Action/duration"/>
+    </genClasses>
+    <genClasses ecoreClass="MissionsDSL.ecore#//NewMissions">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MissionsDSL.ecore#//NewMissions/missions"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

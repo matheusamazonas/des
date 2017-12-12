@@ -28,7 +28,7 @@ class MissionGenerator {
 	
 	def static getAvoidCode(Mission mission)'''
 	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») {
-		«FOR a : mission.actions»«getActionCode(a)»«ENDFOR»
+		«FOR a : mission.actionsAfterSetOfConditions »«getActionCode(a)»«ENDFOR»
 	}
 	'''
 	
@@ -105,8 +105,8 @@ class MissionGenerator {
 		var c1 = "getColorR()" + " " + getRelationCode(relation) + " " + getColorCode(color);
 		var c2 = "getColorL()" + " " + getRelationCode(relation) + " " + getColorCode(color);
 		//var c3 = "getColorM()" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		var c3 = "true";
-		return c1 + " || " + c2 + " || " + c3;
+		//var c3 = "true";
+		return c1 + " || " + c2;// + " || " + c3;
 	}
 	
 	// TODO: Implement this for finding colors. Currently using just Color_Right
