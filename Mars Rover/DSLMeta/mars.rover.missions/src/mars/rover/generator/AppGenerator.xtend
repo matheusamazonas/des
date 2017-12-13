@@ -28,16 +28,11 @@ class AppGenerator {
 	    ev3_font_get_size(font, &FONT_WIDTH, &FONT_HEIGHT);
 	}
 	
-	void close_app_handler(intptr_t unused) 
+	void blink_led(ledcolor_t color, ledcolor_t reset, float duration)
 	{
-		close_app();
-	}
-	
-	void close_app()
-	{
-		//stop();
-		cycle_print((char*)"Closing...");
-		//ter_tsk(ACT_TASK);
+		ev3_led_set_color(color);
+		dly_tsk(duration);
+		ev3_led_set_color(reset);
 	}
 	
 	void setup()
@@ -45,13 +40,13 @@ class AppGenerator {
 		ulong_t time;
 		get_tim(&time);
 		srand(time);
-	
+		
+		ev3_led_set_color(LED_ORANGE);
 		ev3_lcd_set_font(EV3_FONT_SMALL);
 		ev3_font_get_size(EV3_FONT_SMALL, &FONT_WIDTH, &FONT_HEIGHT);
 		NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
 	
-		// Attach exit handler
-		ev3_button_set_on_clicked(ENTER_BUTTON, close_app_handler, ENTER_BUTTON);
+
 	}
 
 	
@@ -98,9 +93,8 @@ class AppGenerator {
 	//extern void set_font(lcdfont_t);
 	//extern void init();
 	//extern void read_sensors(int);
-	extern void close_app();
 	extern void cycle_print(char*); 
-	extern void close_app_handler(intptr_t);
+	extern void blink_led(ledcolor_t, ledcolor_t, float duration);
 	extern void setup();
 	'''
 	

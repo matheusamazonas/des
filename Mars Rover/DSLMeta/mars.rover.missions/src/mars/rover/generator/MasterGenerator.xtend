@@ -21,13 +21,6 @@ class MasterGenerator {
 	
 	#define BT_CONNECT_PERIOD 200
 	
-	#define getColorR() ev3_color_sensor_get_color(COLOR_R_P)
-	#define getColorL() ev3_color_sensor_get_color(COLOR_L_P)
-	#define getColorM() ev3_color_sensor_get_color(COLOR_M_P)
-	#define getUltraBack() ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P)
-	#define getTouchL() ev3_touch_sensor_is_pressed()
-	#define getTouchR() ev3_touch_sensor_is_pressed()
-	
 	static FILE *bt_con;	
 	
 	// Settings
@@ -91,9 +84,9 @@ class MasterGenerator {
 	
 	void read_sensors() 
 	{
-		color_l = getColorL();
-		color_r = getColorR();
-		ultra_back_dist = getUltraBack();
+		color_l = ev3_color_sensor_get_color(COLOR_L_P);
+		color_r = ev3_color_sensor_get_color(COLOR_R_P);
+		ultra_back_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P);
 		gyro_angle = ev3_gyro_sensor_get_angle(GYRO_P);
 	}
 	
@@ -104,6 +97,7 @@ class MasterGenerator {
 		while(color_r != COLOR_BLACK && color_l != COLOR_BLACK) 
 		{
 			read_sensors();
+			sleep(100);
 		}
 		cycle_print((char*)"Ready");
 	}
@@ -113,20 +107,12 @@ class MasterGenerator {
 		while (ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P) <= 0)
 		{
 			read_sensors();
+			sleep(100);
 		}
-	}
-	
-	// TODO: Move this to common.cpp
-	void blink_led(ledcolor_t color, ledcolor_t reset, float duration)
-	{
-		ev3_led_set_color(color);
-		dly_tsk(duration);
-		ev3_led_set_color(reset);
 	}
 	
 	void stop()
 	{
-		// stop and close
 		ev3_motor_stop(WHEEL_LEFT_P, true);
 		ev3_motor_stop(WHEEL_RIGHT_P, true);
 	}
@@ -157,7 +143,7 @@ class MasterGenerator {
 	
 	void rotate()
 	{
-		int rand_direc = rand() % 2;
+		int rand_direc = rand() % 2 == 0 ? 1 : -1;
 		int16_t rot_angle = (rand()%(MAX_ROT_ANGLE - MIN_ROT_ANGLE) + MIN_ROT_ANGLE);
 		
 		ev3_gyro_sensor_reset(GYRO_P);
@@ -167,17 +153,31 @@ class MasterGenerator {
 		ev3_motor_set_power(WHEEL_LEFT_P, rand_direc*SPECIAL_SPEED);
 		ev3_motor_set_power(WHEEL_RIGHT_P, (-rand_direc)*SPECIAL_SPEED);
 	
-		while (gyro_angle < rot_angle)
+		while (abs(gyro_angle) < rot_angle)
 		{
 			//check_for_conditions();
 			read_sensors();
 			sleep(100);
 		}
 	}
+	
+	void close_app_handler(intptr_t unused) 
+	{
+		cycle_print((char*)"Closing...");
+		stop();
+		fclose(bt_con);
+		ev3_led_set_color(LED_OFF);
+		ter_tsk(ACT_TASK);
+		ter_tsk(SENSE_TASK);
+		ter_tsk(MAIN_TASK);
+	}
 
 	void init()
 	{
 		cycle_print((char*)"Master");
+		
+		// Attach exit handler
+		ev3_button_set_on_clicked(BACK_BUTTON, close_app_handler, BACK_BUTTON);
 		
 		//	Motor init
 		ev3_motor_config(WHEEL_LEFT_P, LARGE_MOTOR);
@@ -188,7 +188,6 @@ class MasterGenerator {
 		ev3_sensor_config(COLOR_L_P, COLOR_SENSOR);
 		ev3_sensor_config(GYRO_P, GYRO_SENSOR);
 		
-		ev3_led_set_color(LED_ORANGE);
 		wait_for_black();
 		wait_for_ultra();
 		ev3_led_set_color(LED_GREEN);
@@ -213,8 +212,8 @@ class MasterGenerator {
 	
 	void main_task(intptr_t unused) 
 	{
-		connect_to_slave();
 		setup();
+		connect_to_slave();
 		init();
 		act_tsk(ACT_TASK);
 		act_tsk(SENSE_TASK);
