@@ -52,6 +52,11 @@ class MasterGenerator {
 	colorid_t color_r, color_l;
 	int16_t ultra_back_dist, gyro_angle;
 	
+	// Mission condition variables
+	«FOR Mission mission : robot.availableMissions»
+	«MissionGenerator.getGlobals(mission)»
+	«ENDFOR»
+	
 	void check_for_conditions();
 	
 	bool_t isConnected()

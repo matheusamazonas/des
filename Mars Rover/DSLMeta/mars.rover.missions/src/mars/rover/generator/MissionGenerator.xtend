@@ -14,7 +14,7 @@ class MissionGenerator {
 			getAvoidCode(mission);
 		}
 		case FIND: {
-			// TODO: Implement find
+			getFindCode(mission);
 		}
 		case FINDINORDER: {
 			// TODO: Implement find in order
@@ -26,12 +26,62 @@ class MissionGenerator {
 	»
 	'''
 	
+	def static getGlobals(Mission mission){
+		switch mission.type{
+			case AVOID: {
+			}
+			case FIND: {
+				getFindVariables(mission);
+			}
+			case FINDINORDER: {
+				// TODO: Implement FindInOrder globals
+			}
+			case FINDSIMULTANEOUS: {
+				// TODO: Implement find simultaneous globals
+			}
+		}
+	}
+	
+	def static getFindVariables(Mission mission)'''
+	bool «mission.name»_cond[«mission.cond.length»];
+	'''
+	
 	def static getAvoidCode(Mission mission)'''
 	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») 
 	{
 		«FOR a : mission.actionsAfterSetOfConditions »«getActionCode(a)»«ENDFOR»
 	}
 	'''
+	
+	def static getFindCode(Mission mission)'''
+		«var x = 0»
+		«FOR c : mission.cond SEPARATOR " else "»
+		«IF (mission.cond.get(x).ifConditionTrue !== null)»
+		if(«getConditionCode(mission.cond.get(x), false)» && !«mission.name»_cond[«x»]){
+			«mission.name»_cond[«x»] = true;
+			«FOR act : mission.cond.get(x++).ifConditionTrue»
+			«getActionCode(act)»
+			«ENDFOR»
+		}
+		«ENDIF»
+		«ENDFOR»
+		«IF (mission.actionsAfterSetOfConditions.length > 0)»
+		else if (allTrue(«mission.name»_cond, «mission.cond.length»))
+		{
+			«FOR act : mission.actionsAfterSetOfConditions»
+			«getActionCode(act)»
+			«ENDFOR»
+		}
+		«ENDIF»
+	'''
+	
+	def static allTrue(boolean[] arr){
+		var result = true;
+		for (v : arr){
+			result = result && v;
+		}
+		return result;
+	}
 	
 	def static getActionCode(Action action)'''
 	«switch action.action {
@@ -42,7 +92,7 @@ class MissionGenerator {
 			"play_note_for(" + action.value.value + ", " + action.duration.value + ");"
 		}
 		case REVERSE: {
-			"reverse(" + action.duration.value*1000 + ");" // The DSL takes seconds, the C method milliseconds.
+			"reverse(" + action.duration.value + ");" // The DSL takes seconds, the C method milliseconds.
 		}
 		case ROTATE: {
 			"rotate();"
@@ -112,7 +162,11 @@ class MissionGenerator {
 	
 	// TODO: Implement this for finding colors. Currently using just Color_Right
 	def static getColorFindCond(Relation relation, Color color){
-		return "getColorR()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		//var c3 = "getColorM()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		//var c3 = "true";
+		return "(" + c1 + " || " + c2 + ")";// + " || " + c3;
 	}
 	
 	def static getTouchCond(Relation relation, String b){

@@ -18,6 +18,16 @@ class AppGenerator {
 		dly_tsk(duration);
 	}
 	
+	bool allTrue(bool arr[], int length)
+	{
+		bool result = true;
+		for (int i = 0; i < length; i ++)
+		{
+			result &= arr[i];	
+		}
+		return result;
+	}
+	
 	void cycle_print(char* message) 
 	{
 	    int printLine = ++line % NLINES;
@@ -93,6 +103,7 @@ class AppGenerator {
 	 */
 	
 	extern void play_note_for(float, int);
+	extern bool allTrue(bool[], int);
 	extern void cycle_print(char*); 
 	extern void blink_led(ledcolor_t, ledcolor_t, float duration);
 	extern void setup();
