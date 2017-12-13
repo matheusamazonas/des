@@ -166,15 +166,18 @@ class MasterGenerator {
 		}
 	}
 	
+	void halt()
+	{
+		cycle_print((char*)"Halt...");
+		stop();
+		ev3_led_set_color(LED_OFF);
+		fclose(bt_con);
+		ext_tsk();
+	}
+	
 	void close_app_handler(intptr_t unused) 
 	{
-		cycle_print((char*)"Closing...");
-		stop();
-		fclose(bt_con);
-		ev3_led_set_color(LED_OFF);
-		ter_tsk(ACT_TASK);
-		ter_tsk(SENSE_TASK);
-		ter_tsk(MAIN_TASK);
+		halt();
 	}
 
 	void init()
@@ -196,19 +199,6 @@ class MasterGenerator {
 		wait_for_black();
 		wait_for_ultra();
 		ev3_led_set_color(LED_GREEN);
-	}
-	
-	void halt()
-	{
-		stop();
-		fclose(bt_con);
-		ext_tsk();
-		ter_tsk(ACT_TASK);
-		del_tsk(ACT_TASK);
-		ter_tsk(SENSE_TASK);
-		del_tsk(SENSE_TASK);
-		ter_tsk(MAIN_TASK);
-		del_tsk(MAIN_TASK);
 	}
 	
 	void check_for_conditions()
