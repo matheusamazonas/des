@@ -41,6 +41,23 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 	}
 	
 	@Check
+	def checkRefreshRate(Robot robot){
+		if (robot !== null){
+			if (robot.refreshRate !== null)
+			{
+				if (robot.refreshRate.value < 0){
+					error("Refresh values must be positive", Literals.ROBOT__REFRESH_RATE);
+				} else if (robot.refreshRate.value < 50 ){
+					warning("Refresh values less than 50 might impact performance", Literals.ROBOT__REFRESH_RATE);
+				}
+				if (robot.refreshRate.value > 1000 ){
+					warning("Refresh values greater than 1000 might lead to delays", Literals.ROBOT__REFRESH_RATE);
+				}
+			}
+		}
+	}
+	
+	@Check
 	def checkPriorities(Mission mission){
 		if (mission !== null){
 			if (mission.priority < 0 || mission.priority > 100){

@@ -45,11 +45,7 @@ class AppGenerator {
 		ev3_lcd_set_font(EV3_FONT_SMALL);
 		ev3_font_get_size(EV3_FONT_SMALL, &FONT_WIDTH, &FONT_HEIGHT);
 		NLINES = EV3_LCD_HEIGHT / FONT_HEIGHT;
-	
-
 	}
-
-	
 	'''
 	
 	def static commonHeader()'''
@@ -84,15 +80,12 @@ class AppGenerator {
 	#define ev3_lcd_clear_line(x) ev3_lcd_fill_rect(0, x * FONT_HEIGHT, EV3_LCD_WIDTH, FONT_HEIGHT, EV3_LCD_WHITE)
 	#define ev3_lcd_clear_line_range(x, y) ev3_lcd_fill_rect(0, x * FONT_HEIGHT, EV3_LCD_WIDTH, (y - x) * FONT_HEIGHT, EV3_LCD_WHITE)
 	
-	#endif /* TOPPERS_MACRO_ONLY */
+	#endif
 	
 	/**
 	 * Functions
 	 */
 	
-	//extern void set_font(lcdfont_t);
-	//extern void init();
-	//extern void read_sensors(int);
 	extern void cycle_print(char*); 
 	extern void blink_led(ledcolor_t, ledcolor_t, float duration);
 	extern void setup();

@@ -27,7 +27,7 @@ class MasterGenerator {
 	const uint32_t
 		DRIVE_SPEED = «robot.defaultSpeed»,
 		SPECIAL_SPEED = «robot.slowSpeed»,
-		SENSOR_REFRESH_RATE = 50,
+		SENSOR_REFRESH_RATE = «IF robot.refreshRate !== null»«robot.refreshRate.value»«ELSE»100«ENDIF»,
 		BEEP_DURATION = 10;
 	const int16_t
 		MAX_ROT_ANGLE = «robot.maxAngle»,
@@ -238,8 +238,6 @@ class MasterGenerator {
 		«ENDIF»
 	}
 	'''
-	
-
 	
 	def static toHeader(Robot robot)'''
 	#ifndef APP
