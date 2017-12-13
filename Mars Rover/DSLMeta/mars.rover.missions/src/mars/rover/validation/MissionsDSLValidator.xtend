@@ -68,8 +68,8 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 	
 	@Check
 	def checkDuration(Action action){
-		if (action !== null){
-			if (action.duration < 0){
+		if (action !== null && action.duration !== null){
+			if (action.duration.value < 0){
 				error("Duration must be positive", Literals.ACTION__DURATION);
 			}
 		}
@@ -80,39 +80,39 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 		if (action !== null){
 			switch action.action{
 				case HALT: {
-					if (action.value !== 0){
+					if (action.value !== null){
 						error("Halt doesn't support values", Literals.ACTION__VALUE);
 					}
-					if (action.duration !== 0){
+					if (action.duration !== null){
 						error("Halt doesn't support duration", Literals.ACTION__DURATION);
 					}
 				}
 				case PLAY: {
-					if (action.value !== 0){
-						error("Play doesn't support values", Literals.ACTION__VALUE);
+					if (action.value === null){
+						error("Play needs a value", Literals.ACTION__VALUE);
 					}
-					if (action.duration !== 0){
-						error("Play doesn't support duration", Literals.ACTION__DURATION);
+					if (action.duration === null){
+						error("Play needs a duration in milliseconds", Literals.ACTION__DURATION);
 					}
 				}
 				case REVERSE: {
-					if (action.value !== 0){
+					if (action.value !== null){
 						error("Reverse doesn't support values", Literals.ACTION__VALUE);
 					}
 				}
 				case ROTATE: {
-					if (action.value !== 0){
+					if (action.value !== null){
 						error("Rotate doesn't support values", Literals.ACTION__VALUE);
 					}
-					if (action.duration !== 0){
+					if (action.duration !== null){
 						error("Rotate doesn't support duration", Literals.ACTION__DURATION);
 					}
 				}
 				case STOP: {
-					if (action.value !== 0){
+					if (action.value !== null){
 						error("Stop doesn't support values", Literals.ACTION__VALUE);
 					}
-					if (action.duration !== 0){
+					if (action.duration !== null){
 						error("Stop doesn't support duration", Literals.ACTION__DURATION);
 					}
 				}

@@ -12,6 +12,12 @@ class AppGenerator {
 	int32_t NLINES;
 	int line = 0;
 	
+	void play_note_for(float note, int duration)
+	{
+		ev3_speaker_play_tone(note, duration);
+		dly_tsk(duration);
+	}
+	
 	void cycle_print(char* message) 
 	{
 	    int printLine = ++line % NLINES;
@@ -86,6 +92,7 @@ class AppGenerator {
 	 * Functions
 	 */
 	
+	extern void play_note_for(float, int);
 	extern void cycle_print(char*); 
 	extern void blink_led(ledcolor_t, ledcolor_t, float duration);
 	extern void setup();

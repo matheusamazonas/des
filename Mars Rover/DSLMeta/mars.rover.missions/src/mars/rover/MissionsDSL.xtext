@@ -4,7 +4,7 @@ generate missionsDSL "http://www.rover.mars/MissionsDSL"
 
 Robot: 
 	"SlaveAddress:" slaveAddress = MAC
-	("SensorRefreshRate:" refreshRate = RefreshRate)? 
+	("SensorRefreshRate:" refreshRate = Duration)? 
 	"DefaultSpeed:" defaultSpeed = INT
 	"SlowSpeed:" slowSpeed = INT
 	"RotationRange:" minAngle = INT "to"  maxAngle = INT "degrees" 
@@ -19,8 +19,22 @@ Mission: "Mission" name=ID "priority" priority = INT
 	)
 ;
 
-RefreshRate:
+// Wrapper values. We need these to allow nullable types
+
+Duration:
 	value = INT "ms"
+;
+
+Integer:
+	value = INT
+;
+
+Color:
+	value = EV3_COLOR
+;
+
+Boolean:
+	value = BOOL
 ;
 
 terminal MAC:
@@ -33,8 +47,8 @@ terminal MAC:
 ;
 
 enum MissionType:
-	AVOID = 						"avoid"		|
-	FIND = 							"find"	|
+	AVOID = 						  "avoid"	|
+	FIND = 						   "find"	|
 	FINDINORDER = 			"findInOrder"	|
 	FINDSIMULTANEOUS = "findSimultaneous"	
 ;
@@ -61,9 +75,9 @@ enum Relation:
 ;
 
 Value:
-	color = Color	|
-	integer = INT	|
-	bool = BOOL
+	color = Color	    |
+	integer = Integer	|
+	bool = Boolean
 ;
 
 terminal BOOL:
@@ -71,7 +85,7 @@ terminal BOOL:
 ;
 
 Action:
-	action = EV3_ACTION (value = INT)? ("for" duration = INT)?	
+	action = EV3_ACTION (value = Integer)? ("for" duration = Duration)?	
 ;
 
 enum EV3_ACTION:
@@ -87,7 +101,7 @@ NewMissions:
 	"startMission" missions +=[Mission]+
 ;
 
-enum Color:
+enum EV3_COLOR:
 	BLACK = "black"		|
 	BLUE = "blue" 		|
 	GREEN = "green"		|

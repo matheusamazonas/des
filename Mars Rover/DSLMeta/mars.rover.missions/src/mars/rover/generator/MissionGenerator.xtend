@@ -39,10 +39,10 @@ class MissionGenerator {
 			"halt();"
 		}
 		case PLAY: {
-			// TODO: Implement playing sounds
+			"play_note_for(" + action.value.value + ", " + action.duration.value + ");"
 		}
 		case REVERSE: {
-			"reverse(" + action.duration*1000 + ");" // The DSL takes seconds, the C method milliseconds.
+			"reverse(" + action.duration.value*1000 + ");" // The DSL takes seconds, the C method milliseconds.
 		}
 		case ROTATE: {
 			"rotate();"
@@ -75,7 +75,7 @@ class MissionGenerator {
 	}
 	
 	def static getColorCode(Color color){
-		switch color
+		switch color.value
 		{
 			case BLACK: {
 				return "COLOR_BLACK";
@@ -136,7 +136,7 @@ class MissionGenerator {
 				code = "getUltraBack()" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.toString()
 			}
 			case TOUCH: {
-				code = getTouchCond(cond.relation, cond.value.bool);				
+				code = getTouchCond(cond.relation, cond.value.bool.value);				
 			}
 		}
 		return code;
