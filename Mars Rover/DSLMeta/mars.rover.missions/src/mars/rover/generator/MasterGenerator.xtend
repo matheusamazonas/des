@@ -200,11 +200,15 @@ class MasterGenerator {
 	
 	void halt()
 	{
-		// TODO: Clean halt. Close connection. Close app.
 		stop();
+		fclose(bt_con);
+		ext_tsk();
 		ter_tsk(ACT_TASK);
+		del_tsk(ACT_TASK);
 		ter_tsk(SENSE_TASK);
+		del_tsk(SENSE_TASK);
 		ter_tsk(MAIN_TASK);
+		del_tsk(MAIN_TASK);
 	}
 	
 	void check_for_conditions()
