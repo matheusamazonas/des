@@ -76,6 +76,7 @@ enum EV3_ACTION:
 	PLAY = "play" 		|
 	ROTATE = "rotate"	|
 	HALT = "halt"
+	// TODO: LED Colors
 ;
 
 NewMissions:

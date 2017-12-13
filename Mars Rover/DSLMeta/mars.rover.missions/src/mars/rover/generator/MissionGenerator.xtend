@@ -27,7 +27,8 @@ class MissionGenerator {
 	'''
 	
 	def static getAvoidCode(Mission mission)'''
-	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») {
+	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») 
+	{
 		«FOR a : mission.actionsAfterSetOfConditions »«getActionCode(a)»«ENDFOR»
 	}
 	'''
@@ -102,8 +103,8 @@ class MissionGenerator {
 	
 	// TODO: Implement the middle color sensor after bluetooth setup
 	def static getColorAvoidCond(Relation relation, Color color){
-		var c1 = "getColorR()" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		var c2 = "getColorL()" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color);
 		//var c3 = "getColorM()" + " " + getRelationCode(relation) + " " + getColorCode(color);
 		//var c3 = "true";
 		return c1 + " || " + c2;// + " || " + c3;

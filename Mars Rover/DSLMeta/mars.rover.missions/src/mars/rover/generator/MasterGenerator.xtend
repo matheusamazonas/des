@@ -57,7 +57,7 @@ class MasterGenerator {
 	
 	// Sensors states
 	colorid_t color_r, color_l;
-	int16_t ultra_back_dist = 0;
+	int16_t ultra_back_dist, gyro_angle;
 	
 	void check_for_conditions();
 	
@@ -89,11 +89,12 @@ class MasterGenerator {
 		cycle_print((char*)"Connected to slave.");
 	}
 	
-	void read_sensors(int display_line) 
+	void read_sensors() 
 	{
 		color_l = getColorL();
 		color_r = getColorR();
 		ultra_back_dist = getUltraBack();
+		gyro_angle = ev3_gyro_sensor_get_angle(GYRO_P);
 	}
 	
 	void wait_for_black()
@@ -102,7 +103,7 @@ class MasterGenerator {
 		ev3_motor_stop(WHEEL_RIGHT_P, true);
 		while(color_r != COLOR_BLACK && color_l != COLOR_BLACK) 
 		{
-			read_sensors(1);
+			read_sensors();
 		}
 		cycle_print((char*)"Ready");
 	}
@@ -111,10 +112,11 @@ class MasterGenerator {
 	{
 		while (ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P) <= 0)
 		{
-			read_sensors(1);
+			read_sensors();
 		}
 	}
 	
+	// TODO: Move this to common.cpp
 	void blink_led(ledcolor_t color, ledcolor_t reset, float duration)
 	{
 		ev3_led_set_color(color);
@@ -127,7 +129,6 @@ class MasterGenerator {
 		// stop and close
 		ev3_motor_stop(WHEEL_LEFT_P, true);
 		ev3_motor_stop(WHEEL_RIGHT_P, true);
-		ev3_led_set_color(LED_OFF);
 	}
 	
 	void move_towards()
@@ -147,7 +148,7 @@ class MasterGenerator {
 	
 		while (init_time + duration > current_time)
 		{
-			read_sensors(1);
+			read_sensors();
 			//check_colors();
 			sleep(100);
 			get_tim(&current_time);
@@ -158,17 +159,19 @@ class MasterGenerator {
 	{
 		int rand_direc = rand() % 2;
 		int16_t rot_angle = (rand()%(MAX_ROT_ANGLE - MIN_ROT_ANGLE) + MIN_ROT_ANGLE);
+		
 		ev3_gyro_sensor_reset(GYRO_P);
-		int16_t current_angle = ev3_gyro_sensor_get_angle(GYRO_P);
+		sleep(100);
+		read_sensors();
 		
 		ev3_motor_set_power(WHEEL_LEFT_P, rand_direc*SPECIAL_SPEED);
 		ev3_motor_set_power(WHEEL_RIGHT_P, (-rand_direc)*SPECIAL_SPEED);
 	
-		while (current_angle < rot_angle)
+		while (gyro_angle < rot_angle)
 		{
 			//check_for_conditions();
+			read_sensors();
 			sleep(100);
-			current_angle = ev3_gyro_sensor_get_angle(GYRO_P);
 		}
 	}
 
@@ -191,14 +194,6 @@ class MasterGenerator {
 		ev3_led_set_color(LED_GREEN);
 	}
 	
-	void check_for_conditions()
-	{
-		// TODO: Sort missions based on priority
-		«FOR Mission m : robot.startMissions SEPARATOR " else "»
-		«MissionGenerator.getMissionCode(m)»
-		«ENDFOR»
-	}
-	
 	void halt()
 	{
 		// TODO: Clean halt. Close connection. Close app.
@@ -207,7 +202,15 @@ class MasterGenerator {
 		ter_tsk(SENSE_TASK);
 		ter_tsk(MAIN_TASK);
 	}
-
+	
+	void check_for_conditions()
+	{
+		// TODO: Sort missions based on priority
+		«FOR Mission m : robot.startMissions SEPARATOR " else "»
+		«MissionGenerator.getMissionCode(m)»
+		«ENDFOR»
+	}
+	
 	void main_task(intptr_t unused) 
 	{
 		connect_to_slave();
@@ -228,6 +231,7 @@ class MasterGenerator {
 		«IF robot.startMissions.length > 0»
 		while(true) 
 		{
+			read_sensors();
 			check_for_conditions();
 		    move_towards();
 		    sleep(SENSOR_REFRESH_RATE);
