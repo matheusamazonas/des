@@ -66,6 +66,8 @@ class SlaveGenerator {
 	
 	void read_sensors() 
 	{
+		sleep(SENSOR_REFRESH_RATE);
+		
 		color_m = ev3_color_sensor_get_color(COLOR_M_P);
 		touch_l = ev3_touch_sensor_is_pressed(TOUCH_L_P);
 		touch_r = ev3_touch_sensor_is_pressed(TOUCH_R_P);
@@ -79,7 +81,6 @@ class SlaveGenerator {
 		fwrite(&color_m, sizeof(colorid_t), 1, bt_con);
 		rewind(bt_con);
 		cycle_print(arr1);
-		
 	}
 	
 	void wait_for_black()
@@ -142,11 +143,9 @@ class SlaveGenerator {
 	
 	void act_task(intptr_t unused) 
 	{
-		sleep(1000);
 		while(true) 
 		{
 			read_sensors();
-			sleep(SENSOR_REFRESH_RATE);
 		}
 	}
 	'''

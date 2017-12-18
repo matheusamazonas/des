@@ -72,37 +72,8 @@ class MasterGenerator {
 			cycle_print((char*)"Connected to slave.");
 	}
 	
-	colorid_t convertCharColorValue(char c){
-	
-	
-	
-		switch((c-'0')){	
-			case(0):
-				return COLOR_NONE;
-			case(1):
-				return COLOR_BLACK;
-			case(2):
-				return COLOR_BLUE;
-			case(3):
-				return COLOR_GREEN;
-			case(4):
-				return COLOR_YELLOW;
-			case(5):
-				return COLOR_RED;
-			case(6):
-				return COLOR_WHITE;	
-			case(7):
-				return COLOR_BROWN;
-			default:
-				return COLOR_NONE;
-				
-		}
-	
-	
-	}
-	
-	void update_slave_sensors(){
-		int auxColor=0;
+	void update_slave_sensors()
+	{
 		fread(&ultra_front_dist, sizeof(int16_t), 1, bt_con);
 		fread(&touch_l, sizeof(bool_t), 1, bt_con);
 		fread(&touch_r, sizeof(bool_t), 1, bt_con);
@@ -112,6 +83,7 @@ class MasterGenerator {
 	
 	void read_sensors() 
 	{
+		sleep(SENSOR_REFRESH_RATE);
 		update_slave_sensors();
 		char arr1[30]; 
 		sprintf(arr1, "Obtained : %d %d %d %d", ultra_front_dist, touch_l, touch_r,  color_m);
@@ -120,8 +92,6 @@ class MasterGenerator {
 		color_r = ev3_color_sensor_get_color(COLOR_R_P);
 		ultra_back_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P);
 		gyro_angle = ev3_gyro_sensor_get_angle(GYRO_P);
-		
-		
 	}
 	
 	void wait_for_black()
@@ -131,7 +101,6 @@ class MasterGenerator {
 		while(color_r != COLOR_BLACK && color_l != COLOR_BLACK) 
 		{
 			read_sensors();
-			//sleep(100);
 		}
 		cycle_print((char*)"Ready");
 	}
@@ -141,17 +110,14 @@ class MasterGenerator {
 		while (ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P) <= 0)
 		{
 			read_sensors();
-			//sleep(100);
 		}
 	}
 	
 	void stop()
-		{
-			ev3_motor_stop(WHEEL_LEFT_P, true);
-			ev3_motor_stop(WHEEL_RIGHT_P, true);
-		}
-	
-		
+	{
+		ev3_motor_stop(WHEEL_LEFT_P, true);
+		ev3_motor_stop(WHEEL_RIGHT_P, true);
+	}
 	
 	void move_towards()
 	{
@@ -171,8 +137,6 @@ class MasterGenerator {
 		while (init_time + duration > current_time)
 		{
 			read_sensors();
-			//check_colors();
-			//sleep(100);
 			get_tim(&current_time);
 		}
 	}
@@ -194,7 +158,6 @@ class MasterGenerator {
 		{
 			//check_for_conditions();
 			read_sensors();
-			//sleep(100);
 		}
 	}
 	
@@ -265,7 +228,6 @@ class MasterGenerator {
 			read_sensors();
 			check_for_conditions();
 		    move_towards();
-		    sleep(SENSOR_REFRESH_RATE);
 		}
 		«ENDIF»
 	}
