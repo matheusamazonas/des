@@ -4,16 +4,6 @@ import mars.rover.missionsDSL.Robot
 
 class SlaveGenerator {
 	
-	def static getMacCode(String address){
-		var String[] parts = address.split(":");
-		return "{0x" + parts.get(0) + ", " +
-			    "0x" + parts.get(1) + ", " +
-			    "0x" + parts.get(2) + ", " +
-			    "0x" + parts.get(3) + ", " +
-			    "0x" + parts.get(4) + ", " +
-			    "0x" + parts.get(5) + "}"
-	}
-	
 	def static toCpp(Robot robot)'''
 	#include "common.h"
 	#include "app.h"
@@ -21,8 +11,7 @@ class SlaveGenerator {
 	#define BT_CONNECT_PERIOD 200
 	
 	static FILE *bt_con;
-	const uint8_t slave_address[6] = «getMacCode(robot.slaveAddress)»;
-	const char* pin = "0000";	
+		
 	const uint32_t SENSOR_REFRESH_RATE = «IF robot.refreshRate !== null»«robot.refreshRate.value»«ELSE»100«ENDIF»;
 	
 	// Sensor mapping
@@ -36,32 +25,21 @@ class SlaveGenerator {
 	colorid_t color_m;
 	int16_t ultra_front_dist = 0;
 	
-	bool_t isConnected()
-	{
-		T_SERIAL_RPOR rpor;
-	    ER ercd = serial_ref_por(SIO_PORT_SPP_MASTER_TEST, &rpor);
-	    return ercd == E_OK;
-	}
-	
 	void connect_to_master()
 	{
 		while(true)
+		{
+			while (!ev3_bluetooth_is_connected()) 
 			{
-				bt_con = fdopen(SIO_PORT_SPP_MASTER_TEST_FILENO, "wb+");
-			    if (bt_con != NULL) 
-			    {
-			        setbuf(bt_con, NULL);
-			        while (!isConnected()) 
-			        {
-			        	cycle_print((char*)"Trying to connect...");
-			            spp_master_test_connect(slave_address, pin);
-			            sleep(BT_CONNECT_PERIOD);
-			        }
-			        break;
-			    }
+			    cycle_print((char*)"Waiting for connection...");
+			    sleep(BT_CONNECT_PERIOD);
 			}
-			//fprintf(bt_con, "000\n");
-			cycle_print((char*)"Connected to master.");
+			bt_con = ev3_serial_open_file(EV3_SERIAL_BT);
+			//setbuf(bt_con, NULL);
+			break;
+		}
+		
+		cycle_print((char*)"Connected to master.");
 	}
 	
 	void read_sensors() 
