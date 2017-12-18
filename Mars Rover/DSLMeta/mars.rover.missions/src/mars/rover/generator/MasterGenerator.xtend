@@ -5,15 +5,6 @@ import mars.rover.missionsDSL.Mission
 
 class MasterGenerator {
 	
-	def static getMacCode(String address){
-		var String[] parts = address.split(":");
-		return "{0x" + parts.get(0) + ", " +
-			    "0x" + parts.get(1) + ", " +
-			    "0x" + parts.get(2) + ", " +
-			    "0x" + parts.get(3) + ", " +
-			    "0x" + parts.get(4) + ", " +
-			    "0x" + parts.get(5) + "}"
-	}
 	
 	def static toCpp(Robot robot)'''
 	#include "common.h"
@@ -32,8 +23,7 @@ class MasterGenerator {
 	const int16_t
 		MAX_ROT_ANGLE = «robot.maxAngle»,
 		MIN_ROT_ANGLE = «robot.minAngle»;
-	const uint8_t slave_address[6] = «getMacCode(robot.slaveAddress)»;
-	const char* pin = "0000";
+	
 	
 	// Sensor mapping
 	const sensor_port_t
@@ -52,6 +42,11 @@ class MasterGenerator {
 	colorid_t color_r, color_l;
 	int16_t ultra_back_dist, gyro_angle;
 	
+	//slave sensors
+	bool_t touch_l, touch_r;
+	colorid_t color_m;
+	int16_t ultra_front_dist;
+	
 	// Mission condition variables
 	«FOR Mission mission : robot.availableMissions»
 	«MissionGenerator.getGlobals(mission)»
@@ -59,40 +54,74 @@ class MasterGenerator {
 	
 	void check_for_conditions();
 	
-	bool_t isConnected()
-	{
-		T_SERIAL_RPOR rpor;
-	    ER ercd = serial_ref_por(SIO_PORT_SPP_MASTER_TEST, &rpor);
-	    return ercd == E_OK;
-	}
-	
+		
 	void connect_to_slave()
 	{
 		while(true)
-		{
-			bt_con = fdopen(SIO_PORT_SPP_MASTER_TEST_FILENO, "a+");
-		    if (bt_con != NULL) 
-		    {
-		        setbuf(bt_con, NULL);
-		        while (!isConnected()) 
-		        {
-		        	cycle_print((char*)"Trying to connect...");
-		            spp_master_test_connect(slave_address, pin);
-		            sleep(BT_CONNECT_PERIOD);
-		        }
-		        break;
-		    }
+			{
+				while (!ev3_bluetooth_is_connected()) 
+				{
+				    cycle_print((char*)"Waiting for connection...");
+				    sleep(BT_CONNECT_PERIOD);
+				}
+				bt_con = ev3_serial_open_file(EV3_SERIAL_BT);
+				//setbuf(bt_con, NULL);
+				break;
+			}
+			
+			cycle_print((char*)"Connected to slave.");
+	}
+	
+	colorid_t convertCharColorValue(char c){
+	
+	
+	
+		switch((c-'0')){	
+			case(0):
+				return COLOR_NONE;
+			case(1):
+				return COLOR_BLACK;
+			case(2):
+				return COLOR_BLUE;
+			case(3):
+				return COLOR_GREEN;
+			case(4):
+				return COLOR_YELLOW;
+			case(5):
+				return COLOR_RED;
+			case(6):
+				return COLOR_WHITE;	
+			case(7):
+				return COLOR_BROWN;
+			default:
+				return COLOR_NONE;
+				
 		}
-		//fprintf(bt_con, "000\n");
-		cycle_print((char*)"Connected to slave.");
+	
+	
+	}
+	
+	void update_slave_sensors(){
+		int auxColor=0;
+		fread(&ultra_front_dist, sizeof(int16_t), 1, bt_con);
+		fread(&touch_l, sizeof(bool_t), 1, bt_con);
+		fread(&touch_r, sizeof(bool_t), 1, bt_con);
+		fread(&color_m, sizeof(colorid_t), 1, bt_con);
+		
 	}
 	
 	void read_sensors() 
 	{
+		update_slave_sensors();
+		char arr1[30]; 
+		sprintf(arr1, "Obtained : %d %d %d %d", ultra_front_dist, touch_l, touch_r,  color_m);
+		cycle_print(arr1);
 		color_l = ev3_color_sensor_get_color(COLOR_L_P);
 		color_r = ev3_color_sensor_get_color(COLOR_R_P);
 		ultra_back_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P);
 		gyro_angle = ev3_gyro_sensor_get_angle(GYRO_P);
+		
+		
 	}
 	
 	void wait_for_black()
@@ -102,7 +131,7 @@ class MasterGenerator {
 		while(color_r != COLOR_BLACK && color_l != COLOR_BLACK) 
 		{
 			read_sensors();
-			sleep(100);
+			//sleep(100);
 		}
 		cycle_print((char*)"Ready");
 	}
@@ -112,15 +141,17 @@ class MasterGenerator {
 		while (ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P) <= 0)
 		{
 			read_sensors();
-			sleep(100);
+			//sleep(100);
 		}
 	}
 	
 	void stop()
-	{
-		ev3_motor_stop(WHEEL_LEFT_P, true);
-		ev3_motor_stop(WHEEL_RIGHT_P, true);
-	}
+		{
+			ev3_motor_stop(WHEEL_LEFT_P, true);
+			ev3_motor_stop(WHEEL_RIGHT_P, true);
+		}
+	
+		
 	
 	void move_towards()
 	{
@@ -141,10 +172,11 @@ class MasterGenerator {
 		{
 			read_sensors();
 			//check_colors();
-			sleep(100);
+			//sleep(100);
 			get_tim(&current_time);
 		}
 	}
+	
 	
 	void rotate()
 	{
@@ -152,7 +184,7 @@ class MasterGenerator {
 		int16_t rot_angle = (rand()%(MAX_ROT_ANGLE - MIN_ROT_ANGLE) + MIN_ROT_ANGLE);
 		
 		ev3_gyro_sensor_reset(GYRO_P);
-		sleep(100);
+		//sleep(100);
 		read_sensors();
 		
 		ev3_motor_set_power(WHEEL_LEFT_P, rand_direc*SPECIAL_SPEED);
@@ -162,7 +194,7 @@ class MasterGenerator {
 		{
 			//check_for_conditions();
 			read_sensors();
-			sleep(100);
+			//sleep(100);
 		}
 	}
 	
@@ -190,6 +222,7 @@ class MasterGenerator {
 		//	Motor init
 		ev3_motor_config(WHEEL_LEFT_P, LARGE_MOTOR);
 		ev3_motor_config(WHEEL_RIGHT_P, LARGE_MOTOR);
+		ev3_motor_config(SMALL_ARM_P, MEDIUM_MOTOR);
 		//	Sensor init
 		ev3_sensor_config(ULTRA_BACK_P, ULTRASONIC_SENSOR);
 		ev3_sensor_config(COLOR_R_P, COLOR_SENSOR);

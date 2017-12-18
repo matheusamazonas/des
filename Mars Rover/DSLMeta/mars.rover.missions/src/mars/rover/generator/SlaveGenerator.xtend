@@ -3,13 +3,27 @@ package mars.rover.generator
 import mars.rover.missionsDSL.Robot
 
 class SlaveGenerator {
+	
+	def static getMacCode(String address){
+		var String[] parts = address.split(":");
+		return "{0x" + parts.get(0) + ", " +
+			    "0x" + parts.get(1) + ", " +
+			    "0x" + parts.get(2) + ", " +
+			    "0x" + parts.get(3) + ", " +
+			    "0x" + parts.get(4) + ", " +
+			    "0x" + parts.get(5) + "}"
+	}
+	
 	def static toCpp(Robot robot)'''
 	#include "common.h"
 	#include "app.h"
 	
 	#define BT_CONNECT_PERIOD 200
 	
-	static FILE *bt_con;	
+	static FILE *bt_con;
+	const uint8_t slave_address[6] = «getMacCode(robot.slaveAddress)»;
+	const char* pin = "0000";	
+	const uint32_t SENSOR_REFRESH_RATE = «IF robot.refreshRate !== null»«robot.refreshRate.value»«ELSE»100«ENDIF»;
 	
 	// Sensor mapping
 	sensor_port_t
@@ -22,20 +36,32 @@ class SlaveGenerator {
 	colorid_t color_m;
 	int16_t ultra_front_dist = 0;
 	
+	bool_t isConnected()
+	{
+		T_SERIAL_RPOR rpor;
+	    ER ercd = serial_ref_por(SIO_PORT_SPP_MASTER_TEST, &rpor);
+	    return ercd == E_OK;
+	}
+	
 	void connect_to_master()
 	{
 		while(true)
-		{
-			while (!ev3_bluetooth_is_connected()) 
 			{
-			    cycle_print((char*)"Waiting for connection...");
-			    sleep(BT_CONNECT_PERIOD);
+				bt_con = fdopen(SIO_PORT_SPP_MASTER_TEST_FILENO, "wb+");
+			    if (bt_con != NULL) 
+			    {
+			        setbuf(bt_con, NULL);
+			        while (!isConnected()) 
+			        {
+			        	cycle_print((char*)"Trying to connect...");
+			            spp_master_test_connect(slave_address, pin);
+			            sleep(BT_CONNECT_PERIOD);
+			        }
+			        break;
+			    }
 			}
-			bt_con = ev3_serial_open_file(EV3_SERIAL_BT);
-			break;
-		}
-		//fprintf(bt_con, "000\n");
-		cycle_print((char*)"Connected to master.");
+			//fprintf(bt_con, "000\n");
+			cycle_print((char*)"Connected to master.");
 	}
 	
 	void read_sensors() 
@@ -44,6 +70,16 @@ class SlaveGenerator {
 		touch_l = ev3_touch_sensor_is_pressed(TOUCH_L_P);
 		touch_r = ev3_touch_sensor_is_pressed(TOUCH_R_P);
 		ultra_front_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_FRONT_P);
+		char arr1[30]; 
+		sprintf(arr1, "Obtained : %d %d %d %d", ultra_front_dist, touch_l, touch_r, color_m);
+		
+		fwrite(&ultra_front_dist, sizeof(int16_t), 1, bt_con);
+		fwrite(&touch_l, sizeof(bool_t), 1, bt_con);
+		fwrite(&touch_r, sizeof(bool_t), 1, bt_con);
+		fwrite(&color_m, sizeof(colorid_t), 1, bt_con);
+		rewind(bt_con);
+		cycle_print(arr1);
+		
 	}
 	
 	void wait_for_black()
@@ -106,7 +142,12 @@ class SlaveGenerator {
 	
 	void act_task(intptr_t unused) 
 	{
-		
+		sleep(1000);
+		while(true) 
+		{
+			read_sensors();
+			sleep(SENSOR_REFRESH_RATE);
+		}
 	}
 	'''
 	
