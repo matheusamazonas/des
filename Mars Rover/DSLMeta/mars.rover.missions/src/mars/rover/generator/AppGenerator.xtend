@@ -15,7 +15,6 @@ class AppGenerator {
 	void play_note_for(float note, int duration)
 	{
 		ev3_speaker_play_tone(note, duration);
-		dly_tsk(duration);
 	}
 	
 	bool allTrue(bool arr[], int length)

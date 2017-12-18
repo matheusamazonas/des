@@ -43,32 +43,32 @@ class MissionGenerator {
 	}
 	
 	def static getFindVariables(Mission mission)'''
-	bool «mission.name»_cond[«mission.cond.length»];
+	bool «mission.name»_cond[«mission.actCond.length»];
 	'''
 	
 	def static getAvoidCode(Mission mission)'''
 	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») 
 	{
-		«FOR a : mission.actionsAfterSetOfConditions »«getActionCode(a)»«ENDFOR»
+		«FOR a : mission.actions »«getActionCode(a)»«ENDFOR»
 	}
 	'''
 	
 	def static getFindCode(Mission mission)'''
 		«var x = 0»
-		«FOR c : mission.cond SEPARATOR " else "»
-		«IF (mission.cond.get(x).ifConditionTrue !== null)»
-		if(«getConditionCode(mission.cond.get(x), false)» && !«mission.name»_cond[«x»]){
+		«FOR c : mission.actCond SEPARATOR " else "»
+		«IF (mission.actCond.get(x).actions !== null)»
+		if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
 			«mission.name»_cond[«x»] = true;
-			«FOR act : mission.cond.get(x++).ifConditionTrue»
+			«FOR act : mission.actCond.get(x++).actions»
 			«getActionCode(act)»
 			«ENDFOR»
 		}
 		«ENDIF»
 		«ENDFOR»
-		«IF (mission.actionsAfterSetOfConditions.length > 0)»
+		«IF (mission.actions.length > 0)»
 		else if (allTrue(«mission.name»_cond, «mission.cond.length»))
 		{
-			«FOR act : mission.actionsAfterSetOfConditions»
+			«FOR act : mission.actions»
 			«getActionCode(act)»
 			«ENDFOR»
 		}

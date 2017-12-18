@@ -14,8 +14,8 @@ Robot:
 
 Mission: "Mission" name=ID "priority" priority = INT
 	(
-		type = MissionType cond += Condition+ 'ifHappens' actionsAfterSetOfConditions += Action* (newMission = NewMissions)?			|
-		type = MissionType cond += Condition+ 'whenDone' actionsAfterSetOfConditions += Action* (newMission = NewMissions)?			
+		type = MissionType cond += Condition+ 'ifHappens' actions += Action* ("start" newMissions += [Mission]+)?			|
+		type = MissionType actCond += ActfulCondition+ 'whenDone' actons += Action* ("start" newMissions += [Mission]+)?			
 	)
 ;
 
@@ -57,7 +57,11 @@ Condition:
 	sensor = Sensor 
 	(relation = Relation)?
 	value = (Value)?
-	('ifConditionTrue' ifConditionTrue += Action+)?
+;
+
+ActfulCondition:
+	cond = Condition
+	('then' actions += Action+)?
 ;
 
 enum Sensor:
@@ -95,10 +99,6 @@ enum EV3_ACTION:
 	ROTATE = "rotate"	|
 	HALT = "halt"
 	// TODO: LED Colors
-;
-
-NewMissions:
-	"startMission" missions +=[Mission]+
 ;
 
 enum EV3_COLOR:
