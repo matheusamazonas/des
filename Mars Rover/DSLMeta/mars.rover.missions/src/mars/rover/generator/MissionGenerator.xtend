@@ -100,6 +100,9 @@ class MissionGenerator {
 		case STOP: {
 			"stop();"
 		}
+		case MEASURE: {
+			"measure();"
+		}
 	}»
 	'''
 	
@@ -151,22 +154,21 @@ class MissionGenerator {
 		}
 	}
 	
-	// TODO: Implement the middle color sensor after bluetooth setup
 	def static getColorAvoidCond(Relation relation, Color color){
 		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color);
 		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		//var c3 = "getColorM()" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		//var c3 = "true";
-		return c1 + " || " + c2;// + " || " + c3;
+		var c3 = "color_m" + " " + getRelationCode(relation) + " " + getColorCode(color);
+	
+		return "("+c1 + " || " + c2 + " || " + c3+")";
 	}
 	
-	// TODO: Implement this for finding colors. Currently using just Color_Right
+
 	def static getColorFindCond(Relation relation, Color color){
 		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color);
 		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		//var c3 = "getColorM()" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		//var c3 = "true";
-		return "(" + c1 + " || " + c2 + ")";// + " || " + c3;
+		var c3 = "color_m" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		
+		return "("+c1 + " || " + c2 + " || " + c3+")";
 	}
 	
 	def static getTouchCond(Relation relation, String b){

@@ -19,7 +19,7 @@ class MissionsDSLGenerator extends AbstractGenerator {
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 	val root = resource.allContents.head as Robot;
 		if (root !== null) {
-			var masterPath = "master/";
+			var masterPath = "masterB/";
 			fsa.generateFile(masterPath+"common.cpp", AppGenerator.commonCpp());
 			fsa.generateFile(masterPath+"common.h", AppGenerator.commonHeader());
 			fsa.generateFile(masterPath+"app.cpp", MasterGenerator.toCpp(root));
@@ -27,7 +27,7 @@ class MissionsDSLGenerator extends AbstractGenerator {
 			fsa.generateFile(masterPath+"app.cfg", AppGenerator.toCfg(root));
 			fsa.generateFile(masterPath+"Makefile.inc", MakefileGenerator.toMake(root));
 			
-			var slavePath = "slave/";
+			var slavePath = "slaveB/";
 			fsa.generateFile(slavePath+"common.cpp", AppGenerator.commonCpp());
 			fsa.generateFile(slavePath+"common.h", AppGenerator.commonHeader());
 			fsa.generateFile(slavePath+"app.cpp", SlaveGenerator.toCpp(root));

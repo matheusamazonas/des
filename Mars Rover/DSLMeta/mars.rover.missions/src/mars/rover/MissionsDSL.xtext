@@ -97,7 +97,8 @@ enum EV3_ACTION:
 	REVERSE = "reverse" 	|
 	PLAY = "play" 		|
 	ROTATE = "rotate"	|
-	HALT = "halt"
+	HALT = "halt"		|
+	MEASURE = "measure"
 	// TODO: LED Colors
 ;
 

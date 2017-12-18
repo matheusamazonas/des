@@ -133,10 +133,34 @@ class MasterGenerator {
 		}
 	}
 	
+	
 	void stop()
 	{
 		ev3_motor_stop(WHEEL_LEFT_P, true);
 		ev3_motor_stop(WHEEL_RIGHT_P, true);
+	}
+	
+	void measure()
+	{
+		ulong_t current_time = 0L, init_time;
+		stop();
+		ev3_motor_set_power(SMALL_ARM_P, -7);
+		
+		get_tim(&init_time);
+		while (init_time + 1000 > current_time)
+		{
+			read_sensors();
+			get_tim(&current_time);
+		}
+		ev3_motor_set_power(SMALL_ARM_P, 7);
+		
+		get_tim(&init_time);
+		while (init_time + 1000 > current_time)
+		{
+			read_sensors();
+			get_tim(&current_time);
+		}
+		
 	}
 	
 	void move_towards()
