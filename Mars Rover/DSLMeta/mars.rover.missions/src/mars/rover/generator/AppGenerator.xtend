@@ -108,17 +108,19 @@ class AppGenerator {
 	extern void setup();
 	'''
 	
-	def static toCfg(Robot root)'''
+	def static toCfg(Robot root, boolean master)'''
 	INCLUDE("app_common.cfg");
 	
 	#include "app.h"
 		
 	DOMAIN(TDOM_APP) {
-	CRE_TSK(MAIN_TASK, { TA_ACT, 0, main_task, TMIN_APP_TPRI, STACK_SIZE, NULL });
+	CRE_TSK(MAIN_TASK, { TA_ACT, 0, main_task, TMIN_APP_TPRI+4, STACK_SIZE, NULL });
+	«IF master»
 	CRE_TSK(ACT_TASK, {TA_NULL, 0, act_task, TMIN_APP_TPRI+2, STACK_SIZE, NULL });
-	CRE_TSK(SENSE_TASK, {TA_NULL, 0, sense_task, TMIN_APP_TPRI+1, STACK_SIZE, NULL });
-	}
+	CRE_TSK(SENSE_TASK, {TA_NULL, 0, sense_task, TMIN_APP_TPRI+3, STACK_SIZE, NULL });
 	
+	«ENDIF»
+	}
 	ATT_MOD("app.o");
 	'''
 }

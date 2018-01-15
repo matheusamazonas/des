@@ -5,6 +5,8 @@ import mars.rover.missionsDSL.Condition
 import mars.rover.missionsDSL.Action
 import mars.rover.missionsDSL.Color
 import mars.rover.missionsDSL.Relation
+import mars.rover.missionsDSL.Sensor
+import mars.rover.missionsDSL.EV3_ACTION
 
 class MissionGenerator {
 
@@ -53,13 +55,19 @@ class MissionGenerator {
 	}
 	'''
 	
+		
 	def static getFindCode(Mission mission)'''
+		
 		«var x = 0»
 		«FOR c : mission.actCond SEPARATOR " else "»
 		«IF (mission.actCond.get(x).actions !== null)»
-		if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
+		//if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
+			if («getConditionCode(mission.actCond.get(x).cond, false)»){
 			«mission.name»_cond[«x»] = true;
 			«FOR act : mission.actCond.get(x++).actions»
+				«IF (mission.actCond.get(x-1).cond.sensor == Sensor.COLOR && act.action == EV3_ACTION.MEASURE)»
+					 adjust_for_measurement(«getColorCode(mission.actCond.get(x-1).cond.value.color)»);
+				«ENDIF»
 			«getActionCode(act)»
 			«ENDFOR»
 		}
@@ -172,8 +180,8 @@ class MissionGenerator {
 	}
 	
 	def static getTouchCond(Relation relation, String b){
-		var c1 = "getColorR()" + " " + getRelationCode(relation) + b;
-		var c2 = "getColorL()" + " " + getRelationCode(relation) + b;
+		var c1 = "touch_l" + " " + getRelationCode(relation) + b;
+		var c2 = "touch_r" + " " + getRelationCode(relation) + b;
 		return c1 + " || " + c2;
 	}
 	
@@ -189,7 +197,7 @@ class MissionGenerator {
 				}
 			}
 			case PROXIMITY: {
-				code = "getUltraBack()" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.toString()
+				code = "ultra_front_dist" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.toString()
 			}
 			case TOUCH: {
 				code = getTouchCond(cond.relation, cond.value.bool.value);				

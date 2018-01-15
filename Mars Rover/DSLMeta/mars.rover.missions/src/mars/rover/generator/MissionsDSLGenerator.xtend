@@ -19,20 +19,20 @@ class MissionsDSLGenerator extends AbstractGenerator {
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 	val root = resource.allContents.head as Robot;
 		if (root !== null) {
-			var masterPath = "masterB/";
+			var masterPath = "master/";
 			fsa.generateFile(masterPath+"common.cpp", AppGenerator.commonCpp());
 			fsa.generateFile(masterPath+"common.h", AppGenerator.commonHeader());
 			fsa.generateFile(masterPath+"app.cpp", MasterGenerator.toCpp(root));
 			fsa.generateFile(masterPath+"app.h", MasterGenerator.toHeader(root));
-			fsa.generateFile(masterPath+"app.cfg", AppGenerator.toCfg(root));
+			fsa.generateFile(masterPath+"app.cfg", AppGenerator.toCfg(root, true));
 			fsa.generateFile(masterPath+"Makefile.inc", MakefileGenerator.toMake(root));
 			
-			var slavePath = "slaveB/";
+			var slavePath = "slave/";
 			fsa.generateFile(slavePath+"common.cpp", AppGenerator.commonCpp());
 			fsa.generateFile(slavePath+"common.h", AppGenerator.commonHeader());
 			fsa.generateFile(slavePath+"app.cpp", SlaveGenerator.toCpp(root));
 			fsa.generateFile(slavePath+"app.h", SlaveGenerator.toHeader(root));
-			fsa.generateFile(slavePath+"app.cfg", AppGenerator.toCfg(root));
+			fsa.generateFile(slavePath+"app.cfg", AppGenerator.toCfg(root, false));
 			fsa.generateFile(slavePath+"Makefile.inc", MakefileGenerator.toMake(root));
 		} 
 	}

@@ -21,9 +21,9 @@ class SlaveGenerator {
 	ULTRA_FRONT_P = EV3_PORT_3,
 	TOUCH_R_P = EV3_PORT_4;
 	
-	bool_t touch_l, touch_r;
-	colorid_t color_m;
-	int16_t ultra_front_dist = 0;
+	bool_t touch_l, touch_r, touch_l_old, touch_r_old ;
+	colorid_t color_m, color_m_old;
+	int16_t ultra_front_dist, ultra_front_dist_old;
 	
 	void connect_to_master()
 	{
@@ -44,21 +44,27 @@ class SlaveGenerator {
 	
 	void read_sensors() 
 	{
-		sleep(SENSOR_REFRESH_RATE);
+		
 		
 		color_m = ev3_color_sensor_get_color(COLOR_M_P);
-		touch_l = ev3_touch_sensor_is_pressed(TOUCH_L_P);
-		touch_r = ev3_touch_sensor_is_pressed(TOUCH_R_P);
-		ultra_front_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_FRONT_P);
-		char arr1[30]; 
-		sprintf(arr1, "Obtained : %d %d %d %d", ultra_front_dist, touch_l, touch_r, color_m);
+			touch_l = ev3_touch_sensor_is_pressed(TOUCH_L_P);
+			touch_r = ev3_touch_sensor_is_pressed(TOUCH_R_P);
+			ultra_front_dist = ev3_ultrasonic_sensor_get_distance(ULTRA_FRONT_P);
+			char arr1[30]; 
+			sprintf(arr1, "Obtained : %d %d %d %d", ultra_front_dist, touch_l, touch_r, color_m);
+			
+			if(color_m != color_m_old || touch_l != touch_l_old || touch_r != touch_r_old || ultra_front_dist != ultra_front_dist_old){ 
+			
+				
+				fprintf(bt_con, "%d,%d,%d,%d,", ultra_front_dist, touch_l, touch_r, color_m);
+				fprintf(bt_con, "\n");
+				cycle_print(arr1);
 		
-		fwrite(&ultra_front_dist, sizeof(int16_t), 1, bt_con);
-		fwrite(&touch_l, sizeof(bool_t), 1, bt_con);
-		fwrite(&touch_r, sizeof(bool_t), 1, bt_con);
-		fwrite(&color_m, sizeof(colorid_t), 1, bt_con);
-		rewind(bt_con);
-		cycle_print(arr1);
+				color_m_old = color_m;
+				touch_l_old = touch_l;
+				touch_r_old = touch_r;
+				ultra_front_dist_old = ultra_front_dist;
+			}
 	}
 	
 	void wait_for_black()
@@ -83,8 +89,6 @@ class SlaveGenerator {
 		cycle_print((char*)"Closing...");
 		fclose(bt_con);
 		ev3_led_set_color(LED_OFF);
-		ter_tsk(ACT_TASK);
-		ter_tsk(SENSE_TASK);
 		ter_tsk(MAIN_TASK);
 	}
 	
@@ -101,31 +105,32 @@ class SlaveGenerator {
 		ev3_sensor_config(TOUCH_L_P, TOUCH_SENSOR);
 		ev3_sensor_config(TOUCH_R_P, TOUCH_SENSOR);
 		
-		wait_for_black();
-		wait_for_ultra();
 		ev3_led_set_color(LED_GREEN);
 	}
 
+	void act() 
+		{
+			while(true) 
+			{
+				read_sensors();
+				dly_tsk(50);
+			}
+		}
+	
 	void main_task(intptr_t unused) 
 	{
 		setup();
-		connect_to_master();
-		init();
-		act_tsk(ACT_TASK);
+			connect_to_master();
+			init();
+			color_m_old = ev3_color_sensor_get_color(COLOR_M_P);
+			touch_l_old = ev3_touch_sensor_is_pressed(TOUCH_L_P);
+			touch_r_old = ev3_touch_sensor_is_pressed(TOUCH_R_P);
+			ultra_front_dist_old = ev3_ultrasonic_sensor_get_distance(ULTRA_FRONT_P);
+			act();
 	}
 	
-	void sense_task(intptr_t unused) 
-	{
 	
-	}
 	
-	void act_task(intptr_t unused) 
-	{
-		while(true) 
-		{
-			read_sensors();
-		}
-	}
 	'''
 	
 	def static toHeader(Robot robot)'''
@@ -145,8 +150,7 @@ class SlaveGenerator {
 	#endif
 	
 	extern void	main_task(intptr_t);
-	extern void act_task(intptr_t);
-	extern void sense_task(intptr_t);
+	
 	
 	#ifdef __cplusplus
 	}
