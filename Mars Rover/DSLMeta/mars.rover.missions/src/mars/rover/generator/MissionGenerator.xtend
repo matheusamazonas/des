@@ -78,7 +78,7 @@ class MissionGenerator {
 		}
 		«ENDIF»
 		«ENDFOR»
-		«IF (mission.actions.length > 0)»
+		«IF (mission.actCond.length > 0)»
 		else if (allTrue(«mission.name»_cond, «mission.actCond.length»))
 		{
 			«FOR act : mission.actions»
