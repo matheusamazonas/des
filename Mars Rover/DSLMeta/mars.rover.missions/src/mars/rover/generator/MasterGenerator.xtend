@@ -251,6 +251,7 @@ class MasterGenerator {
 		
 		while (init_time + duration > current_time)
 		{
+			check_for_conditions();
 			read_sensors();
 			get_tim(&current_time);
 		}
@@ -267,6 +268,7 @@ class MasterGenerator {
 	
 		while (init_time + duration > current_time)
 		{
+			check_for_conditions();
 			read_sensors();
 			get_tim(&current_time);
 		}
@@ -288,6 +290,7 @@ class MasterGenerator {
 					cycle_print((char*)"....REVERSE MID=NONE");
 					reverse(200);
 				}
+				check_for_conditions();
 				read_sensors();
 			}
 		}
@@ -300,6 +303,7 @@ class MasterGenerator {
 					cycle_print((char*)"....REVERSE MID=NONE");
 					reverse(200);
 				}
+				check_for_conditions();
 				read_sensors();
 			}
 		}
@@ -319,7 +323,7 @@ class MasterGenerator {
 	
 		while (abs(gyro_angle) < rot_angle)
 		{
-			//check_for_conditions();
+			check_for_conditions();
 			read_sensors();
 		}
 	}
