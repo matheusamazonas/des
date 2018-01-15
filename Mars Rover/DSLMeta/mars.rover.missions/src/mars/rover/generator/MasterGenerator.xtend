@@ -177,7 +177,7 @@ class MasterGenerator {
 	{
 		char arr1[30];
 		dly_tsk(SENSOR_REFRESH_RATE); 
-		sprintf(arr1, "Obtained : %d %d %d %d . %d %d", ultra_front_dist, touch_l, touch_r,  color_m, color_l, color_r);
+		sprintf(arr1, "Obtained : %d %d %d %d %d . %d %d", ultra_front_dist, ultra_back_dist, touch_l, touch_r,  color_m, color_l, color_r);
 		cycle_print(arr1);
 		color_l = ev3_color_sensor_get_color(COLOR_L_P);
 		color_r = ev3_color_sensor_get_color(COLOR_R_P);
