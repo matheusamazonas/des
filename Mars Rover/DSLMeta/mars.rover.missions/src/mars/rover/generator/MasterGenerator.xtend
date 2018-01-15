@@ -191,7 +191,7 @@ class MasterGenerator {
 	{
 		ev3_motor_stop(WHEEL_LEFT_P, true);
 		ev3_motor_stop(WHEEL_RIGHT_P, true);
-		while(color_r != COLOR_BLACK && color_l != COLOR_BLACK) 
+		while(color_r != COLOR_BLACK && color_l != COLOR_BLACK && color_m != COLOR_BLACK)  
 		{
 			read_sensors();
 		}
@@ -200,7 +200,7 @@ class MasterGenerator {
 	
 	void wait_for_ultra()
 	{
-		while (ev3_ultrasonic_sensor_get_distance(ULTRA_BACK_P) <= 0)
+		while (ultra_back_dist <= 0 || ultra_front_dist <= 0)
 		{
 			read_sensors();
 		}
