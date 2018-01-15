@@ -121,16 +121,16 @@ class MissionGenerator {
 				return "==";
 			}
 			case GE: {
-				return "<=";
-			}
-			case GT: {
-				return "<";
-			}
-			case LE: {
 				return ">=";
 			}
-			case LT: {
+			case GT: {
 				return ">";
+			}
+			case LE: {
+				return "<=";
+			}
+			case LT: {
+				return "<";
 			}
 		}
 	}
