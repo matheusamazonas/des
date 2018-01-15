@@ -61,8 +61,8 @@ class MissionGenerator {
 		«var x = 0»
 		«FOR c : mission.actCond SEPARATOR " else "»
 		«IF (mission.actCond.get(x).actions !== null)»
-		//if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
-			if («getConditionCode(mission.actCond.get(x).cond, false)»){
+		if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
+			//if («getConditionCode(mission.actCond.get(x).cond, false)»){
 			«mission.name»_cond[«x»] = true;
 			«FOR act : mission.actCond.get(x++).actions»
 				«IF (mission.actCond.get(x-1).cond.sensor == Sensor.COLOR && act.action == EV3_ACTION.MEASURE)»
