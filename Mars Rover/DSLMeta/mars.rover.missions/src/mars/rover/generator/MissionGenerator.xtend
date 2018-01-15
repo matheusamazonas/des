@@ -15,8 +15,11 @@ class MissionGenerator {
 		case AVOID: {
 			getAvoidCode(mission);
 		}
+		case SEEK_FOREVER: {
+			getFindCode(mission, true);
+		}
 		case FIND: {
-			getFindCode(mission);
+			getFindCode(mission, false);
 		}
 		case FINDINORDER: {
 			// TODO: Implement find in order
@@ -31,6 +34,9 @@ class MissionGenerator {
 	def static getGlobals(Mission mission){
 		switch mission.type{
 			case AVOID: {
+			}
+			case SEEK_FOREVER: {
+				getFindVariables(mission);
 			}
 			case FIND: {
 				getFindVariables(mission);
@@ -54,16 +60,15 @@ class MissionGenerator {
 		«FOR a : mission.actions »«getActionCode(a)»«ENDFOR»
 	}
 	'''
-	
 		
-	def static getFindCode(Mission mission)'''
-		
+	def static getFindCode(Mission mission, boolean forever)'''
 		«var x = 0»
 		«FOR c : mission.actCond SEPARATOR " else "»
 		«IF (mission.actCond.get(x).actions !== null)»
 		if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
-			//if («getConditionCode(mission.actCond.get(x).cond, false)»){
+			«IF !forever»
 			«mission.name»_cond[«x»] = true;
+			«ENDIF»
 			«FOR act : mission.actCond.get(x++).actions»
 				«IF (mission.actCond.get(x-1).cond.sensor == Sensor.COLOR && act.action == EV3_ACTION.MEASURE)»
 				adjust_for_measurement(«getColorCode(mission.actCond.get(x-1).cond.value.color)»);

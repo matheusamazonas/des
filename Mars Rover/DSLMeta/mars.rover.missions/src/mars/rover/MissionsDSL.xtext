@@ -48,6 +48,7 @@ terminal MAC:
 
 enum MissionType:
 	AVOID = 						  "avoid"	|
+	SEEK_FOREVER =       		   "seek"   |
 	FIND = 						   "find"	|
 	FINDINORDER = 			"findInOrder"	|
 	FINDSIMULTANEOUS = "findSimultaneous"	
