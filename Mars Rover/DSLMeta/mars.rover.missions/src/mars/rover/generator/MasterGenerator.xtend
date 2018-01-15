@@ -20,7 +20,7 @@ class MasterGenerator {
 	#include "common.h"
 	#include "app.h"
 	
-	#define BT_CONNECT_PERIOD 50
+	#define BT_CONNECT_PERIOD 100
 	
 	static FILE *bt_con;	
 	
@@ -96,8 +96,10 @@ class MasterGenerator {
 		act_tsk(SENSE_TASK);
 	}
 	
-	colorid_t parseIntToColor(int n){
-		switch(n){
+	colorid_t parseIntToColor(int n)
+	{
+		switch(n)
+		{
 			case 1 :{
 				return COLOR_BLACK;
 			}
@@ -122,11 +124,11 @@ class MasterGenerator {
 			case 0 :{
 				return COLOR_WHITE;
 			}
-				
 		}
 	}
 	
-	void parseStringToVar(char* arr ){
+	void parseStringToVar(char* arr )
+	{
 		int count = 0;
 	
 		const char s[2] = ",";
@@ -134,41 +136,45 @@ class MasterGenerator {
 		
 		token = strtok(arr, s);
 		ultra_front_dist = atoi(token);
-		while( token != NULL) {
+		while( token != NULL) 
+		{
 			token = strtok(NULL,s);
-			if(count == 0){
+			if(count == 0)
+			{
 				touch_l = atoi(token);
 			}
-			else{
-				if(count == 1){
+			else
+			{
+				if(count == 1)
+				{
 					touch_r = atoi(token);
 				}
-				else{
-					if(count == 2){
+				else
+				{
+					if(count == 2)
+					{
 						color_m = parseIntToColor(atoi(token));
 					}
 				}
 			}
 		count++;
 		}
-	
 	}
 	
 	void update_slave_sensors()
 	{
-		while(true){
+		while(true)
+		{
 			char arr1[30];
 			fgets(arr1, 30, bt_con);
 			parseStringToVar(arr1);
 			sprintf(arr1, "update slave %d %d %d %d sl", ultra_front_dist, touch_l, touch_r, color_m);
 			cycle_print(arr1);
 		}
-		
 	}
 	
 	void read_sensors() 
 	{
-		
 		char arr1[30];
 		dly_tsk(50); 
 		sprintf(arr1, "Obtained : %d %d %d %d . %d %d", ultra_front_dist, touch_l, touch_r,  color_m, color_l, color_r);
@@ -199,7 +205,6 @@ class MasterGenerator {
 		}
 	}
 	
-	
 	void stop()
 	{
 		ev3_motor_stop(WHEEL_LEFT_P, true);
@@ -226,7 +231,6 @@ class MasterGenerator {
 			read_sensors();
 			get_tim(&current_time);
 		}
-		
 	}
 	
 	void move_towards()
@@ -253,50 +257,36 @@ class MasterGenerator {
 	}
 	
 	
-	
-	void rotate_with_params(int16_t dir, colorid_t targetColor){
+	void rotate_with_params(int16_t dir, colorid_t targetColor)
+	{
 		ev3_gyro_sensor_reset(GYRO_P);
 		//read_sensors();
 		ev3_motor_set_power(WHEEL_LEFT_P, dir*SPECIAL_SPEED);
 		ev3_motor_set_power(WHEEL_RIGHT_P, (-dir)*SPECIAL_SPEED);
-		if(dir == 1){
+		if(dir == 1)
+		{
 			while ( (color_m != targetColor || color_r == targetColor ||  color_r == COLOR_NONE)  )
 			{
-				if(color_m == COLOR_NONE){
-					//if(touch_l < 2)
-						cycle_print((char*)"....REVERSE MID=NONE");
+				if(color_m == COLOR_NONE)
+				{
+					cycle_print((char*)"....REVERSE MID=NONE");
 					reverse(200);
 				}
-				
 				read_sensors();
-				//dly_tsk(10);
-					
-					
-				
-				
 			}
-					
 		}
-		else{
+		else
+		{
 			while ( (color_m != targetColor || color_l == targetColor ||  color_l == COLOR_NONE)  )
 			{
-				if(color_m == COLOR_NONE){
-					//if(touch_l < 2)
-						cycle_print((char*)"....REVERSE MID=NONE");
+				if(color_m == COLOR_NONE)
+				{
+					cycle_print((char*)"....REVERSE MID=NONE");
 					reverse(200);
 				}
-				
 				read_sensors();
-				//dly_tsk(10);
-					
-					
-				
-				
 			}
-					
 		}
-		//dly_tsk(100);
-		
 	}
 	
 	void rotate()
@@ -315,7 +305,6 @@ class MasterGenerator {
 		{
 			//check_for_conditions();
 			read_sensors();
-			
 		}
 	}
 	
@@ -364,65 +353,70 @@ class MasterGenerator {
 		«ENDFOR»
 	}
 	
-	void adjust_for_measurement(colorid_t targetColor){
-		
-			ulong_t current_time = 0L, init_time;
-								if(color_m ==  targetColor && color_l ==  targetColor && color_r !=  targetColor){
-									//rotateLeft
-									cycle_print((char*)"....MID and LEFT");
-									reverse(200);
-									rotate_with_params(-1, targetColor);
-									
-								}else{
-									if(color_m ==  targetColor && color_l !=  targetColor && color_r ==  targetColor){
-										//rotateRight
-										cycle_print((char*)"....MID and RIGHT");
-										reverse(200);
-										rotate_with_params( 1, targetColor);
-										
-									}else{
-										if(color_m !=  targetColor && color_l !=  targetColor && color_r ==  targetColor){
-											//rotateRight
-											cycle_print((char*)".... RIGHT");
-											move_towards();
-											get_tim(&init_time);
-											while (init_time + 375 > current_time)
-											{
-												read_sensors();
-												
-												if(color_m == targetColor)
-													break;
-												get_tim(&current_time);
-												//dly_tsk(10);
-											}
-																						
-											rotate_with_params(1, targetColor);
-											cycle_print((char*)"....DONE_WITH_ADJUST");
-											
-										}else{
-											if(color_m !=  targetColor && color_l ==  targetColor && color_r !=  targetColor){
-												
-												move_towards();
-												cycle_print((char*)".... LEFT");
-												get_tim(&init_time);
-												while (init_time + 375 > current_time)
-												{
-													read_sensors();
-												
-													if(color_m ==  targetColor)
-														break;
-													get_tim(&current_time);
-											//		dly_tsk(10);
-												}
-												
-												rotate_with_params(-1, targetColor);
-												
-											}
-											
-										}
-									}
-									
-								}
+	void adjust_for_measurement(colorid_t targetColor)
+	{
+		ulong_t current_time = 0L, init_time;
+		if(color_m ==  targetColor && color_l ==  targetColor && color_r !=  targetColor)
+		{
+			//rotateLeft
+			cycle_print((char*)"....MID and LEFT");
+			reverse(200);
+			rotate_with_params(-1, targetColor);
+			
+		}
+		else
+		{
+			if(color_m ==  targetColor && color_l !=  targetColor && color_r ==  targetColor)
+			{
+				//rotateRight
+				cycle_print((char*)"....MID and RIGHT");
+				reverse(200);
+				rotate_with_params( 1, targetColor);
+				
+			}
+			else
+			{
+				if(color_m !=  targetColor && color_l !=  targetColor && color_r ==  targetColor)
+				{
+					//rotateRight
+					cycle_print((char*)".... RIGHT");
+					move_towards();
+					get_tim(&init_time);
+					while (init_time + 375 > current_time)
+					{
+						read_sensors();
+						
+						if(color_m == targetColor)
+							break;
+						get_tim(&current_time);
+						//dly_tsk(10);
+					}
+																
+					rotate_with_params(1, targetColor);
+					cycle_print((char*)"....DONE_WITH_ADJUST");
+					
+				}
+				else
+				{
+					if(color_m !=  targetColor && color_l ==  targetColor && color_r !=  targetColor)
+					{
+						move_towards();
+						cycle_print((char*)".... LEFT");
+						get_tim(&init_time);
+						while (init_time + 375 > current_time)
+						{
+							read_sensors();
+						
+							if(color_m ==  targetColor)
+								break;
+							get_tim(&current_time);
+					//		dly_tsk(10);
+						}
+						rotate_with_params(-1, targetColor);
+					}
+				}
+			}
+		}
 	}
 	
 	void main_task(intptr_t unused) 
@@ -432,14 +426,13 @@ class MasterGenerator {
 		init();
 		//initiated right after bt connection is concluded. in connect_to_slave
 		act_tsk(ACT_TASK);
-		//act_tsk(SENSE_TASK);
 	}
 	
+	// The sense task is initializated in connect_to_slave, after the BT connection is stablished
 	void sense_task(intptr_t unused) 
 	{
 		cycle_print((char*)"SENSE HAS STARTED");
 		update_slave_sensors();
-
 	}
 	
 	void act_task(intptr_t unused) 
