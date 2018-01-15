@@ -196,8 +196,11 @@ class MissionGenerator {
 					code = getColorFindCond(cond.relation, cond.value.color);
 				}
 			}
-			case PROXIMITY: {
-				code = "ultra_front_dist" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.toString()
+			case FRONT_PROXIMITY: {
+				code = "ultra_front_dist" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.value
+			}
+			case BACK_PROXIMITY: {
+				code = "ultra_back_dist" + " " + getRelationCode(cond.relation) + " " + cond.value.integer.value
 			}
 			case TOUCH: {
 				code = getTouchCond(cond.relation, cond.value.bool.value);				

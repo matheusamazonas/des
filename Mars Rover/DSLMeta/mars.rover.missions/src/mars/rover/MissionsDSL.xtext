@@ -65,8 +65,9 @@ ActfulCondition:
 ;
 
 enum Sensor:
-	color = "color"				|
-	proximity = "proximity"		|
+	color = "color"					|
+	backProximity = "backProximity"	|
+	frontProximity = "frontProximity"|
 	touch = "touch"
 ;
 
