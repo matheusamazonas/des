@@ -176,7 +176,7 @@ class MasterGenerator {
 	void read_sensors() 
 	{
 		char arr1[30];
-		dly_tsk(50); 
+		dly_tsk(SENSOR_REFRESH_RATE); 
 		sprintf(arr1, "Obtained : %d %d %d %d . %d %d", ultra_front_dist, touch_l, touch_r,  color_m, color_l, color_r);
 		cycle_print(arr1);
 		color_l = ev3_color_sensor_get_color(COLOR_L_P);
@@ -252,7 +252,6 @@ class MasterGenerator {
 		{
 			read_sensors();
 			get_tim(&current_time);
-			//dly_tsk(10);
 		}
 	}
 	
@@ -387,9 +386,10 @@ class MasterGenerator {
 						read_sensors();
 						
 						if(color_m == targetColor)
+						{
 							break;
+						}
 						get_tim(&current_time);
-						//dly_tsk(10);
 					}
 																
 					rotate_with_params(1, targetColor);
@@ -408,9 +408,10 @@ class MasterGenerator {
 							read_sensors();
 						
 							if(color_m ==  targetColor)
+							{
 								break;
+							}
 							get_tim(&current_time);
-					//		dly_tsk(10);
 						}
 						rotate_with_params(-1, targetColor);
 					}
@@ -443,7 +444,6 @@ class MasterGenerator {
 			read_sensors();
 			check_for_conditions();
 		    move_towards();
-		    //dly_tsk(10);
 		}
 		«ENDIF»
 	}

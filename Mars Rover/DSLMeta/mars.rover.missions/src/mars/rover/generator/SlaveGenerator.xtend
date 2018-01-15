@@ -110,7 +110,7 @@ class SlaveGenerator {
 		while(true) 
 		{
 			read_sensors();
-			dly_tsk(50);
+			dly_tsk(SENSOR_REFRESH_RATE);
 		}
 	}
 	
