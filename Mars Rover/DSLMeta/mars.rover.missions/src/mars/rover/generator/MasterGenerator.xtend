@@ -125,6 +125,7 @@ class MasterGenerator {
 				return COLOR_WHITE;
 			}
 		}
+		return COLOR_NONE;
 	}
 	
 	void parseStringToVar(char* arr )
@@ -237,6 +238,22 @@ class MasterGenerator {
 	{
 		ev3_motor_set_power(WHEEL_LEFT_P, DRIVE_SPEED);
 		ev3_motor_set_power(WHEEL_RIGHT_P, DRIVE_SPEED);
+	}
+	
+	void move_for(uint32_t duration)
+	{
+		ulong_t current_time = 0L, init_time;
+		
+		ev3_motor_set_power(WHEEL_LEFT_P, SPECIAL_SPEED);
+		ev3_motor_set_power(WHEEL_RIGHT_P, SPECIAL_SPEED);
+		
+		get_tim(&init_time);
+		
+		while (init_time + duration > current_time)
+		{
+			read_sensors();
+			get_tim(&current_time);
+		}
 	}
 	
 	void reverse(uint32_t duration)

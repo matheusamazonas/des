@@ -66,7 +66,7 @@ class MissionGenerator {
 			«mission.name»_cond[«x»] = true;
 			«FOR act : mission.actCond.get(x++).actions»
 				«IF (mission.actCond.get(x-1).cond.sensor == Sensor.COLOR && act.action == EV3_ACTION.MEASURE)»
-					 adjust_for_measurement(«getColorCode(mission.actCond.get(x-1).cond.value.color)»);
+				adjust_for_measurement(«getColorCode(mission.actCond.get(x-1).cond.value.color)»);
 				«ENDIF»
 			«getActionCode(act)»
 			«ENDFOR»
@@ -110,6 +110,9 @@ class MissionGenerator {
 		}
 		case MEASURE: {
 			"measure();"
+		}
+		case MOVE: {
+			"move_for(" + action.duration.value + ");"
 		}
 	}»
 	'''
