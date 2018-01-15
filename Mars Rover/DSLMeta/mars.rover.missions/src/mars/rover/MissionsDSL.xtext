@@ -15,7 +15,7 @@ Robot:
 Mission: "Mission" name=ID "priority" priority = INT
 	(
 		type = MissionType cond += Condition+ 'ifHappens' actions += Action* ("start" newMissions += [Mission]+)?			|
-		type = MissionType actCond += ActfulCondition+ 'whenDone' actons += Action* ("start" newMissions += [Mission]+)?			
+		type = MissionType actCond += ActfulCondition+ 'whenDone' actions += Action* ("start" newMissions += [Mission]+)?			
 	)
 ;
 
