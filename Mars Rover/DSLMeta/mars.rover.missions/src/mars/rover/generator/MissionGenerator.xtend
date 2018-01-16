@@ -10,16 +10,16 @@ import mars.rover.missionsDSL.EV3_ACTION
 
 class MissionGenerator {
 
-	def static getMissionCode(Mission mission)'''
+	def static getMissionCode(Mission mission, int index)'''
 	«switch mission.type {
 		case AVOID: {
-			getAvoidCode(mission);
+			getAvoidCode(mission, index);
 		}
 		case SEEK_FOREVER: {
-			getFindCode(mission, true);
+			getFindCode(mission, true, index);
 		}
 		case FIND: {
-			getFindCode(mission, false);
+			getFindCode(mission, false, index);
 		}
 		case FINDINORDER: {
 			// TODO: Implement find in order
@@ -54,18 +54,18 @@ class MissionGenerator {
 	bool «mission.name»_cond[«mission.actCond.length»];
 	'''
 	
-	def static getAvoidCode(Mission mission)'''
-	if («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR») 
+	def static getAvoidCode(Mission mission, int index)'''
+	if (mission_status[«index»].status && («FOR c : mission.cond SEPARATOR " || "»«getConditionCode(c, true)»«ENDFOR»)) 
 	{
 		«FOR a : mission.actions »«getActionCode(a)»«ENDFOR»
 	}
 	'''
 		
-	def static getFindCode(Mission mission, boolean forever)'''
+	def static getFindCode(Mission mission, boolean forever, int index)'''
 		«var x = 0»
 		«FOR c : mission.actCond SEPARATOR " else "»
 		«IF (mission.actCond.get(x).actions !== null)»
-		if («getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
+		if (mission_status[«index»].status && «getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
 			«IF !forever»
 			«mission.name»_cond[«x»] = true;
 			«ENDIF»
@@ -79,10 +79,14 @@ class MissionGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«IF (mission.actCond.length > 0)»
-		else if (allTrue(«mission.name»_cond, «mission.actCond.length»))
+		else if (mission_status[«index»].status && allTrue(«mission.name»_cond, «mission.actCond.length»))
 		{
 			«FOR act : mission.actions»
 			«getActionCode(act)»
+			«ENDFOR»
+			«FOR newMission : mission.newMissions»
+			set_status((char*)"«newMission.name»", true);
+			set_status((char*)"«mission.name»", false);
 			«ENDFOR»
 		}
 		«ENDIF»

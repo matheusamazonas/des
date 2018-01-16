@@ -97,6 +97,11 @@ class AppGenerator {
 	
 	#endif
 	
+	struct mission_info{
+		const char *name;
+		bool status;
+	};
+	
 	/**
 	 * Functions
 	 */

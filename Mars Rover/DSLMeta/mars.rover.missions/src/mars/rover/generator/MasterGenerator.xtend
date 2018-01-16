@@ -16,6 +16,44 @@ class MasterGenerator {
 			    "0x" + parts.get(5) + "}"
 	}
 	
+	def static getCheckForConditions(Robot robot){
+		var ret = "void check_for_conditions()\n{\n";
+		var missions = robot.availableMissions.sortBy[priority].reverse;
+		var i = 0;
+		for (i = 0; i < missions.length-1; i++){
+			ret += MissionGenerator.getMissionCode(missions.get(i), i);
+			ret += "else "
+		}
+		// The last one doesn't contain an "else" appended to it
+		ret += MissionGenerator.getMissionCode(missions.get(i), i);
+		ret += "}"
+		return ret;
+	}
+	
+	def static getMissionStatus(Robot robot){
+		var ret = "mission_info mission_status[" + robot.availableMissions.length + "] = {\n";
+		var missions = robot.availableMissions.sortBy[priority].reverse;
+		var i = 0;
+		for (i = 0; i < missions.length-1; i++){
+			var mission = missions.get(i);
+			ret += "{ .name = \"" + mission.name + "\", .status = " + isMissionInitial(robot, mission) + "}, \n"
+		}
+		ret += "{ .name = \"" + missions.get(i).name + "\", .status = " + isMissionInitial(robot, missions.get(i)) + "}\n};\n"
+		return ret;
+	}
+	
+	def static isMissionInitial(Robot robot, Mission mission)
+	{
+		for (Mission m : robot.startMissions)
+		{
+			if (m.name.equals(mission.name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	def static toCpp(Robot robot)'''
 	#include "common.h"
 	#include "app.h"
@@ -58,6 +96,9 @@ class MasterGenerator {
 	bool_t touch_l, touch_r;
 	colorid_t color_m;
 	int16_t ultra_front_dist;
+	
+	// Mission status
+	«getMissionStatus(robot)»
 	
 	// Mission condition variables
 	«FOR Mission mission : robot.availableMissions»
@@ -322,6 +363,20 @@ class MasterGenerator {
 		}
 	}
 	
+	void set_status(char name[], bool status)
+	{
+		for (int i = 0; i < «robot.availableMissions.length»; i++)
+		{
+			if (strcmp(mission_status[i].name, name) == 0)
+			{
+				mission_status[i].status = status;
+				break;
+			} 	
+		}
+	}
+	
+	«getCheckForConditions(robot)»
+	
 	void halt()
 	{
 		cycle_print((char*)"Halt...");
@@ -359,13 +414,6 @@ class MasterGenerator {
 	}
 	
 	
-	void check_for_conditions()
-	{
-		// TODO: Sort missions based on priority
-		«FOR Mission m : robot.startMissions.sortBy[priority].reverse SEPARATOR " else "»
-		«MissionGenerator.getMissionCode(m)»
-		«ENDFOR»
-	}
 	
 	void main_task(intptr_t unused) 
 	{
