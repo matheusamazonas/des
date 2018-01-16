@@ -99,6 +99,9 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 					if (action.value !== null){
 						error("Reverse doesn't support values", Literals.ACTION__VALUE);
 					}
+					if (action.duration === null){
+						error("Reverse needs a duration in milliseconds", Literals.ACTION__DURATION);
+					}
 				}
 				case ROTATE: {
 					if (action.value !== null){
@@ -114,6 +117,22 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 					}
 					if (action.duration !== null){
 						error("Stop doesn't support duration", Literals.ACTION__DURATION);
+					}
+				}
+				case MEASURE: {
+					if (action.value !== null){
+						error("Measure doesn't support values", Literals.ACTION__VALUE);
+					}
+					if (action.duration !== null){
+						error("Measure doesn't support duration", Literals.ACTION__DURATION);
+					}
+				}
+				case MOVE: {
+					if (action.value !== null){
+						error("Move doesn't support values", Literals.ACTION__VALUE);
+					}
+					if (action.duration === null){
+						error("Move needs a duration in milliseconds", Literals.ACTION__DURATION);
 					}
 				}
 				
