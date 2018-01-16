@@ -70,6 +70,24 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 	}
 	
 	@Check
+	def checkRepeatedPriorities(Robot robot){
+		if (robot !== null){
+			for(var int i = 0; i< robot.availableMissions.length; i++){
+				for(var int j = 0; j< robot.availableMissions.length; j++){
+					if(i != j){
+						if(robot.availableMissions.get(i).priority == robot.availableMissions.get(j).priority){
+							error("Priority must be unique, conflict: "+robot.availableMissions.get(i).name+ " "+ robot.availableMissions.get(j).name , Literals.ROBOT__START_MISSIONS);
+						}
+					
+					}
+					 
+				}
+			
+			}
+		}
+	}
+	
+	@Check
 	def checkDuration(Action action){
 		if (action !== null && action.duration !== null){
 			if (action.duration.value < 0){
