@@ -272,39 +272,6 @@ class MasterGenerator {
 		}
 	}
 	
-	
-	void rotate_with_params(int16_t dir, colorid_t targetColor)
-	{
-		ev3_gyro_sensor_reset(GYRO_P);
-		//read_sensors();
-		ev3_motor_set_power(WHEEL_LEFT_P, dir*SPECIAL_SPEED);
-		ev3_motor_set_power(WHEEL_RIGHT_P, (-dir)*SPECIAL_SPEED);
-		if(dir == 1)
-		{
-			while ( (color_m != targetColor || color_r == targetColor ||  color_r == COLOR_NONE)  )
-			{
-				if(color_m == COLOR_NONE)
-				{
-					cycle_print((char*)"....REVERSE MID=NONE");
-					reverse(200);
-				}
-				read_sensors();
-			}
-		}
-		else
-		{
-			while ( (color_m != targetColor || color_l == targetColor ||  color_l == COLOR_NONE)  )
-			{
-				if(color_m == COLOR_NONE)
-				{
-					cycle_print((char*)"....REVERSE MID=NONE");
-					reverse(200);
-				}
-				read_sensors();
-			}
-		}
-	}
-	
 	void rotate()
 	{
 		int rand_direc = rand() % 2 == 0 ? 1 : -1;
@@ -321,6 +288,37 @@ class MasterGenerator {
 		{
 			//check_for_conditions();
 			read_sensors();
+		}
+	}
+	
+	void adjust_for_measurement(colorid_t targetColor)
+	{
+		if (color_l == targetColor)
+		{
+			ev3_motor_set_power(WHEEL_LEFT_P, 0);
+			ev3_motor_set_power(WHEEL_RIGHT_P, SPECIAL_SPEED);
+	
+			while (color_m != targetColor || color_l == targetColor)
+			{
+				read_sensors();
+			}
+			dly_tsk(300);
+			if (color_m != targetColor)
+			{
+				reverse(300);
+			}
+			stop();
+		}
+		else if (color_r == targetColor)
+		{
+			ev3_motor_set_power(WHEEL_LEFT_P, SPECIAL_SPEED);
+			ev3_motor_set_power(WHEEL_RIGHT_P, 0);
+	
+			while (color_m != targetColor || color_r == targetColor)
+			{
+				read_sensors();
+			}
+			stop();
 		}
 	}
 	
@@ -367,74 +365,6 @@ class MasterGenerator {
 		«FOR Mission m : robot.startMissions.sortBy[priority].reverse SEPARATOR " else "»
 		«MissionGenerator.getMissionCode(m)»
 		«ENDFOR»
-	}
-	
-	void adjust_for_measurement(colorid_t targetColor)
-	{
-		ulong_t current_time = 0L, init_time;
-		if(color_m ==  targetColor && color_l ==  targetColor && color_r !=  targetColor)
-		{
-			//rotateLeft
-			cycle_print((char*)"....MID and LEFT");
-			reverse(200);
-			rotate_with_params(-1, targetColor);
-			
-		}
-		else
-		{
-			if(color_m ==  targetColor && color_l !=  targetColor && color_r ==  targetColor)
-			{
-				//rotateRight
-				cycle_print((char*)"....MID and RIGHT");
-				reverse(200);
-				rotate_with_params( 1, targetColor);
-				
-			}
-			else
-			{
-				if(color_m !=  targetColor && color_l !=  targetColor && color_r ==  targetColor)
-				{
-					//rotateRight
-					cycle_print((char*)".... RIGHT");
-					move_towards();
-					get_tim(&init_time);
-					while (init_time + 375 > current_time)
-					{
-						read_sensors();
-						
-						if(color_m == targetColor)
-						{
-							break;
-						}
-						get_tim(&current_time);
-					}
-																
-					rotate_with_params(1, targetColor);
-					cycle_print((char*)"....DONE_WITH_ADJUST");
-					
-				}
-				else
-				{
-					if(color_m !=  targetColor && color_l ==  targetColor && color_r !=  targetColor)
-					{
-						move_towards();
-						cycle_print((char*)".... LEFT");
-						get_tim(&init_time);
-						while (init_time + 375 > current_time)
-						{
-							read_sensors();
-						
-							if(color_m ==  targetColor)
-							{
-								break;
-							}
-							get_tim(&current_time);
-						}
-						rotate_with_params(-1, targetColor);
-					}
-				}
-			}
-		}
 	}
 	
 	void main_task(intptr_t unused) 
