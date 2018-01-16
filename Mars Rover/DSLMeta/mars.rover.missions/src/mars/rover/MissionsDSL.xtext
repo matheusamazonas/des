@@ -33,6 +33,10 @@ Color:
 	value = EV3_COLOR
 ;
 
+LEDColor:
+	value = EV3_LED_COLOR
+;
+
 Boolean:
 	value = BOOL
 ;
@@ -83,7 +87,8 @@ enum Relation:
 Value:
 	color = Color	    |
 	integer = Integer	|
-	bool = Boolean
+	bool = Boolean		|
+	ledColor = LEDColor
 ;
 
 terminal BOOL:
@@ -91,7 +96,7 @@ terminal BOOL:
 ;
 
 Action:
-	action = EV3_ACTION (value = Integer)? ("for" duration = Duration)?	
+	action = EV3_ACTION (value = Value)? ("for" duration = Duration)?	
 ;
 
 enum EV3_ACTION:
@@ -101,8 +106,8 @@ enum EV3_ACTION:
 	ROTATE = "rotate"	|
 	HALT = "halt"		|
 	MEASURE = "measure" |
-	MOVE = "move"
-	// TODO: LED Colors
+	MOVE = "move"       |
+	LED = "led"
 ;
 
 enum EV3_COLOR:
@@ -113,4 +118,11 @@ enum EV3_COLOR:
 	RED = "red" 			|
 	WHITE = "white"		|
 	BROWN = "brown"
+;
+
+enum EV3_LED_COLOR:
+	LED_OFF 	= "led_off"			|
+	LED_RED = "led_red"			| 	
+    LED_GREEN = "led_green" 		|
+	LED_ORANGE = "led_orange"	
 ;

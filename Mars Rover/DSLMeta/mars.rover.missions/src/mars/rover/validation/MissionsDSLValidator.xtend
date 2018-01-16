@@ -92,7 +92,9 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 				}
 				case PLAY: {
 					if (action.value === null){
-						error("Play needs a value", Literals.ACTION__VALUE);
+						error("Play needs an integer value", Literals.ACTION__VALUE);
+					} else if (action.value.integer === null){
+						error("Play needs an integer value", Literals.ACTION__VALUE);
 					}
 					if (action.duration === null){
 						error("Play needs a duration in milliseconds", Literals.ACTION__DURATION);
