@@ -7,6 +7,8 @@ import mars.rover.missionsDSL.Color
 import mars.rover.missionsDSL.Relation
 import mars.rover.missionsDSL.Sensor
 import mars.rover.missionsDSL.EV3_ACTION
+import mars.rover.missionsDSL.EV3_LED_COLOR
+import mars.rover.missionsDSL.EV3_COLOR
 
 class MissionGenerator {
 
@@ -71,7 +73,7 @@ class MissionGenerator {
 			«ENDIF»
 			«FOR act : mission.actCond.get(x++).actions»
 				«IF (mission.actCond.get(x-1).cond.sensor == Sensor.COLOR && act.action == EV3_ACTION.MEASURE)»
-				adjust_for_measurement(«getColorCode(mission.actCond.get(x-1).cond.value.color)»);
+				adjust_for_measurement(«getColorCode(mission.actCond.get(x-1).cond.value.color.value)»);
 				«ENDIF»
 			«getActionCode(act)»
 			«ENDFOR»
@@ -106,7 +108,7 @@ class MissionGenerator {
 			"halt();"
 		}
 		case PLAY: {
-			"play_note_for(" + action.value.value + ", " + action.duration.value + ");"
+			"play_note_for(" + action.value.integer + ", " + action.duration.value + ");"
 		}
 		case REVERSE: {
 			"reverse(" + action.duration.value + ");" // The DSL takes seconds, the C method milliseconds.
@@ -123,6 +125,10 @@ class MissionGenerator {
 		case MOVE: {
 			"move_for(" + action.duration.value + ");"
 		}
+		case LED: {
+			"set_led(" + getLedColorCode(action.value.ledColor.value) + ", " + action.duration.value + ");"
+		}
+		
 	}»
 	'''
 	
@@ -147,8 +153,8 @@ class MissionGenerator {
 		}
 	}
 	
-	def static getColorCode(Color color){
-		switch color.value
+	def static getColorCode(EV3_COLOR color){
+		switch color
 		{
 			case BLACK: {
 				return "COLOR_BLACK";
@@ -174,19 +180,39 @@ class MissionGenerator {
 		}
 	}
 	
+	def static getLedColorCode(EV3_LED_COLOR color){
+		switch color {
+			case LED_GREEN: {
+				return "LED_GREEN"
+			}
+			case LED_OFF: {
+				return "LED_OFF"
+			}
+			case LED_ORANGE: {
+				return "LED_ORANGE"
+			}
+			case LED_RED: {
+				return "LED_RED"
+			}
+			default: {
+				return "LED_GREEN"
+			}
+		}
+	}
+	
 	def static getColorAvoidCond(Relation relation, Color color){
-		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		var c3 = "color_m" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color.value);
+		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color.value);
+		var c3 = "color_m" + " " + getRelationCode(relation) + " " + getColorCode(color.value);
 	
 		return "("+c1 + " || " + c2 + " || " + c3+")";
 	}
 	
 
 	def static getColorFindCond(Relation relation, Color color){
-		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color);
-		var c3 = "color_m" + " " + getRelationCode(relation) + " " + getColorCode(color);
+		var c1 = "color_r" + " " + getRelationCode(relation) + " " + getColorCode(color.value);
+		var c2 = "color_l" + " " + getRelationCode(relation) + " " + getColorCode(color.value);
+		var c3 = "color_m" + " " + getRelationCode(relation) + " " + getColorCode(color.value);
 		
 		return "("+c1 + " || " + c2 + " || " + c3+")";
 	}

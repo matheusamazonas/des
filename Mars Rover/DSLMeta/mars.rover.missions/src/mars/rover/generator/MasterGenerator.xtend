@@ -92,7 +92,7 @@ class MasterGenerator {
 	colorid_t color_r, color_l;
 	int16_t ultra_back_dist, gyro_angle;
 	
-	//slave sensors
+	// Slave sensors
 	bool_t touch_l, touch_r;
 	colorid_t color_m;
 	int16_t ultra_front_dist;
@@ -381,7 +381,7 @@ class MasterGenerator {
 	{
 		cycle_print((char*)"Halt...");
 		stop();
-		ev3_led_set_color(LED_OFF);
+		set_led(LED_OFF, 0);
 		fclose(bt_con);
 		ext_tsk();
 	}
@@ -410,7 +410,7 @@ class MasterGenerator {
 		
 		wait_for_black();
 		wait_for_ultra();
-		ev3_led_set_color(LED_GREEN);
+		set_led(LED_GREEN, 0);
 	}
 	
 	

@@ -20,10 +20,13 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 	def checkSpeeds(Robot robot){
 		if (robot !== null){
 			if (robot.defaultSpeed < 0 || robot.defaultSpeed > 100){
-				error("Speeds values must be between 0 and 100", Literals.ROBOT__DEFAULT_SPEED);
+				error("Speed values must be between 0 and 100", Literals.ROBOT__DEFAULT_SPEED);
 			}
 			if (robot.slowSpeed < 0 || robot.slowSpeed > 100){
-				error("Speeds values must be between 0 and 100", Literals.ROBOT__SLOW_SPEED);
+				error("Speed values must be between 0 and 100", Literals.ROBOT__SLOW_SPEED);
+			}
+			if (robot.defaultSpeed >= 75){
+				warning("Speed values greater than 75 can be too much", Literals.ROBOT__DEFAULT_SPEED);
 			}
 		}
 	}
@@ -133,6 +136,19 @@ class MissionsDSLValidator extends AbstractMissionsDSLValidator {
 					}
 					if (action.duration === null){
 						error("Move needs a duration in milliseconds", Literals.ACTION__DURATION);
+					}
+				}
+				case LED: {
+					if (action.value === null){
+						error("LED needs a led_color value", Literals.ACTION__VALUE);
+					}
+					else {
+						if (action.value.ledColor === null){
+							error("LED needs a led_color value", Literals.ACTION__VALUE);
+						}
+					}
+					if (action.duration === null){
+						error("LED needs a duration in milliseconds", Literals.ACTION__DURATION);
 					}
 				}
 				

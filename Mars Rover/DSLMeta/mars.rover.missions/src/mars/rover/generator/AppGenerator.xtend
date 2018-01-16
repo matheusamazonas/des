@@ -12,6 +12,8 @@ class AppGenerator {
 	int32_t NLINES;
 	int line = 0;
 	
+	ledcolor_t led_color;
+	
 	void play_note_for(float note, int duration)
 	{
 		ev3_speaker_play_tone(note, duration);
@@ -43,11 +45,17 @@ class AppGenerator {
 	    ev3_font_get_size(font, &FONT_WIDTH, &FONT_HEIGHT);
 	}
 	
-	void blink_led(ledcolor_t color, ledcolor_t reset, float duration)
+	void set_led(ledcolor_t color, float duration)
 	{
+		ledcolor_t previous = led_color; 
+		led_color = color;	
 		ev3_led_set_color(color);
-		dly_tsk(duration);
-		ev3_led_set_color(reset);
+		if (duration > 0)
+		{
+			dly_tsk(duration);
+			ev3_led_set_color(previous);
+			led_color = previous;
+		}
 	}
 	
 	void setup()
@@ -109,7 +117,7 @@ class AppGenerator {
 	extern void play_note_for(float, int);
 	extern bool allTrue(bool[], int);
 	extern void cycle_print(char*); 
-	extern void blink_led(ledcolor_t, ledcolor_t, float duration);
+	extern void set_led(ledcolor_t, float duration);
 	extern void setup();
 	'''
 	
