@@ -67,7 +67,8 @@ class MissionGenerator {
 		«var x = 0»
 		«FOR c : mission.actCond SEPARATOR " else "»
 		«IF (mission.actCond.get(x).actions !== null)»
-		if (mission_status[«index»].status && «getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»]){
+		if (mission_status[«index»].status && «getConditionCode(mission.actCond.get(x).cond, false)» && !«mission.name»_cond[«x»])
+		{
 			«IF !forever»
 			«mission.name»_cond[«x»] = true;
 			«ENDIF»
