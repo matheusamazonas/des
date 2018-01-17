@@ -141,6 +141,9 @@ class MasterGenerator {
 	{
 		switch(n)
 		{
+			case 0 :{
+				return COLOR_NONE;
+			}
 			case 1 :{
 				return COLOR_BLACK;
 			}
@@ -162,11 +165,10 @@ class MasterGenerator {
 			case 7 :{
 				return COLOR_BROWN;
 			}
-			case 0 :{
-				return COLOR_WHITE;
+			default: {
+				return COLOR_NONE;	
 			}
 		}
-		return COLOR_NONE;
 	}
 	
 	void parseStringToVar(char* arr )
