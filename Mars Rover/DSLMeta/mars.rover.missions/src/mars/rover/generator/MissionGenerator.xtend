@@ -108,7 +108,7 @@ class MissionGenerator {
 			"halt();"
 		}
 		case PLAY: {
-			"play_note_for(" + action.value.integer + ", " + action.duration.value + ");"
+			"play_note_for(" + action.value.integer.value + ", " + action.duration.value + ");"
 		}
 		case REVERSE: {
 			"reverse(" + action.duration.value + ");" // The DSL takes seconds, the C method milliseconds.
